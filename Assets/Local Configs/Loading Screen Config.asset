@@ -18,3 +18,6 @@ MonoBehaviour:
     - _assetPath: Loading Screens/Loading Screen Start
       _type: 1
       _isLocal: 1
+    - _assetPath: Loading Screens/Loading Screen Battle
+      _type: 2
+      _isLocal: 1

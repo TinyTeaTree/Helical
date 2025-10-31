@@ -41,6 +41,7 @@ namespace Game
                     
                     var worldXZ = cell.Coordinate.ToWorldXZ();
                     instance.transform.localPosition = new Vector3(worldXZ.x, 0f, worldXZ.y);
+                    instance.transform.localScale = Vector3.one * GridUtils.HexScaleModifier;
 
                     // Cache the hex data with its instance
                     _hexCache[coordinate] = (cell, instance);

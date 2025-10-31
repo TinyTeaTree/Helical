@@ -58,7 +58,7 @@ namespace Game
 
         public void OnNewGameClicked()
         {
-            Hide();
+            new BattleLaunchFlow(_bootstrap).Execute();
         }
     }
 }
