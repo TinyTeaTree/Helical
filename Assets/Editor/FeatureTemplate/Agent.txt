@@ -1,0 +1,9 @@
+using Core;
+
+namespace Agents
+{
+    public class <AgentName>Agent : BaseAgent<I<AgentName>Agent>, I<AgentName>Agent
+    {
+        
+    }
+}

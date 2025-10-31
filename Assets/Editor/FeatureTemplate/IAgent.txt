@@ -1,0 +1,9 @@
+using Core;
+
+namespace Agents
+{
+    public interface I<AgentName>Agent : IAgent
+    {
+        //Add Your Agent API Here
+    }
+}

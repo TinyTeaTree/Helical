@@ -16,6 +16,9 @@
 *.blend1
 *.blend1.meta
 
+# Ignore Mac Folder Settings
+*.DS_Store
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
@@ -97,3 +100,6 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+/.idea
+/Assets/_Recovery
+Assets/_Recovery.meta

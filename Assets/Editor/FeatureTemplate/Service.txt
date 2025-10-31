@@ -1,0 +1,11 @@
+using System;
+using Core;
+
+namespace Services
+{
+    public class <ServiceName>Service : BaseService, I<ServiceName>Service
+    {
+        
+        
+    }
+}

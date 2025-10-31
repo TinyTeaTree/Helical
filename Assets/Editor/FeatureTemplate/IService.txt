@@ -1,0 +1,9 @@
+using Core;
+
+namespace Services
+{
+    public interface I<ServiceName>Service : IService
+    {
+        
+    }
+}
