@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Services::Services.GenericSoundCollectionSO
   _sounds:
   - {fileID: 11400000, guid: fc9a0f0f8a33348b9ae7cc943a9e84d0, type: 2}
+  - {fileID: 11400000, guid: e70747bb80bd5420ca67d79ae6eeee48, type: 2}
+  - {fileID: 11400000, guid: e70747bb80bd5420ca67d79ae6eeee48, type: 2}

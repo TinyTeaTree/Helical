@@ -9,5 +9,6 @@ namespace Services
 	{
 		public static IDesignSound Click_Sound => GenericCollection != null ? GenericCollection.Get("Click") : null;
 		public static IDesignSound Play_Sound => GenericCollection != null ? GenericCollection.Get("Play") : null;
+		public static IDesignSound SoundXX_Sound => GenericCollection != null ? GenericCollection.Get("SoundXX") : null;
 	}
 }
