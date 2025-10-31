@@ -39,6 +39,7 @@ namespace Game
             _factories.Add(typeof(HudVisual), new ResourceFactory(Addresses.HudVisual));
             _factories.Add(typeof(LoadingScreenVisual), new ResourceFactory(Addresses.LoadingScreenHud));
             _factories.Add(typeof(LobbyVisual), new ResourceFactory(Addresses.LobbyVisual));
+            _factories.Add(typeof(GridVisual), new ResourceFactory(Addresses.GridVisual));
         }
 
         protected override void AddAgents()
@@ -111,6 +112,8 @@ namespace Game
         {
             var summoner = _services.Get<ISummoningService>();
             Summoner.SummoningService = summoner;
+
+            summoner.SetProvider(typeof(GridResourcePack), new ResourceAssetPackProvider(Addresses.GridResourcePack));
         }
 
         protected override void StartGame()

@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Core;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Services
@@ -15,7 +16,7 @@ namespace Services
         T LoadResource<T>(string resourcePath)
             where T : UnityEngine.Object;
 
-        Task<TAssetPack> LoadAssetPack<TAssetPack>()
+        UniTask<TAssetPack> LoadAssetPack<TAssetPack>()
             where TAssetPack : BaseAssetPack;
     }
 }

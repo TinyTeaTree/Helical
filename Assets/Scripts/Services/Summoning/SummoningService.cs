@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Services
@@ -27,7 +28,7 @@ namespace Services
             return UnityEngine.Object.Instantiate(loadedAsset, parent);
         }
 
-        public Task<TAssetPack> LoadAssetPack<TAssetPack>() 
+        public UniTask<TAssetPack> LoadAssetPack<TAssetPack>() 
             where TAssetPack : BaseAssetPack
         {
             if (_providers.TryGetValue(typeof(TAssetPack), out var provider))
@@ -37,7 +38,7 @@ namespace Services
             else
             {
                 Notebook.NoteError($"No provider for {typeof(TAssetPack)} found");
-                return Task.FromResult((TAssetPack)null);
+                return UniTask.FromResult((TAssetPack)null);
             }
         }
     }

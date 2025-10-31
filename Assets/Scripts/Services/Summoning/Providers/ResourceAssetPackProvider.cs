@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Services
@@ -12,10 +12,10 @@ namespace Services
             _path = path;
         }
         
-        public override Task<T> Load<T>()
+        public override UniTask<T> Load<T>()
         {
             var result = Resources.Load<T>(_path);
-            return Task.FromResult(result);
+            return UniTask.FromResult(result);
         }
     }
 }

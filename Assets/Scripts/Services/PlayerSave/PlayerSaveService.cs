@@ -66,6 +66,18 @@ namespace Services
             var filePath = Path.Combine(userDataFolderPath, saveId + ".json");
             File.WriteAllText(filePath, saveText);
             
+            #if UNITY_EDITOR
+            // Ensure the Project window updates immediately during Play Mode in the Editor
+            var relativePath = "Assets/Player Data/" + saveId + ".json";
+            UnityEditor.EditorApplication.delayCall += () =>
+            {
+                // Import the specific file (faster than full refresh), then refresh to update listings
+                UnityEditor.AssetDatabase.ImportAsset(relativePath, UnityEditor.ImportAssetOptions.ForceUpdate);
+                UnityEditor.AssetDatabase.SaveAssets();
+                UnityEditor.AssetDatabase.Refresh();
+            };
+            #endif
+            
             return UniTask.CompletedTask;
         }
     }
