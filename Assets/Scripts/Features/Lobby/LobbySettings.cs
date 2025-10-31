@@ -14,51 +14,51 @@ namespace Game
 		[SerializeField] private UnityEngine.Events.UnityEvent<bool> _onAudioToggled;
 
 		[SerializeField] private LobbyVisual _visual;
+		public bool MusicOn => _musicToggle.isOn;
+		public bool EffectOn => _audioToggle.isOn;
 
 		private void OnEnable()
 		{
-			if (_musicToggle != null)
-				_musicToggle.onValueChanged.AddListener(OnMusicToggleChanged);
+			_musicToggle.onValueChanged.AddListener(OnMusicToggleChanged);
 
-			if (_audioToggle != null)
-				_audioToggle.onValueChanged.AddListener(OnAudioToggleChanged);
+			_audioToggle.onValueChanged.AddListener(OnAudioToggleChanged);
 
-			if (_exitButton != null)
-				_exitButton.onClick.AddListener(OnExitClicked);
+			_exitButton.onClick.AddListener(OnExitClicked);
 		}
 
 		private void OnDisable()
 		{
-			if (_musicToggle != null)
-				_musicToggle.onValueChanged.RemoveListener(OnMusicToggleChanged);
+			_musicToggle.onValueChanged.RemoveListener(OnMusicToggleChanged);
 
-			if (_audioToggle != null)
-				_audioToggle.onValueChanged.RemoveListener(OnAudioToggleChanged);
+			_audioToggle.onValueChanged.RemoveListener(OnAudioToggleChanged);
 
-			if (_exitButton != null)
-				_exitButton.onClick.RemoveListener(OnExitClicked);
+			_exitButton.onClick.RemoveListener(OnExitClicked);
 		}
 
 		private void OnMusicToggleChanged(bool isOn)
 		{
-			DJ.Play(DJ.Click_Sound);
+			DJ.Play(isOn ? DJ.ClickOn_Sound : DJ.ClickOff_Sound);
 			_onMusicToggled?.Invoke(isOn);
 		}
 
 		private void OnAudioToggleChanged(bool isOn)
 		{
-			DJ.Play(DJ.Click_Sound);
-			// Basic default behavior: toggle global audio. Projects with mixers can override via UnityEvent.
-			AudioListener.pause = !isOn;
+			DJ.Play(isOn ? DJ.ClickOn_Sound : DJ.ClickOff_Sound);
+
 			_onAudioToggled?.Invoke(isOn);
 		}
 
 		private void OnExitClicked()
 		{
-			DJ.Play(DJ.Click_Sound);
+			DJ.Play(DJ.ClickOff_Sound);
 
 			_visual.ExitSettings();
+		}
 
+		public void SetupSettings(PlayerSettingsRecord settingsRecord)
+		{
+			_musicToggle.SetIsOnWithoutNotify(settingsRecord.Music);
+			_audioToggle.SetIsOnWithoutNotify(settingsRecord.Effects);
 		}
 	}
 }

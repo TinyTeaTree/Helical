@@ -1,16 +1,24 @@
-using System;
 using Core;
-using Newtonsoft.Json;
 
 namespace Game
 {
+    /*
+     *
+     * Version 0 - before migration system
+     *
+     * 
+     */
     public class PlayerAccountRecord : BaseRecord
     {
+        public static readonly int MigrationRecord = 0; //Increase this number if you want to Reset all the Users via a Migration Process
+        //And document the reason for increment up above.
+        
         public string PlayerId { get; set; }
-        [JsonIgnore] public string SessionId { get; set; }
-        public DateTime CreationDate { get; set; }
+        public string Nickname { get; set; } //TODO : Ask for a Nickname
 
-        public string NickName { get; set; }
-        public AvatarId AvatarId { get; set; }
+        public void Reset()  //TODO: Add a Test that Resets makes this record the same as a New() record
+        {
+            PlayerId = null;
+        }
     }
 }

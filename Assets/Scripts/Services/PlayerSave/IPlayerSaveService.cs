@@ -1,14 +1,17 @@
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using Core;
+using Cysharp.Threading.Tasks;
 
-namespace Services
+public interface IPlayerSaveService : IService
 {
-    public interface IPlayerSaveService : IService
-    {
-        Task<T> GetSavedData<T>(string saveId);
+    void AddSaveRecord(BaseRecord record);
+    List<BaseRecord> RecordsForSaving { get; }
+        
+    UniTask<T> GetSavedData<T>(string saveId);
 
-        Task<string> GetSavedJson(string saveId);
+    UniTask<string> GetSavedJson(string saveId);
 
-        Task SaveData<T>(T save, string saveId);
-    }
+    UniTask SaveData<T>(T save, string saveId);
+
+    UniTask SyncPlayerData();
 }

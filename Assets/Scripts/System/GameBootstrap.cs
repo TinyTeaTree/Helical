@@ -30,6 +30,7 @@ namespace Game
             _features.Add<IGrid>(new Grid());
             _features.Add<IMobs>(new Mobs());
             _features.Add<IPlayerAccount>(new PlayerAccount());
+            _features.Add<IPlayerSettings>(new PlayerSettings());
             //<New Feature>
         }
 
@@ -44,6 +45,8 @@ namespace Game
         {
             _agents.Add<IAppLaunchAgent>(new AppLaunchAgent());
             _agents.Add<IAppExitAgent>(new AppExitAgent());
+            _agents.Add<ILogoutAgent>(new LogoutAgent());
+            _agents.Add<ILoggedInAgent>(new LoggedInAgent());
             //<New Agent>
         }
 
@@ -54,6 +57,7 @@ namespace Game
             _records.Add(typeof(MobsRecord), new MobsRecord());
             _records.Add(typeof(LoadingScreenRecord), new LoadingScreenRecord());
             _records.Add(typeof(PlayerAccountRecord), new PlayerAccountRecord());
+            _records.Add(typeof(PlayerSettingsRecord), new PlayerSettingsRecord());
             //<New Record>
         }
 
@@ -64,6 +68,7 @@ namespace Game
             BootstrapSummoningService();
             BootstrapLocalConfigurationService();
 			BootstrapGenericSounds();
+            BootstrapSavedRecords();
 
             AppExitAgent.SelfRegister(_agents.Get<IAppExitAgent>());
         }
@@ -86,6 +91,15 @@ namespace Game
             var localConfigSO = Services.Get<ISummoningService>().LoadResource<LocalConfigCollectionSO>(Addresses.LocalConfigs);
             localConfigService.SetConfigSO(localConfigSO);
         }
+        
+        //If you want your Record to be saved, add your Record here
+        private void BootstrapSavedRecords()
+        {
+            var saveService = _services.Get<IPlayerSaveService>();
+            
+            saveService.AddSaveRecord(_records[typeof(PlayerAccountRecord)]);
+            saveService.AddSaveRecord(_records[typeof(PlayerSettingsRecord)]);
+        }  
 
 		private void BootstrapGenericSounds()
 		{

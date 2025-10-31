@@ -11,7 +11,8 @@ namespace Game
         public GameLaunchFlow(IBootstrap bootstrap)
         {
             var loginFlow = Create()
-                .AddNext(asyncMethod: bootstrap.Features.Get<IPlayerAccount>().Login);
+                .AddNext(asyncMethod: bootstrap.Features.Get<IPlayerAccount>().Login)
+                .AddNext(action: bootstrap.Agents.Get<ILoggedInAgent>().LoggedIn);
             
             this.AddNext(action: () => bootstrap.Agents.Get<IAppLaunchAgent>().AppLaunch())
                 .AddNext(action: () => bootstrap.Features.Get<ILoadingScreen>().Show(LoadingScreenType.Start))

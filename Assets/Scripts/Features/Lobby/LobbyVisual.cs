@@ -15,6 +15,9 @@ namespace Game
         [SerializeField] private UnityEngine.UI.Button _newGameButton;
         [SerializeField] private UnityEngine.UI.Button _settingsButton;
         [SerializeField] private UnityEngine.UI.Button _exitButton;
+
+        public bool MusicOn => _settings.MusicOn;
+        public bool EffectOn => _settings.EffectOn;
         
         private void OnEnable()
         {
@@ -96,7 +99,7 @@ namespace Game
 
 		private void OnExitClicked()
 		{
-			DJ.Play(DJ.Click_Sound);
+			DJ.Play(DJ.ClickOff_Sound);
 #if UNITY_EDITOR
 			UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -108,6 +111,13 @@ namespace Game
         {
             _settings.gameObject.SetActive(false);
             _options.gameObject.SetActive(true);
+
+            Feature.SyncSettings();
+        }
+
+        public void SetupSettings(PlayerSettingsRecord settingsRecord)
+        {
+            _settings.SetupSettings(settingsRecord);
         }
     }
 }

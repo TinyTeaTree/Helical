@@ -8,7 +8,7 @@ namespace Services
 	public static partial class DJ
 	{
 		public static IDesignSound Click_Sound => GenericCollection != null ? GenericCollection.Get("Click") : null;
-		public static IDesignSound Play_Sound => GenericCollection != null ? GenericCollection.Get("Play") : null;
-		public static IDesignSound SoundXX_Sound => GenericCollection != null ? GenericCollection.Get("SoundXX") : null;
+		public static IDesignSound ClickOn_Sound => GenericCollection != null ? GenericCollection.Get("ClickOn") : null;
+		public static IDesignSound ClickOff_Sound => GenericCollection != null ? GenericCollection.Get("ClickOff") : null;
 	}
 }

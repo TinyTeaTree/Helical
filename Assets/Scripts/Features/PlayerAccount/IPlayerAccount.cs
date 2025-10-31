@@ -6,12 +6,14 @@ namespace Game
 {
     public interface IPlayerAccount : IFeature
     {
+        bool IsLoggedIn { get; }
+        string PlayerId { get; }
+        
         UniTask Login();
         UniTask Logout();
+        
+        //Task LinkCredentials(); 
 
-        UniTask LinkCredentials();
-
-        void CreateNewPlayer();
-        UniTask SyncPlayerData();
+        UniTask CreateNewPlayer();
     }
 }

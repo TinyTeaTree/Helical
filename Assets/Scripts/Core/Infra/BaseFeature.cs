@@ -9,6 +9,7 @@ namespace Core
         private static readonly Type _injectType = typeof(InjectAttribute);
         private static readonly Type _featureType = typeof(IFeature);
         private static readonly Type _serviceType = typeof(IService);
+        private static readonly Type _agentType = typeof(IAgent);
         private static readonly Type _recordType = typeof(BaseRecord);
         
         public virtual void Bootstrap(IBootstrap bootstrap)
@@ -37,6 +38,11 @@ namespace Core
                     {
                         var record = bootstrap.Records[propertyType];
                         property.SetValue(this, record);
+                    }
+                    else if (_agentType.IsAssignableFrom(propertyType))
+                    {
+                        var agent = bootstrap.Agents.Get(propertyType);
+                        property.SetValue(this, agent);
                     }
                     else
                     {
