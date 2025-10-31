@@ -17,8 +17,17 @@ namespace Game
         
         private void OnEnable()
         {
-            _newGameButton.onClick.AddListener(OnNewGameClicked);
+			_newGameButton.onClick.AddListener(OnNewGameClicked);
+			_settingsButton.onClick.AddListener(OnSettingsClicked);
+			_exitButton.onClick.AddListener(OnExitClicked);
         }
+
+		private void OnDisable()
+		{
+			_newGameButton.onClick.RemoveListener(OnNewGameClicked);
+			_settingsButton.onClick.RemoveListener(OnSettingsClicked);
+			_exitButton.onClick.RemoveListener(OnExitClicked);
+		}
 
         public void Hide(bool immediate = false)
         {
@@ -75,5 +84,20 @@ namespace Game
         {
             DJ.Play(DJ.Click_Sound);
         }
+
+		private void OnSettingsClicked()
+		{
+			DJ.Play(DJ.Click_Sound);
+		}
+
+		private void OnExitClicked()
+		{
+			DJ.Play(DJ.Click_Sound);
+#if UNITY_EDITOR
+			UnityEditor.EditorApplication.isPlaying = false;
+#else
+			Application.Quit();
+#endif
+		}
     }
 }
