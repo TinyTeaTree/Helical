@@ -10,6 +10,7 @@ namespace Game
     {
         [SerializeField] private CanvasGroup _cg;
         [SerializeField] private GameObject _options;
+        [SerializeField] private LobbySettings _settings;
         
         [SerializeField] private UnityEngine.UI.Button _newGameButton;
         [SerializeField] private UnityEngine.UI.Button _settingsButton;
@@ -20,6 +21,8 @@ namespace Game
 			_newGameButton.onClick.AddListener(OnNewGameClicked);
 			_settingsButton.onClick.AddListener(OnSettingsClicked);
 			_exitButton.onClick.AddListener(OnExitClicked);
+
+            _settings.gameObject.SetActive(false);
         }
 
 		private void OnDisable()
@@ -39,8 +42,6 @@ namespace Game
             {
                 HideAnimate();
             }
-
-
         }
 
         private void HideAnimate()
@@ -88,6 +89,9 @@ namespace Game
 		private void OnSettingsClicked()
 		{
 			DJ.Play(DJ.Click_Sound);
+            
+            _settings.gameObject.SetActive(true);
+            _options.gameObject.SetActive(false);
 		}
 
 		private void OnExitClicked()
@@ -99,5 +103,11 @@ namespace Game
 			Application.Quit();
 #endif
 		}
+
+        public void ExitSettings()
+        {
+            _settings.gameObject.SetActive(false);
+            _options.gameObject.SetActive(true);
+        }
     }
 }
