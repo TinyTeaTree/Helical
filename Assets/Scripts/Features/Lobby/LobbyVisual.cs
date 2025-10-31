@@ -87,6 +87,8 @@ namespace Game
         private void OnNewGameClicked()
         {
             DJ.Play(DJ.Click_Sound);
+
+            Feature.OnNewGameClicked();
         }
 
 		private void OnSettingsClicked()
@@ -100,11 +102,8 @@ namespace Game
 		private void OnExitClicked()
 		{
 			DJ.Play(DJ.ClickOff_Sound);
-#if UNITY_EDITOR
-			UnityEditor.EditorApplication.isPlaying = false;
-#else
-			Application.Quit();
-#endif
+
+            Feature.OnExitClicked();
 		}
 
         public void ExitSettings()

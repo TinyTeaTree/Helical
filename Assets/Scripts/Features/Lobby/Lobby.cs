@@ -46,5 +46,19 @@ namespace Game
         {
             _visual.SetupSettings(SettingsRecord);
         }
+
+        public void OnExitClicked()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+			Application.Quit();
+#endif        
+        }
+
+        public void OnNewGameClicked()
+        {
+            Hide();
+        }
     }
 }
