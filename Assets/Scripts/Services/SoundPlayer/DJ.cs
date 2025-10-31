@@ -2,9 +2,10 @@ using UnityEngine;
 
 namespace Services
 {
-    public static class DJ
+    public static partial class DJ
     {
         public static ISoundPlayerService SoundPlayer { get; set; }
+        public static GenericSoundCollectionSO GenericCollection { get; set; }
 
         public static void Play(IDesignSound soundDesign)
         {

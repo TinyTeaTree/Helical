@@ -14,9 +14,7 @@ namespace Game
         [SerializeField] private UnityEngine.UI.Button _newGameButton;
         [SerializeField] private UnityEngine.UI.Button _settingsButton;
         [SerializeField] private UnityEngine.UI.Button _exitButton;
-
-        [SerializeField] private BaseSoundDesign _click;
-
+        
         private void OnEnable()
         {
             _newGameButton.onClick.AddListener(OnNewGameClicked);
@@ -71,14 +69,11 @@ namespace Game
         public void DisplayOptions()
         {
             _options.SetActive(true);
-            
-            
         }
 
         private void OnNewGameClicked()
         {
-            Debug.Log("OnNewGameClicked");
-            DJ.Play(_click);
+            DJ.Play(DJ.Click_Sound);
         }
     }
 }

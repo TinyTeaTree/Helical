@@ -63,6 +63,7 @@ namespace Game
             BootstrapSoundPlayerService();
             BootstrapSummoningService();
             BootstrapLocalConfigurationService();
+			BootstrapGenericSounds();
 
             AppExitAgent.SelfRegister(_agents.Get<IAppExitAgent>());
         }
@@ -85,6 +86,12 @@ namespace Game
             var localConfigSO = Services.Get<ISummoningService>().LoadResource<LocalConfigCollectionSO>(Addresses.LocalConfigs);
             localConfigService.SetConfigSO(localConfigSO);
         }
+
+		private void BootstrapGenericSounds()
+		{
+			var collection = Services.Get<ISummoningService>().LoadResource<GenericSoundCollectionSO>(Addresses.GenericSoundCollection);
+			DJ.GenericCollection = collection;
+		}
 
         private void BootstrapSummoningService()
         {

@@ -3,6 +3,7 @@ namespace Services
     public static class Addresses
     {
         //<Resource Path Start>
+        public const string GenericSoundCollection = "Generic Sound Collection";
         public const string SoundPlayer = "Sound Player";
         public const string LocalConfigs = "Configs/Local Configs";
         public const string LoadingScreenStart = "Loading Screens/Loading Screen Start";
