@@ -10,11 +10,11 @@ namespace Game
     {
         [Inject] public BattleUnitsRecord Record { get; set; }
         [Inject] public ILocalConfigService ConfigService { get; set; }
+        [Inject] public IGrid Grid { get; set; }
 
         private BattleUnitsConfig _config;
         private BattleUnitsAssetPack _assetPack;
 
-        public BattleUnitsConfig Config => _config;
         public BattleUnitsAssetPack AssetPack => _assetPack;
 
         public async UniTask AppLaunch()
@@ -25,26 +25,37 @@ namespace Game
             _assetPack = await Summoner.SummoningService.LoadAssetPack<BattleUnitsAssetPack>();
         }
 
-        public BattleUnitConfig GetUnitConfig(string unitId)
-        {
-            return _config.GetBattleUnit(unitId);
-        }
-
         public UniTask BattleLaunch()
         {
             Record.BattleUnits.Clear();
             
-            // Temporary until we have a spawn system
+            // Temporary sample unit
             Record.BattleUnits.Add(new BattleUnitData()
             {
                 BattleUnitId = "Skeleton",
                 Coordinate = new Vector2Int(15, 15),
+                Direction = HexDirection.South,
                 Health = 40,
                 IsDead = false,
                 PlayerId = _bootstrap.Features.Get<IPlayerAccount>().PlayerId
             });
             
+            SpawnAllUnits();
+            
             return UniTask.CompletedTask;
+        }
+
+        public void SpawnAllUnits()
+        {
+            foreach (var unitData in Record.BattleUnits)
+            {
+                _visual.SpawnUnit(unitData);
+            }
+        }
+
+        public void DespawnAllUnits()
+        {
+            _visual.DespawnAllUnits();
         }
     }
 }

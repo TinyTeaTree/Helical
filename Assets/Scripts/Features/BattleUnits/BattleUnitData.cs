@@ -8,6 +8,7 @@ namespace Game
         public string BattleUnitId { get; set; }
         
         public Vector2Int Coordinate { get; set; }
+        public HexDirection Direction { get; set; }
         
         public int Health { get; set; }
         public bool IsDead { get; set; }

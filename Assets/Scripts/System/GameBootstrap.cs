@@ -120,7 +120,7 @@ namespace Game
 
             //Add Provider for each Asset Pack type
             summoner.SetProvider(typeof(GridResourcePack), new ResourceAssetPackProvider(Addresses.GridResourcePack));
-            summoner.SetProvider(typeof(BattleUnitsAssetPack), new ResourceAssetPackProvider(Addresses.GridResourcePack));
+            summoner.SetProvider(typeof(BattleUnitsAssetPack), new ResourceAssetPackProvider(Addresses.BattleUnitsAssetPack));
         }
 
         protected override void StartGame()

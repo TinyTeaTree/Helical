@@ -8,6 +8,7 @@ namespace Services
         public const string LocalConfigs = "Configs/Local Configs";
         public const string LoadingScreenStart = "Loading Screens/Loading Screen Start";
         public const string GridResourcePack = "Packs/GridResourcePack";
+        public const string BattleUnitsAssetPack = "Packs/BattleUnitsAssetPack";
         public const string GridVisual = "Visuals/Grid Visual";
         public const string HudVisual = "Visuals/Hud Visual";
         public const string LoadingScreenHud = "Visuals/Loading Screen Hud";

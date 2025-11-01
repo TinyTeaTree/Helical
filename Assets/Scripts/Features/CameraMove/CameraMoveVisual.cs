@@ -7,6 +7,7 @@ namespace Game
     public class CameraMoveVisual : BaseVisual<CameraMove>
     {
         [SerializeField] private float _moveSpeed = 5f;
+        [SerializeField] [Range(0.01f, 0.1f)] private float _edgeScrollThreshold = 0.01f; // 1% of screen
         
         private bool _isMovementEnabled = false;
         private Vector3 _centerOffset;
@@ -28,6 +29,7 @@ namespace Game
         {
             Vector3 moveDirection = Vector3.zero;
 
+            // WASD keyboard input
             if (Input.GetKey(KeyCode.W))
             {
                 moveDirection += Vector3.forward;
@@ -48,6 +50,10 @@ namespace Game
                 moveDirection += Vector3.right;
             }
 
+            // Edge scrolling with mouse
+            Vector3 edgeScrollDirection = CalculateEdgeScrollDirection();
+            moveDirection += edgeScrollDirection;
+
             if (moveDirection != Vector3.zero)
             {
                 // Move along XZ plane only
@@ -63,6 +69,46 @@ namespace Game
                 
                 transform.position = newPosition;
             }
+        }
+
+        private Vector3 CalculateEdgeScrollDirection()
+        {
+            Vector3 direction = Vector3.zero;
+            Vector3 mousePos = Input.mousePosition;
+            
+            float screenWidth = Screen.width;
+            float screenHeight = Screen.height;
+            
+            float edgeThresholdPixelsX = screenWidth * _edgeScrollThreshold;
+            float edgeThresholdPixelsY = screenHeight * _edgeScrollThreshold;
+            
+            // Check left edge
+            if (mousePos.x < edgeThresholdPixelsX)
+            {
+                float normalizedDistance = 1f - (mousePos.x / edgeThresholdPixelsX);
+                direction += Vector3.left * normalizedDistance;
+            }
+            // Check right edge
+            else if (mousePos.x > screenWidth - edgeThresholdPixelsX)
+            {
+                float normalizedDistance = (mousePos.x - (screenWidth - edgeThresholdPixelsX)) / edgeThresholdPixelsX;
+                direction += Vector3.right * normalizedDistance;
+            }
+            
+            // Check bottom edge
+            if (mousePos.y < edgeThresholdPixelsY)
+            {
+                float normalizedDistance = 1f - (mousePos.y / edgeThresholdPixelsY);
+                direction += Vector3.back * normalizedDistance;
+            }
+            // Check top edge
+            else if (mousePos.y > screenHeight - edgeThresholdPixelsY)
+            {
+                float normalizedDistance = (mousePos.y - (screenHeight - edgeThresholdPixelsY)) / edgeThresholdPixelsY;
+                direction += Vector3.forward * normalizedDistance;
+            }
+            
+            return direction;
         }
 
         private Vector3 ApplyClamping(Vector3 position)

@@ -83,5 +83,11 @@ namespace Game
             _visual.Build(gridData, _gridResourcePack);
             return UniTask.CompletedTask;
         }
+
+        public Vector3 GetWorldPosition(Vector2Int coordinate)
+        {
+            var worldXZ = coordinate.ToWorldXZ();
+            return new Vector3(worldXZ.x, 0f, worldXZ.y);
+        }
     }
 }
