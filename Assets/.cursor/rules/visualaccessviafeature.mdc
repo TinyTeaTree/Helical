@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+Visual Scripts should access APIs from other Features via their own Feature (through the Feature property) instead of receiving everything as function parameters. The Feature should expose public properties for anything the Visual needs to access.
