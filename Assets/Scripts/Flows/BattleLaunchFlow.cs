@@ -11,6 +11,7 @@ namespace Game
         {
             this.AddNext(action: () => bootstrap.Features.Get<ILobby>().Hide())
                 .AddNext(action: () => bootstrap.Features.Get<ILoadingScreen>().Show(LoadingScreenType.Battle))
+                .AddNext(asyncMethod: () => bootstrap.Agents.Get<IBattleLaunchAgent>().BattleLaunch())
                 .AddNext(asyncMethod: () => UniTask.Delay(TimeSpan.FromSeconds(2f)))
                 .AddNext(asyncMethod: () => bootstrap.Features.Get<IGrid>().LoadGrid("Basic"))
                 .AddNext(asyncMethod: () => bootstrap.Features.Get<ICameraMove>().SetupVisual())

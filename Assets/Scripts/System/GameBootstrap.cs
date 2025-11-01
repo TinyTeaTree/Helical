@@ -51,6 +51,7 @@ namespace Game
             _agents.Add<IAppExitAgent>(new AppExitAgent());
             _agents.Add<ILogoutAgent>(new LogoutAgent());
             _agents.Add<ILoggedInAgent>(new LoggedInAgent());
+            _agents.Add<IBattleLaunchAgent>(new BattleLaunchAgent());
             //<New Agent>
         }
 

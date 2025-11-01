@@ -2,10 +2,11 @@ using Agents;
 using Core;
 using Cysharp.Threading.Tasks;
 using Services;
+using UnityEngine;
 
 namespace Game
 {
-    public class BattleUnits : BaseVisualFeature<BattleUnitsVisual>, IBattleUnits, IAppLaunchAgent
+    public class BattleUnits : BaseVisualFeature<BattleUnitsVisual>, IBattleUnits, IAppLaunchAgent, IBattleLaunchAgent
     {
         [Inject] public BattleUnitsRecord Record { get; set; }
         [Inject] public ILocalConfigService ConfigService { get; set; }
@@ -26,7 +27,24 @@ namespace Game
 
         public BattleUnitConfig GetUnitConfig(string unitId)
         {
-            return _config?.GetBattleUnit(unitId);
+            return _config.GetBattleUnit(unitId);
+        }
+
+        public UniTask BattleLaunch()
+        {
+            Record.BattleUnits.Clear();
+            
+            // Temporary until we have a spawn system
+            Record.BattleUnits.Add(new BattleUnitData()
+            {
+                BattleUnitId = "Skeleton",
+                Coordinate = new Vector2Int(15, 15),
+                Health = 40,
+                IsDead = false,
+                PlayerId = _bootstrap.Features.Get<IPlayerAccount>().PlayerId
+            });
+            
+            return UniTask.CompletedTask;
         }
     }
 }
