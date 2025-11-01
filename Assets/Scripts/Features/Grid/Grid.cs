@@ -12,6 +12,8 @@ namespace Game
 
         private GridResourcePack _gridResourcePack;
         
+        public GridVisual Visual => _visual;
+        
         public async UniTask AppLaunch()
         {
             await CreateVisual();

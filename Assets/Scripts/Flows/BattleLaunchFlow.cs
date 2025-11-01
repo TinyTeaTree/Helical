@@ -13,6 +13,9 @@ namespace Game
                 .AddNext(action: () => bootstrap.Features.Get<ILoadingScreen>().Show(LoadingScreenType.Battle))
                 .AddNext(asyncMethod: () => UniTask.Delay(TimeSpan.FromSeconds(2f)))
                 .AddNext(asyncMethod: async () => await bootstrap.Features.Get<IGrid>().LoadGrid("Basic"))
+                .AddNext(asyncMethod: async () => await bootstrap.Features.Get<ICameraMove>().SetupVisual())
+                .AddNext(action: () => bootstrap.Features.Get<ICameraMove>().InitializeBounds())
+                .AddNext(action: () => bootstrap.Features.Get<ICameraMove>().Start())
                 .AddNext(action: () => bootstrap.Features.Get<ILoadingScreen>().Hide())
                 ;
         }

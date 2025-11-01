@@ -31,6 +31,7 @@ namespace Game
             _features.Add<IMobs>(new Mobs());
             _features.Add<IPlayerAccount>(new PlayerAccount());
             _features.Add<IPlayerSettings>(new PlayerSettings());
+            _features.Add<ICameraMove>(new CameraMove());
             //<New Feature>
         }
 
