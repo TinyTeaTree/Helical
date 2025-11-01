@@ -32,6 +32,7 @@ namespace Game
             _features.Add<IPlayerAccount>(new PlayerAccount());
             _features.Add<IPlayerSettings>(new PlayerSettings());
             _features.Add<ICameraMove>(new CameraMove());
+            _features.Add<IBattleUnits>(new BattleUnits());
             //<New Feature>
         }
 
@@ -60,6 +61,7 @@ namespace Game
             _records.Add(typeof(LoadingScreenRecord), new LoadingScreenRecord());
             _records.Add(typeof(PlayerAccountRecord), new PlayerAccountRecord());
             _records.Add(typeof(PlayerSettingsRecord), new PlayerSettingsRecord());
+            _records.Add(typeof(BattleUnitsRecord), new BattleUnitsRecord());
             //<New Record>
         }
 
