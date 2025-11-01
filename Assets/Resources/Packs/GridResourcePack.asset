@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: d98762f2077744fe99efef5f3d7e750d, type: 3}
   m_Name: GridResourcePack
   m_EditorClassIdentifier: Game:Game:GridResourcePack
   _hexEntries:
@@ -21,5 +21,7 @@ MonoBehaviour:
     Prefab: {fileID: 1388657164994780, guid: dcf682d7e73d63e4db2f3cea8bdac239, type: 3}
   - Type: 5
     Prefab: {fileID: 1513751033591328, guid: acb86a1738de1364cad1d7ac4f60f2ed, type: 3}
+  - Type: 3
+    Prefab: {fileID: 1994085010386688, guid: 408ff2acb0a41b24dbed2426e39d1530, type: 3}
   _grids:
   - {fileID: 11400000, guid: 050624fc5beb44e58b53eccab7ffb2e8, type: 2}

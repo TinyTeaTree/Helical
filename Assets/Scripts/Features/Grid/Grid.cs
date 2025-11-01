@@ -75,12 +75,13 @@ namespace Game
             return gridSO;
         }
 
-        public async UniTask LoadGrid(string gridId)
+        public UniTask LoadGrid(string gridId)
         {
             var gridSO = _gridResourcePack.GetGrid(gridId);
             var gridData = ToGridData(gridSO);
 
             _visual.Build(gridData, _gridResourcePack);
+            return UniTask.CompletedTask;
         }
     }
 }

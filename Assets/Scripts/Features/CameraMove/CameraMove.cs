@@ -8,12 +8,12 @@ namespace Game
     {
         [Inject] public IGrid Grid { get; set; }
 
-        public async UniTask SetupVisual()
+        public UniTask SetupVisual()
         {
             if (_visual != null)
             {
                 Notebook.NoteError($"Visual already exists for {typeof(CameraMoveVisual)}");
-                return;
+                return UniTask.CompletedTask;
             }
 
             // Attach visual directly to Camera.main instead of loading from Resources
@@ -21,11 +21,13 @@ namespace Game
             if (camera == null)
             {
                 Notebook.NoteError("Camera.main not found. Cannot attach CameraMoveVisual.");
-                return;
+                return UniTask.CompletedTask;
             }
 
             _visual = camera.gameObject.AddComponent<CameraMoveVisual>();
             _visual.SetFeature(this);
+            
+            return UniTask.CompletedTask;
         }
 
         public void InitializeBounds()

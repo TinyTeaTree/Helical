@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+Every AssetPack needs to have its Provider Bootstraped in the GameBootstrap

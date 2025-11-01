@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+---
+No need to GetComponent() on Awake on MonoBehaviours. If the component is a SerializeField then assume that its attached and is not null.

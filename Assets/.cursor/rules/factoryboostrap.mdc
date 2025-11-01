@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+Every Visual from BaseVisual needs to have a Factory in the GameBoostrap
