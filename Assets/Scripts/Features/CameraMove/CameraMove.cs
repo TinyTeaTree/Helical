@@ -1,14 +1,20 @@
+using Agents;
 using Core;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
 namespace Game
 {
-    public class CameraMove : BaseVisualFeature<CameraMoveVisual>, ICameraMove
+    public class CameraMove : BaseVisualFeature<CameraMoveVisual>, ICameraMove, IBattleLaunchAgent
     {
         [Inject] public IGrid Grid { get; set; }
 
-        public UniTask SetupVisual()
+        public UniTask BattleLaunch()
+        {
+            return SetupVisual();
+        }
+
+        private UniTask SetupVisual()
         {
             if (_visual != null)
             {

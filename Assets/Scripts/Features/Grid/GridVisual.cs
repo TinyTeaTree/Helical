@@ -41,11 +41,11 @@ namespace Game
                     instance.transform.localPosition = new Vector3(worldXZ.x, 0f, worldXZ.y);
                     instance.transform.localScale = Vector3.one * GridUtils.HexScaleModifier;
 
-                    // Initialize HexDetection if present
-                    var hexDetection = instance.GetComponent<HexDetection>();
-                    if (hexDetection != null)
+                    // Initialize HexOperator with coordinate
+                    var hexOperator = instance.GetComponent<HexOperator>();
+                    if (hexOperator != null)
                     {
-                        hexDetection.Initialize(coordinate);
+                        hexOperator.Initialize(coordinate);
                     }
 
                     // Cache the hex data with its instance

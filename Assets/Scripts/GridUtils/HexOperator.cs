@@ -14,6 +14,7 @@ namespace Game
         private Vector3 _normalPosition;
         private Vector3 _elevatedPosition;
         private bool _isGlowing;
+        private Vector2Int _coordinate;
 
         private const float ElevationHeight = 0.1f;
 
@@ -65,6 +66,19 @@ namespace Game
         /// Gets whether the hex is currently in glowing state.
         /// </summary>
         public bool IsGlowing => _isGlowing;
+
+        /// <summary>
+        /// Initializes the hex with its grid coordinate.
+        /// </summary>
+        public void Initialize(Vector2Int coordinate)
+        {
+            _coordinate = coordinate;
+        }
+
+        /// <summary>
+        /// Gets the coordinate of this hex in the grid.
+        /// </summary>
+        public Vector2Int Coordinate => _coordinate;
     }
 }
 

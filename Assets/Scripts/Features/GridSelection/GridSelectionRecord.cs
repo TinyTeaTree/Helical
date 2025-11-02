@@ -6,6 +6,7 @@ namespace Game
     public class GridSelectionRecord : BaseRecord
     {
         public Vector2Int? SelectedCoordinate { get; set; }
+        public bool IsSelectionEnabled { get; set; }
         
         /// <summary>
         /// Checks if any hex is currently selected.

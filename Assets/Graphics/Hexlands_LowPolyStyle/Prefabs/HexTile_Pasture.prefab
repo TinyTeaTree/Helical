@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4116196927331254}
   - component: {fileID: 351169939211696672}
-  m_Layer: 0
+  - component: {fileID: 2574738870221464530}
+  - component: {fileID: 9096413878186268239}
+  m_Layer: 6
   m_Name: HexTile_Pasture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,6 +50,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game::Game.HexOperator
   outline: {fileID: 4297684450151311982}
   mesh: {fileID: 4920593272444950}
+--- !u!135 &2574738870221464530
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388657164994780}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9096413878186268239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388657164994780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e0169fce49ea43258ff269ad7a62dfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game::Game.HexDetection
+  hexOperator: {fileID: 351169939211696672}
 --- !u!1 &1920513786959524
 GameObject:
   m_ObjectHideFlags: 0
