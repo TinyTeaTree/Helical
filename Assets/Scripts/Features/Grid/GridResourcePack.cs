@@ -9,7 +9,7 @@ namespace Game
     public class HexPrefabEntry
     {
         public HexType Type;
-        public GameObject Prefab;
+        public HexOperator Prefab;
     }
 
     [CreateAssetMenu(fileName = "Grid Resource Pack", menuName = "Game/Resource Packs/Grid Resource Pack")]
@@ -21,17 +21,12 @@ namespace Game
         [SerializeField]
         private List<GridSO> _grids = new List<GridSO>();
 
-        private Dictionary<HexType, GameObject> _hexLookup;
+        private Dictionary<HexType, HexOperator> _hexLookup;
         private Dictionary<string, GridSO> _gridLookup;
-
-        private void OnEnable()
-        {
-            BuildLookups();
-        }
 
         private void BuildLookups()
         {
-            _hexLookup = new Dictionary<HexType, GameObject>();
+            _hexLookup = new Dictionary<HexType, HexOperator>();
             foreach (var entry in _hexEntries)
             {
                 _hexLookup[entry.Type] = entry.Prefab;
@@ -47,7 +42,7 @@ namespace Game
             }
         }
 
-        public GameObject GetHex(HexType type)
+        public HexOperator GetHex(HexType type)
         {
             if (_hexLookup == null)
             {

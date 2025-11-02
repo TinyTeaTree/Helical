@@ -33,6 +33,7 @@ namespace Game
             _features.Add<IPlayerSettings>(new PlayerSettings());
             _features.Add<ICameraMove>(new CameraMove());
             _features.Add<IBattleUnits>(new BattleUnits());
+            _features.Add<IGridSelection>(new GridSelection());
             //<New Feature>
         }
 
@@ -43,6 +44,7 @@ namespace Game
             _factories.Add(typeof(LobbyVisual), new ResourceFactory(Addresses.LobbyVisual));
             _factories.Add(typeof(GridVisual), new ResourceFactory(Addresses.GridVisual));
             _factories.Add(typeof(BattleUnitsVisual), new GenerateVisualFactory());
+            _factories.Add(typeof(GridSelectionVisual), new GenerateVisualFactory());
         }
 
         protected override void AddAgents()
@@ -64,6 +66,7 @@ namespace Game
             _records.Add(typeof(PlayerAccountRecord), new PlayerAccountRecord());
             _records.Add(typeof(PlayerSettingsRecord), new PlayerSettingsRecord());
             _records.Add(typeof(BattleUnitsRecord), new BattleUnitsRecord());
+            _records.Add(typeof(GridSelectionRecord), new GridSelectionRecord());
             //<New Record>
         }
 

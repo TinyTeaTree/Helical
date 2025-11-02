@@ -17,6 +17,8 @@ namespace Game
                 .AddNext(asyncMethod: () => bootstrap.Features.Get<ICameraMove>().SetupVisual())
                 .AddNext(action: () => bootstrap.Features.Get<ICameraMove>().InitializeBounds())
                 .AddNext(action: () => bootstrap.Features.Get<ICameraMove>().Start())
+                .AddNext(asyncMethod: () => bootstrap.Features.Get<IGridSelection>().SetupVisual())
+                .AddNext(action: () => bootstrap.Features.Get<IGridSelection>().Start())
                 .AddNext(action: () => bootstrap.Features.Get<ILoadingScreen>().Hide())
                 ;
         }
