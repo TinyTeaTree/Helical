@@ -1,6 +1,7 @@
 using Agents;
 using Core;
 using Cysharp.Threading.Tasks;
+using Services;
 using UnityEngine;
 
 namespace Game
@@ -62,7 +63,7 @@ namespace Game
         {
             Vector2Int coordinate = hexOperator.Coordinate;
             
-            // Deselect previous hex if there is one
+            // Deselect previous hex if there is one (without playing sound - we're changing selection)
             if (_currentlySelectedHex != null)
             {
                 _currentlySelectedHex.SetNormalState();
@@ -78,7 +79,32 @@ namespace Game
             // Update battle unit selection based on the selected coordinate
             BattleUnits.UpdateUnitSelectionAtCoordinate(coordinate);
             
+            // Play select sound
+            DJ.Play(DJ.SelectOn_Sound);
+            
             Notebook.NoteData($"Selected hex at coordinate: {coordinate}");
+        }
+        
+        public void DeselectHex()
+        {
+            // Only deselect if something is actually selected
+            if (_currentlySelectedHex == null)
+                return;
+            
+            // Deselect the hex
+            _currentlySelectedHex.SetNormalState();
+            _currentlySelectedHex = null;
+            
+            // Clear selection data
+            Record.ClearSelection();
+            
+            // Clear battle unit selection
+            BattleUnits.UpdateUnitSelectionAtCoordinate(null);
+            
+            // Play deselect sound
+            DJ.Play(DJ.SelectOff_Sound);
+            
+            Notebook.NoteData("Deselected hex");
         }
     }
 }

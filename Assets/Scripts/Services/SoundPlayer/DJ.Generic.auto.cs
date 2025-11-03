@@ -10,5 +10,7 @@ namespace Services
 		public static IDesignSound Click_Sound => GenericCollection != null ? GenericCollection.Get("Click") : null;
 		public static IDesignSound ClickOn_Sound => GenericCollection != null ? GenericCollection.Get("ClickOn") : null;
 		public static IDesignSound ClickOff_Sound => GenericCollection != null ? GenericCollection.Get("ClickOff") : null;
+		public static IDesignSound SelectOff_Sound => GenericCollection != null ? GenericCollection.Get("SelectOff") : null;
+		public static IDesignSound SelectOn_Sound => GenericCollection != null ? GenericCollection.Get("SelectOn") : null;
 	}
 }

@@ -31,7 +31,7 @@ namespace Game
             // Create raycast from camera through mouse position
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
             
-            // Perform raycast on "Hex" layer
+            // Check for Hex layer first
             int hexLayerMask = LayerMask.GetMask("Hex");
             
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, hexLayerMask))
@@ -42,7 +42,16 @@ namespace Game
                 if (hexDetection != null)
                 {
                     Feature.SelectHex(hexDetection.Operator);
+                    return;
                 }
+            }
+            
+            // Check for Bottom layer to deselect
+            int bottomLayerMask = LayerMask.GetMask("Bottom");
+            
+            if (Physics.Raycast(ray, out RaycastHit bottomHit, Mathf.Infinity, bottomLayerMask))
+            {
+                Feature.DeselectHex();
             }
         }
     }
