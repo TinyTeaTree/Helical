@@ -28,12 +28,7 @@ namespace Game
             
             // Initialize visual with camera
             var camera = Camera.main;
-            if (camera == null)
-            {
-                Notebook.NoteError("GridSelection: Camera.main not found.");
-                return;
-            }
-            
+
             _visual.Initialize(camera);
             _visual.gameObject.SetActive(false);
         }
@@ -46,11 +41,6 @@ namespace Game
 
         public void Halt()
         {
-            if (_visual == null)
-            {
-                return;
-            }
-
             Record.IsSelectionEnabled = false;
             _visual.gameObject.SetActive(false);
             
