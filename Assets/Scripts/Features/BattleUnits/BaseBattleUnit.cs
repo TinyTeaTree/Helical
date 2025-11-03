@@ -18,6 +18,8 @@ namespace Game
         public abstract void SetIsMove(bool isMoving);
         public abstract void SetIsDead(bool isDead);
         public abstract void GetHit();
+        
+        public abstract void SetGlow(bool isGlowing);
 
         protected virtual void OnInitialized(string unitId)
         {

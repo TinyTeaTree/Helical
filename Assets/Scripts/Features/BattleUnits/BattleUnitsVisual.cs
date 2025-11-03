@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Core;
 using Services;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace Game
 {
     public class BattleUnitsVisual : BaseVisual<BattleUnits>
     {
-        private List<BaseBattleUnit> _spawnedUnits = new List<BaseBattleUnit>();
+        private Dictionary<Vector2Int, BaseBattleUnit> _unitsByCoordinate = new Dictionary<Vector2Int, BaseBattleUnit>();
 
         public BaseBattleUnit SpawnUnit(BattleUnitData unitData)
         {
@@ -22,31 +23,41 @@ namespace Game
             var battleUnit = unitInstance.GetComponent<BaseBattleUnit>();
             battleUnit.Initialize(unitData.BattleUnitId);
 
-            _spawnedUnits.Add(battleUnit);
+            // Track unit by coordinate (one unit per coordinate)
+            _unitsByCoordinate[unitData.Coordinate] = battleUnit;
 
             return battleUnit;
         }
 
         public void DespawnUnit(BaseBattleUnit battleUnit)
         {
-            if (_spawnedUnits.Remove(battleUnit))
+            // Find and remove from coordinate tracking
+            var coordinateToRemove = _unitsByCoordinate.FirstOrDefault(kvp => kvp.Value == battleUnit).Key;
+            if (_unitsByCoordinate.ContainsKey(coordinateToRemove))
             {
+                _unitsByCoordinate.Remove(coordinateToRemove);
                 Destroy(battleUnit.gameObject);
             }
         }
 
         public void DespawnAllUnits()
         {
-            foreach (var unit in _spawnedUnits)
+            foreach (var unit in _unitsByCoordinate.Values)
             {
                 Destroy(unit.gameObject);
             }
-            _spawnedUnits.Clear();
+            _unitsByCoordinate.Clear();
         }
 
         public IReadOnlyList<BaseBattleUnit> GetSpawnedUnits()
         {
-            return _spawnedUnits;
+            return _unitsByCoordinate.Values.ToList();
+        }
+        
+        public BaseBattleUnit GetUnitAtCoordinate(Vector2Int coordinate)
+        {
+            _unitsByCoordinate.TryGetValue(coordinate, out var unit);
+            return unit;
         }
     }
 }

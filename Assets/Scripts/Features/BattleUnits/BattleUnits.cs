@@ -57,5 +57,34 @@ namespace Game
         {
             _visual.DespawnAllUnits();
         }
+        
+        public void UpdateUnitSelectionAtCoordinate(Vector2Int? coordinate)
+        {
+            // Clear previous selection
+            ClearUnitSelection();
+            
+            if (coordinate == null)
+            {
+                return;
+            }
+            
+            // Find unit at the coordinate
+            var unitAtCoordinate = _visual.GetUnitAtCoordinate(coordinate.Value);
+            
+            // Select unit at new coordinate if one exists
+            if (unitAtCoordinate != null)
+            {
+                unitAtCoordinate.SetGlow(true);
+            }
+        }
+        
+        private void ClearUnitSelection()
+        {
+            var allUnits = _visual.GetSpawnedUnits();
+            foreach (var unit in allUnits)
+            {
+                unit.SetGlow(false);
+            }
+        }
     }
 }

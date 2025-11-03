@@ -4,6 +4,8 @@ namespace Game
 {
     public class SimpleBattleUnit : BaseBattleUnit
     {
+        [SerializeField] private BattleUnitGlow _glowComponent;
+        
         private static readonly int AttackTrigger = Animator.StringToHash("Attack");
         private static readonly int GetHitTrigger = Animator.StringToHash("GetHit");
         private static readonly int IsMoveBool = Animator.StringToHash("IsMove");
@@ -33,6 +35,11 @@ namespace Game
         public override void SetIsDead(bool isDead)
         {
             _animator.SetBool(IsDeadBool, isDead);
+        }
+        
+        public override void SetGlow(bool isGlowing)
+        {
+            _glowComponent?.SetGlow(isGlowing);
         }
     }
 }

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6837519442375195461}
   - component: {fileID: 4991224947395610782}
+  - component: {fileID: 289387202809386469}
   m_Layer: 0
   m_Name: BattleUnit_Skeleton
   m_TagString: Untagged
@@ -47,6 +48,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game::Game.SimpleBattleUnit
   _id: Skeleton
   _animator: {fileID: 3036793005611469043}
+  _glowComponent: {fileID: 289387202809386469}
+--- !u!114 &289387202809386469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9079085940906287020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f3e8b912c4d4e5f8b1a9c3d2e5f7a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game::Game.BattleUnitGlow
+  _glowMaterial: {fileID: 2100000, guid: b2901ef4369c5478cb254ca7a5a418ce, type: 2}
+  _renderer: {fileID: 3036793005607302707}
 --- !u!1001 &3036793005601996179
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -435,6 +451,11 @@ PrefabInstance:
 --- !u!4 &3036793005601859373 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400062, guid: f227b5017a7c0184a96c2c26f1e4408d, type: 3}
+  m_PrefabInstance: {fileID: 3036793005601996179}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &3036793005607302707 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700000, guid: f227b5017a7c0184a96c2c26f1e4408d, type: 3}
   m_PrefabInstance: {fileID: 3036793005601996179}
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &3036793005611469043 stripped

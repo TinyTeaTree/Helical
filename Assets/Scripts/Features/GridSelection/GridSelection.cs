@@ -8,6 +8,7 @@ namespace Game
     public class GridSelection : BaseVisualFeature<GridSelectionVisual>, IGridSelection, IBattleLaunchAgent
     {
         [Inject] public GridSelectionRecord Record { get; set; }
+        [Inject] public IBattleUnits BattleUnits { get; set; }
         
         private HexOperator _currentlySelectedHex;
 
@@ -52,6 +53,9 @@ namespace Game
             }
             
             Record.ClearSelection();
+            
+            // Clear battle unit selection
+            BattleUnits.UpdateUnitSelectionAtCoordinate(null);
         }
 
         public void SelectHex(HexOperator hexOperator)
@@ -70,6 +74,9 @@ namespace Game
             // Update tracking
             _currentlySelectedHex = hexOperator;
             Record.SelectedCoordinate = coordinate;
+            
+            // Update battle unit selection based on the selected coordinate
+            BattleUnits.UpdateUnitSelectionAtCoordinate(coordinate);
             
             Notebook.NoteData($"Selected hex at coordinate: {coordinate}");
         }
