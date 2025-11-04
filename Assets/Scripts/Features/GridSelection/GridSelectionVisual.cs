@@ -1,5 +1,6 @@
 using Core;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Game
 {
@@ -28,6 +29,12 @@ namespace Game
 
         private void HandleMouseClick()
         {
+            // Don't process selection if mouse is over UI
+            if (IsPointerOverUI())
+            {
+                return;
+            }
+            
             // Create raycast from camera through mouse position
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
             
@@ -53,6 +60,12 @@ namespace Game
             {
                 Feature.DeselectHex();
             }
+        }
+        
+        private bool IsPointerOverUI()
+        {
+            // Check if the pointer is over a UI element
+            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
         }
     }
 }
