@@ -6,6 +6,8 @@ namespace Game
 {
     public class BattleGUI : BaseVisualFeature<BattleGUIVisual>, IBattleGUI, IBattleLaunchAgent
     {
+        [Inject] public IGridSelection GridSelection { get; set; }
+
         public async UniTask BattleLaunch()
         {
             await SetupVisual();
@@ -31,6 +33,12 @@ namespace Game
         public void HideUnitSelection()
         {
             _visual.HideUnitSelection();
+        }
+
+        public void OnAttackButtonClicked()
+        {
+            GridSelection.SetAbilityMode(AbilityMode.Attack);
+            Notebook.NoteData("Attack mode activated");
         }
     }
 }

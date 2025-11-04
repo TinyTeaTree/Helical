@@ -6,5 +6,6 @@ namespace Game
     {
         void ShowUnitSelection();
         void HideUnitSelection();
+        void OnAttackButtonClicked();
     }
 }

@@ -83,6 +83,21 @@ namespace Game
             return Record.BattleUnits.Find(unit => unit.Coordinate == coordinate);
         }
         
+        public void ExecuteAttack(Vector2Int attackerCoordinate, Vector2Int targetCoordinate)
+        {
+            var attackerUnit = _visual.GetUnitAtCoordinate(attackerCoordinate);
+            
+            if (attackerUnit == null)
+            {
+                Notebook.NoteError("Attack failed: No attacker unit found");
+                return;
+            }
+            
+            attackerUnit.Attack();
+            
+            Notebook.NoteData($"Unit at {attackerCoordinate} attacked target at {targetCoordinate}");
+        }
+        
         private void ClearUnitSelection()
         {
             var allUnits = _visual.GetSpawnedUnits();

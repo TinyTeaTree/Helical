@@ -6,5 +6,6 @@ namespace Game
     {
         void Start();
         void Halt();
+        void SetAbilityMode(AbilityMode mode);
     }
 }

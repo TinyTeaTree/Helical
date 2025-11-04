@@ -7,6 +7,7 @@ namespace Game
     {
         public Vector2Int? SelectedCoordinate { get; set; }
         public bool IsSelectionEnabled { get; set; }
+        public AbilityMode CurrentAbilityMode { get; set; } = AbilityMode.None;
         
         /// <summary>
         /// Checks if any hex is currently selected.
@@ -19,6 +20,22 @@ namespace Game
         public void ClearSelection()
         {
             SelectedCoordinate = null;
+        }
+        
+        /// <summary>
+        /// Sets the current ability mode.
+        /// </summary>
+        public void SetAbilityMode(AbilityMode mode)
+        {
+            CurrentAbilityMode = mode;
+        }
+        
+        /// <summary>
+        /// Clears the ability mode back to None.
+        /// </summary>
+        public void ClearAbilityMode()
+        {
+            CurrentAbilityMode = AbilityMode.None;
         }
     }
 }

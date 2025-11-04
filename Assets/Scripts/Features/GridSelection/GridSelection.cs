@@ -56,6 +56,7 @@ namespace Game
             }
             
             Record.ClearSelection();
+            Record.ClearAbilityMode();
             
             // Clear battle unit selection
             BattleUnits.UpdateUnitSelectionAtCoordinate(null);
@@ -64,10 +65,24 @@ namespace Game
             BattleGUI.HideUnitSelection();
         }
 
+        public void SetAbilityMode(AbilityMode mode)
+        {
+            Record.SetAbilityMode(mode);
+            Notebook.NoteData($"Ability mode set to: {mode}");
+        }
+
         public void SelectHex(HexOperator hexOperator)
         {
             Vector2Int coordinate = hexOperator.Coordinate;
             
+            // Check if we're in Attack mode
+            if (Record.CurrentAbilityMode == AbilityMode.Attack)
+            {
+                HandleAttackMode(coordinate);
+                return;
+            }
+            
+            // Normal selection mode
             // Deselect previous hex if there is one (without playing sound - we're changing selection)
             if (_currentlySelectedHex != null)
             {
@@ -101,6 +116,26 @@ namespace Game
             DJ.Play(DJ.SelectOn_Sound);
             
             Notebook.NoteData($"Selected hex at coordinate: {coordinate}");
+        }
+        
+        private void HandleAttackMode(Vector2Int targetCoordinate)
+        {
+            // Check if there's a selected unit (the attacker)
+            if (!Record.HasSelection)
+            {
+                Notebook.NoteWarning("No unit selected to perform attack");
+                return;
+            }
+            
+            Vector2Int attackerCoordinate = Record.SelectedCoordinate.Value;
+            
+            // Execute the attack
+            BattleUnits.ExecuteAttack(attackerCoordinate, targetCoordinate);
+            
+            // Clear ability mode after attack
+            Record.ClearAbilityMode();
+            
+            Notebook.NoteData($"Attack executed from {attackerCoordinate} to {targetCoordinate}");
         }
         
         public void DeselectHex()
