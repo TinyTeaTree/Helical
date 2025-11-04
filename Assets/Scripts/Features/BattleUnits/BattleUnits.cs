@@ -68,7 +68,7 @@ namespace Game
                 return;
             }
             
-            // Find unit at the coordinate
+            // Find unit at the coordinate (keep visual internal)
             var unitAtCoordinate = _visual.GetUnitAtCoordinate(coordinate.Value);
             
             // Select unit at new coordinate if one exists
@@ -76,6 +76,11 @@ namespace Game
             {
                 unitAtCoordinate.SetGlow(true);
             }
+        }
+        
+        public BattleUnitData GetUnitDataAtCoordinate(Vector2Int coordinate)
+        {
+            return Record.BattleUnits.Find(unit => unit.Coordinate == coordinate);
         }
         
         private void ClearUnitSelection()

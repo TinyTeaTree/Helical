@@ -10,6 +10,7 @@ namespace Game
     {
         public string UnitId;
         public GameObject Prefab;
+        public Sprite Photo;
     }
 
     [CreateAssetMenu(fileName = "Battle Units Asset Pack", menuName = "Game/Asset Packs/Battle Units Asset Pack")]

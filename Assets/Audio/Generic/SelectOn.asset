@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SelectOn
   m_EditorClassIdentifier: Services::Services.SoundDesign
   PitchRange: {x: 1, y: 1}
-  _clip: {fileID: 8300000, guid: 331c87fda672f4b34b0a187e26d383a6, type: 3}
+  _clip: {fileID: 8300000, guid: 4fc16be30d8d5458db3f4b71bd872025, type: 3}
   _type: 0
   _loop: 0
   _volume: 1

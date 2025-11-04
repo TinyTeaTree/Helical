@@ -34,6 +34,7 @@ namespace Game
             _features.Add<ICameraMove>(new CameraMove());
             _features.Add<IBattleUnits>(new BattleUnits());
             _features.Add<IGridSelection>(new GridSelection());
+            _features.Add<IBattleGUI>(new BattleGUI());
             //<New Feature>
         }
 
@@ -45,6 +46,7 @@ namespace Game
             _factories.Add(typeof(GridVisual), new ResourceFactory(Addresses.GridVisual));
             _factories.Add(typeof(BattleUnitsVisual), new GenerateVisualFactory());
             _factories.Add(typeof(GridSelectionVisual), new GenerateVisualFactory());
+            _factories.Add(typeof(BattleGUIVisual), new ResourceFactory(Addresses.BattleGUIVisual));
         }
 
         protected override void AddAgents()

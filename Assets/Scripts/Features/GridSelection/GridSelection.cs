@@ -10,6 +10,7 @@ namespace Game
     {
         [Inject] public GridSelectionRecord Record { get; set; }
         [Inject] public IBattleUnits BattleUnits { get; set; }
+        [Inject] public IBattleGUI BattleGUI { get; set; }
         
         private HexOperator _currentlySelectedHex;
 
@@ -57,6 +58,9 @@ namespace Game
             
             // Clear battle unit selection
             BattleUnits.UpdateUnitSelectionAtCoordinate(null);
+            
+            // Hide the battle GUI
+            BattleGUI.HideUnitSelection();
         }
 
         public void SelectHex(HexOperator hexOperator)
@@ -79,6 +83,17 @@ namespace Game
             // Update battle unit selection based on the selected coordinate
             BattleUnits.UpdateUnitSelectionAtCoordinate(coordinate);
             
+            // Check if there's a unit at this coordinate via BattleUnits API
+            var unitData = BattleUnits.GetUnitDataAtCoordinate(coordinate);
+            if (unitData != null)
+            {
+                BattleGUI.ShowUnitSelection();
+            }
+            else
+            {
+                BattleGUI.HideUnitSelection();
+            }
+            
             // Play select sound
             DJ.Play(DJ.SelectOn_Sound);
             
@@ -100,6 +115,9 @@ namespace Game
             
             // Clear battle unit selection
             BattleUnits.UpdateUnitSelectionAtCoordinate(null);
+            
+            // Hide the battle GUI
+            BattleGUI.HideUnitSelection();
             
             // Play deselect sound
             DJ.Play(DJ.SelectOff_Sound);

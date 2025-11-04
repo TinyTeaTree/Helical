@@ -6,5 +6,6 @@ namespace Game
     public interface IBattleUnits : IFeature
     {
         void UpdateUnitSelectionAtCoordinate(Vector2Int? coordinate);
+        BattleUnitData GetUnitDataAtCoordinate(Vector2Int coordinate);
     }
 }
