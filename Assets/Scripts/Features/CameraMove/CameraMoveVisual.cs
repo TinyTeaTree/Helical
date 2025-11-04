@@ -6,15 +6,20 @@ namespace Game
 {
     public class CameraMoveVisual : BaseVisual<CameraMove>
     {
+        [Header("References")]
+        [SerializeField] private CameraLerpToHex _lerpToHex;
+        
+        [Header("Movement Settings")]
         [SerializeField] private float _moveSpeed = 5f;
         [SerializeField] [Range(0.01f, 0.1f)] private float _edgeScrollThreshold = 0.01f; // 1% of screen
-        
+
         private bool _isMovementEnabled = false;
         private Vector3 _centerOffset;
         private bool _boundsInitialized = false;
         private Vector2 _clampMin;
         private Vector2 _clampMax;
-
+        public Camera Camera { get; set; }
+ 
         private void Update()
         {
             if (!_isMovementEnabled)
@@ -56,10 +61,16 @@ namespace Game
 
             if (moveDirection != Vector3.zero)
             {
+                // Cancel any active lerp when user provides input
+                if (_lerpToHex.IsLerping())
+                {
+                    _lerpToHex.CancelLerp();
+                }
+                
                 // Move along XZ plane only
                 moveDirection.y = 0f;
                 moveDirection = moveDirection.normalized;
-                Vector3 newPosition = transform.position + moveDirection * _moveSpeed * Time.deltaTime;
+                Vector3 newPosition = Camera.transform.position + moveDirection * _moveSpeed * Time.deltaTime;
                 
                 // Apply clamping if bounds are initialized
                 if (_boundsInitialized)
@@ -67,7 +78,7 @@ namespace Game
                     newPosition = ApplyClamping(newPosition);
                 }
                 
-                transform.position = newPosition;
+                Camera.transform.position = newPosition;
             }
         }
 
@@ -133,7 +144,7 @@ namespace Game
         private Vector3 PositionFromCenterWorldPosition(Vector2 centerWorldPos)
         {
             // Reverse the offset to get the camera position
-            return new Vector3(centerWorldPos.x - _centerOffset.x, transform.position.y, centerWorldPos.y - _centerOffset.z);
+            return new Vector3(centerWorldPos.x - _centerOffset.x, Camera.transform.position.y, centerWorldPos.y - _centerOffset.z);
         }
 
         public void CalculateAndSetBounds(IGrid grid)
@@ -154,8 +165,8 @@ namespace Game
             // Solve for t where Y = 0: cameraPos.y + t * forward.y = 0
             // t = -cameraPos.y / forward.y
             
-            Vector3 cameraPos = transform.position;
-            Vector3 forward = transform.forward;
+            Vector3 cameraPos = Camera.transform.position;
+            Vector3 forward = Camera.transform.forward;
             
             if (Mathf.Approximately(forward.y, 0f))
             {
@@ -217,6 +228,14 @@ namespace Game
         public void HaltMovement()
         {
             _isMovementEnabled = false;
+        }
+        
+        public void LerpToWorldPosition(Vector3 worldPosition)
+        {
+            if (_lerpToHex != null && Camera != null)
+            {
+                _lerpToHex.LerpToWorldPosition(worldPosition, Camera.transform);
+            }
         }
     }
 }

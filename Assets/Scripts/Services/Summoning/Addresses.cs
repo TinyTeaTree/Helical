@@ -11,6 +11,7 @@ namespace Services
         public const string BattleUnitsAssetPack = "Packs/BattleUnitsAssetPack";
         public const string GridResourcePack = "Packs/GridResourcePack";
         public const string BattleGUIVisual = "Visuals/BattleGUI Visual";
+        public const string CameraMoveVisual = "Visuals/Camera Move Visual";
         public const string GridVisual = "Visuals/Grid Visual";
         public const string HudVisual = "Visuals/Hud Visual";
         public const string LoadingScreenHud = "Visuals/Loading Screen Hud";

@@ -47,6 +47,7 @@ namespace Game
             _factories.Add(typeof(BattleUnitsVisual), new GenerateVisualFactory());
             _factories.Add(typeof(GridSelectionVisual), new GenerateVisualFactory());
             _factories.Add(typeof(BattleGUIVisual), new ResourceFactory(Addresses.BattleGUIVisual));
+            _factories.Add(typeof(CameraMoveVisual), new ResourceFactory(Addresses.CameraMoveVisual));
         }
 
         protected override void AddAgents()

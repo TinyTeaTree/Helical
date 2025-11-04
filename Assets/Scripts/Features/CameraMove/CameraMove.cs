@@ -9,31 +9,22 @@ namespace Game
     {
         [Inject] public IGrid Grid { get; set; }
 
-        public UniTask BattleLaunch()
+        public async UniTask BattleLaunch()
         {
-            return SetupVisual();
+            await SetupVisual();
         }
 
-        private UniTask SetupVisual()
+        private async UniTask SetupVisual()
         {
             if (_visual != null)
             {
                 Notebook.NoteError($"Visual already exists for {typeof(CameraMoveVisual)}");
-                return UniTask.CompletedTask;
+                return;
             }
 
-            // Attach visual directly to Camera.main instead of loading from Resources
-            var camera = Camera.main;
-            if (camera == null)
-            {
-                Notebook.NoteError("Camera.main not found. Cannot attach CameraMoveVisual.");
-                return UniTask.CompletedTask;
-            }
-
-            _visual = camera.gameObject.AddComponent<CameraMoveVisual>();
-            _visual.SetFeature(this);
-            
-            return UniTask.CompletedTask;
+            // Create visual from prefab (it won't be parented to the camera)
+            await CreateVisual();
+            _visual.Camera = Camera.main;
         }
 
         public void InitializeBounds()
@@ -66,6 +57,18 @@ namespace Game
             }
 
             _visual.HaltMovement();
+        }
+
+        public void LerpToCoordinate(Vector2Int coordinate)
+        {
+            if (_visual == null)
+            {
+                Notebook.NoteError("CameraMoveVisual not initialized. Call SetupVisual first.");
+                return;
+            }
+
+            Vector3 worldPosition = Grid.GetWorldPosition(coordinate);
+            _visual.LerpToWorldPosition(worldPosition);
         }
     }
 }

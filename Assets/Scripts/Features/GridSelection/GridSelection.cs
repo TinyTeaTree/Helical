@@ -11,6 +11,7 @@ namespace Game
         [Inject] public GridSelectionRecord Record { get; set; }
         [Inject] public IBattleUnits BattleUnits { get; set; }
         [Inject] public IBattleGUI BattleGUI { get; set; }
+        [Inject] public ICameraMove CameraMove { get; set; }
         
         private HexOperator _currentlySelectedHex;
 
@@ -88,6 +89,9 @@ namespace Game
             if (unitData != null)
             {
                 BattleGUI.ShowUnitSelection();
+                
+                // Lerp camera to the unit's position
+                CameraMove.LerpToCoordinate(coordinate);
             }
             else
             {

@@ -1,4 +1,5 @@
 using Core;
+using UnityEngine;
 
 namespace Game
 {
@@ -7,5 +8,6 @@ namespace Game
         void InitializeBounds();
         void Start();
         void Halt();
+        void LerpToCoordinate(Vector2Int coordinate);
     }
 }
