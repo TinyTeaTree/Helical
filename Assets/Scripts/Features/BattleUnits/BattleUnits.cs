@@ -29,16 +29,32 @@ namespace Game
         {
             Record.BattleUnits.Clear();
             
-            // Temporary sample unit
-            Record.BattleUnits.Add(new BattleUnitData()
+            var playerId = _bootstrap.Features.Get<IPlayerAccount>().PlayerId;
+            var random = new System.Random();
+            var directions = System.Enum.GetValues(typeof(HexDirection));
+            
+            // Add 16 skeleton units at random positions
+            for (int i = 0; i < 16; i++)
             {
-                BattleUnitId = "Skeleton",
-                Coordinate = new Vector2Int(15, 15),
-                Direction = HexDirection.South,
-                Health = 40,
-                IsDead = false,
-                PlayerId = _bootstrap.Features.Get<IPlayerAccount>().PlayerId
-            });
+                // Generate random coordinate (spread across the map)
+                var randomCoordinate = new Vector2Int(
+                    random.Next(5, 25),  // x between 5 and 25
+                    random.Next(5, 25)   // y between 5 and 25
+                );
+                
+                // Random direction
+                var randomDirection = (HexDirection)directions.GetValue(random.Next(directions.Length));
+                
+                Record.BattleUnits.Add(new BattleUnitData()
+                {
+                    BattleUnitId = "Skeleton",
+                    Coordinate = randomCoordinate,
+                    Direction = randomDirection,
+                    Health = 40,
+                    IsDead = false,
+                    PlayerId = playerId
+                });
+            }
             
             SpawnAllUnits();
             
