@@ -29,18 +29,39 @@ namespace Game
         {
             Record.BattleUnits.Clear();
             
+            TMP_PopulateTestSkeletons();
+            
+            return UniTask.CompletedTask;
+        }
+        
+        // TODO: Remove this temporary function - for testing only
+        private void TMP_PopulateTestSkeletons()
+        {
             var playerId = _bootstrap.Features.Get<IPlayerAccount>().PlayerId;
             var random = new System.Random();
             var directions = System.Enum.GetValues(typeof(HexDirection));
             
-            // Add 16 skeleton units at random positions
-            for (int i = 0; i < 16; i++)
+            int unitsToSpawn = 16;
+            int attempts = 0;
+            int maxAttempts = 100; // Prevent infinite loop
+            
+            while (Record.BattleUnits.Count < unitsToSpawn && attempts < maxAttempts)
             {
+                attempts++;
+                
                 // Generate random coordinate (spread across the map)
                 var randomCoordinate = new Vector2Int(
                     random.Next(5, 25),  // x between 5 and 25
                     random.Next(5, 25)   // y between 5 and 25
                 );
+                
+                
+                
+                // Check if a unit already exists at this coordinate
+                if (Record.BattleUnits.Exists(u => u.Coordinate == randomCoordinate))
+                {
+                    continue;
+                }
                 
                 // Random direction
                 var randomDirection = (HexDirection)directions.GetValue(random.Next(directions.Length));
@@ -56,9 +77,7 @@ namespace Game
                 });
             }
             
-            SpawnAllUnits();
-            
-            return UniTask.CompletedTask;
+            Notebook.NoteData($"TMP: Spawned {Record.BattleUnits.Count} test skeletons");
         }
 
         public void SpawnAllUnits()
@@ -74,9 +93,8 @@ namespace Game
             _visual.DespawnAllUnits();
         }
         
-        public void UpdateUnitSelectionAtCoordinate(Vector2Int? coordinate)
+        public void UpdateUnitSelection(Vector2Int? coordinate)
         {
-            // Clear previous selection
             ClearUnitSelection();
             
             if (coordinate == null)
@@ -94,7 +112,7 @@ namespace Game
             }
         }
         
-        public BattleUnitData GetUnitDataAtCoordinate(Vector2Int coordinate)
+        public BattleUnitData GetUnitData(Vector2Int coordinate)
         {
             return Record.BattleUnits.Find(unit => unit.Coordinate == coordinate);
         }

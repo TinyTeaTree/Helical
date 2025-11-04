@@ -9,5 +9,7 @@ namespace Game
         GridVisual Visual { get; }
         UniTask LoadGrid(string gridId);
         Vector3 GetWorldPosition(Vector2Int coordinate);
+        bool IsValidHex(Vector2Int coordinate);
+        HexData GetHexData(Vector2Int coordinate);
     }
 }

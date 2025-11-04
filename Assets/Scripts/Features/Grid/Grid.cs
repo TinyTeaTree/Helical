@@ -80,6 +80,9 @@ namespace Game
             var gridSO = _gridResourcePack.GetGrid(gridId);
             var gridData = ToGridData(gridSO);
 
+            // Store grid data in record for later access
+            Record.GridData = gridData;
+
             _visual.Build(gridData, _gridResourcePack);
             return UniTask.CompletedTask;
         }
@@ -88,6 +91,42 @@ namespace Game
         {
             var worldXZ = coordinate.ToWorldXZ();
             return new Vector3(worldXZ.x, 0f, worldXZ.y);
+        }
+
+        public bool IsValidHex(Vector2Int coordinate)
+        {
+            if (Record.GridData == null)
+            {
+                return false;
+            }
+
+            // Check if coordinate is within grid bounds
+            if (coordinate.x < 0 || coordinate.x >= Record.GridData.Width ||
+                coordinate.y < 0 || coordinate.y >= Record.GridData.Height)
+            {
+                return false;
+            }
+
+            // Check if hex type is not None (empty)
+            var hexData = Record.GridData.GetCell(coordinate);
+            return hexData.Type != HexType.None;
+        }
+
+        public HexData GetHexData(Vector2Int coordinate)
+        {
+            if (Record.GridData == null)
+            {
+                return new HexData { Type = HexType.None };
+            }
+
+            // Check bounds
+            if (coordinate.x < 0 || coordinate.x >= Record.GridData.Width ||
+                coordinate.y < 0 || coordinate.y >= Record.GridData.Height)
+            {
+                return new HexData { Type = HexType.None };
+            }
+
+            return Record.GridData.GetCell(coordinate);
         }
     }
 }

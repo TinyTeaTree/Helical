@@ -59,7 +59,7 @@ namespace Game
             Record.ClearAbilityMode();
             
             // Clear battle unit selection
-            BattleUnits.UpdateUnitSelectionAtCoordinate(null);
+            BattleUnits.UpdateUnitSelection(null);
             
             // Hide the battle GUI
             BattleGUI.HideUnitSelection();
@@ -97,10 +97,10 @@ namespace Game
             Record.SelectedCoordinate = coordinate;
             
             // Update battle unit selection based on the selected coordinate
-            BattleUnits.UpdateUnitSelectionAtCoordinate(coordinate);
+            BattleUnits.UpdateUnitSelection(coordinate);
             
             // Check if there's a unit at this coordinate via BattleUnits API
-            var unitData = BattleUnits.GetUnitDataAtCoordinate(coordinate);
+            var unitData = BattleUnits.GetUnitData(coordinate);
             if (unitData != null)
             {
                 BattleGUI.ShowUnitSelection();
@@ -152,7 +152,7 @@ namespace Game
             Record.ClearSelection();
             
             // Clear battle unit selection
-            BattleUnits.UpdateUnitSelectionAtCoordinate(null);
+            BattleUnits.UpdateUnitSelection(null);
             
             // Hide the battle GUI
             BattleGUI.HideUnitSelection();
