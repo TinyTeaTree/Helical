@@ -89,8 +89,7 @@ namespace Game
             if (unitData != null)
             {
                 BattleGUI.ShowUnitSelection();
-                
-                // Lerp camera to the unit's position
+
                 CameraMove.LerpToCoordinate(coordinate);
             }
             else
