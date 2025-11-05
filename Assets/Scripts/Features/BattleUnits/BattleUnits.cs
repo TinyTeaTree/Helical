@@ -62,6 +62,11 @@ namespace Game
                 {
                     continue;
                 }
+
+                if (!Grid.IsValidHex(randomCoordinate))
+                {
+                    continue;
+                }   
                 
                 // Random direction
                 var randomDirection = (HexDirection)directions.GetValue(random.Next(directions.Length));
