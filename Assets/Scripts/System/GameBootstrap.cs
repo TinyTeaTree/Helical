@@ -35,6 +35,7 @@ namespace Game
             _features.Add<IBattleUnits>(new BattleUnits());
             _features.Add<IGridSelection>(new GridSelection());
             _features.Add<IBattleGUI>(new BattleGUI());
+            _features.Add<IInputDetection>(new InputDetection());
             //<New Feature>
         }
 
@@ -70,6 +71,7 @@ namespace Game
             _records.Add(typeof(PlayerSettingsRecord), new PlayerSettingsRecord());
             _records.Add(typeof(BattleUnitsRecord), new BattleUnitsRecord());
             _records.Add(typeof(GridSelectionRecord), new GridSelectionRecord());
+            _records.Add(typeof(InputDetectionRecord), new InputDetectionRecord());
             //<New Record>
         }
 
