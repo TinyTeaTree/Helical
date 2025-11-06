@@ -8,9 +8,15 @@ namespace Game
     public class BattleGUI : BaseVisualFeature<BattleGUIVisual>, IBattleGUI, IBattleLaunchAgent
     {
         [Inject] public IGridSelection GridSelection { get; set; }
+        [Inject] public ILocalConfigService ConfigService { get; set; }
+
+        private BattleUnitsConfig _config;
+        private BattleUnitsAssetPack _assetPack;
 
         public async UniTask BattleLaunch()
         {
+            _config = ConfigService.GetConfig<BattleUnitsConfig>();
+            _assetPack = await Summoner.SummoningService.LoadAssetPack<BattleUnitsAssetPack>();
             await SetupVisual();
         }
 
@@ -26,8 +32,17 @@ namespace Game
             _visual.gameObject.SetActive(true);
         }
 
-        public void ShowUnitSelection()
+        public void ShowUnitSelection(BattleUnitData unitData)
         {
+            // Get unit name from config
+            var unitConfig = _config.GetBattleUnit(unitData.BattleUnitId);
+            string displayName = unitConfig != null ? unitConfig.DisplayName : unitData.BattleUnitId;
+            
+            // Get unit photo from asset pack
+            var photo = _assetPack.GetUnitPhoto(unitData.BattleUnitId);
+            
+            // Update the visual with name, level, and photo
+            _visual.UpdateUnitInfo(displayName, unitData.Level, photo);
             _visual.ShowUnitSelection();
         }
 

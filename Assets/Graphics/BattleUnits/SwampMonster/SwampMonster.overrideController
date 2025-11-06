@@ -7,5 +7,11 @@ AnimatorOverrideController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: SwampMonster
-  m_Controller: {fileID: 0}
-  m_Clips: []
+  m_Controller: {fileID: 9100000, guid: cf835309de2684ef9a4901291d7f1656, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: f15c07c4bb03eeb48a7d2f8bfc519969, type: 3}
+    m_OverrideClip: {fileID: 7400000, guid: 778c647fc5750ea4699bd1bb5d0a92e4, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 68e3a50f30bb0c54e8ca5cfae6eea48d, type: 3}
+    m_OverrideClip: {fileID: 7400000, guid: 5edee861392362a4c976b765eba3a6d2, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 272e84c6ff8fea340b19da71308f0475, type: 3}
+    m_OverrideClip: {fileID: 7400000, guid: 233d4e0f3fe21cc44bdee5556298d03b, type: 3}

@@ -1,4 +1,5 @@
 using Core;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,10 @@ namespace Game
         [SerializeField] private Button _attackButton;
         [SerializeField] private Button _moveButton;
         [SerializeField] private Button _rotateButton;
+        
+        [SerializeField] private TMP_Text _name;
+        [SerializeField] private TMP_Text _level;
+        [SerializeField] private UnityEngine.UI.Image _photo;
 
         private void Awake()
         {
@@ -38,6 +43,17 @@ namespace Game
         private void OnRotateButtonClicked()
         {
             Feature.OnRotateButtonClicked();
+        }
+
+        public void UpdateUnitInfo(string unitName, int level, Sprite photo)
+        {
+            _name.text = $"{unitName}";
+            _level.text = $"{level}";
+            
+            if (_photo != null && photo != null)
+            {
+                _photo.sprite = photo;
+            }
         }
 
         public void ShowUnitSelection()

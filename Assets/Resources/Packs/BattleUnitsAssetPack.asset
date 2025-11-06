@@ -16,3 +16,6 @@ MonoBehaviour:
   - UnitId: Skeleton
     Prefab: {fileID: 9079085940906287020, guid: 17944674e87bc485b98e645674980dd7, type: 3}
     Photo: {fileID: 21300000, guid: ff32b13800d884c58a442ec8ace95d32, type: 3}
+  - UnitId: SwampMonster
+    Prefab: {fileID: 7848765859527338972, guid: f865ed432e3c64a639c3c6e39fb45a66, type: 3}
+    Photo: {fileID: 21300000, guid: ee0a694da971a4fe194c9ae34d20e0e8, type: 3}

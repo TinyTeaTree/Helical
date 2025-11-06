@@ -4,7 +4,7 @@ namespace Game
 {
     public interface IBattleGUI : IFeature
     {
-        void ShowUnitSelection();
+        void ShowUnitSelection(BattleUnitData unitData);
         void HideUnitSelection();
         void OnAttackButtonClicked();
     }

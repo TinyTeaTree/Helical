@@ -30,17 +30,25 @@ namespace Game
         {
             Record.BattleUnits.Clear();
             
-            TMP_PopulateTestSkeletons();
+            TMP_PopulateTestBattleUnits();
             
             return UniTask.CompletedTask;
         }
         
         // TODO: Remove this temporary function - for testing only
-        private void TMP_PopulateTestSkeletons()
+        private void TMP_PopulateTestBattleUnits()
         {
             var playerId = _bootstrap.Features.Get<IPlayerAccount>().PlayerId;
             var random = new System.Random();
             var directions = System.Enum.GetValues(typeof(HexDirection));
+            
+            // Get available unit IDs from the asset pack
+            var availableUnitIds = _assetPack.GetAvailableUnitIds();
+            if (availableUnitIds.Count == 0)
+            {
+                Notebook.NoteError("No units available in asset pack!");
+                return;
+            }
             
             int unitsToSpawn = 16;
             int attempts = 0;
@@ -56,8 +64,6 @@ namespace Game
                     random.Next(5, 25)   // y between 5 and 25
                 );
                 
-                
-                
                 // Check if a unit already exists at this coordinate
                 if (Record.BattleUnits.Exists(u => u.Coordinate == randomCoordinate))
                 {
@@ -69,21 +75,29 @@ namespace Game
                     continue;
                 }   
                 
+                // Randomly select a unit type from available units
+                var randomUnitId = availableUnitIds[random.Next(availableUnitIds.Count)];
+                
+                // Get unit config to get proper health value
+                var unitConfig = _config.GetBattleUnit(randomUnitId);
+                int unitHealth = unitConfig != null ? unitConfig.MaxHealth : 40; // Fallback to 40 if config not found
+                
                 // Random direction
                 var randomDirection = (HexDirection)directions.GetValue(random.Next(directions.Length));
                 
                 Record.BattleUnits.Add(new BattleUnitData()
                 {
-                    BattleUnitId = "Skeleton",
+                    BattleUnitId = randomUnitId,
                     Coordinate = randomCoordinate,
                     Direction = randomDirection,
-                    Health = 40,
+                    Health = unitHealth,
+                    Level = random.Next(1, 6), // Random level between 1 and 5
                     IsDead = false,
                     PlayerId = playerId
                 });
             }
             
-            Notebook.NoteData($"TMP: Spawned {Record.BattleUnits.Count} test skeletons");
+            Notebook.NoteData($"TMP: Spawned {Record.BattleUnits.Count} randomized battle units");
         }
 
         public void SpawnAllUnits()

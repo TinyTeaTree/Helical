@@ -65,6 +65,18 @@ namespace Game
             }
             return ids;
         }
+        
+        public Sprite GetUnitPhoto(string unitId)
+        {
+            foreach (var entry in _unitEntries)
+            {
+                if (entry.UnitId == unitId)
+                {
+                    return entry.Photo;
+                }
+            }
+            return null;
+        }
     }
 }
 

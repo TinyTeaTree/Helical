@@ -156,7 +156,7 @@ namespace Game
             var unitData = BattleUnits.GetUnitData(coordinate);
             if (unitData != null)
             {
-                BattleGUI.ShowUnitSelection();
+                BattleGUI.ShowUnitSelection(unitData);
             }
             else
             {
