@@ -3,10 +3,11 @@ using Core;
 using Cysharp.Threading.Tasks;
 using Services;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Game
 {
-    public class GridSelection : BaseVisualFeature<GridSelectionVisual>, IGridSelection, IBattleLaunchAgent
+    public class GridSelection : BaseFeature, IGridSelection, IBattleLaunchAgent
     {
         [Inject] public GridSelectionRecord Record { get; set; }
         [Inject] public IBattleUnits BattleUnits { get; set; }
@@ -15,39 +16,22 @@ namespace Game
         [Inject] public IGrid Grid { get; set; }
         
         private HexOperator _currentlySelectedHex;
+        private Camera _camera;
 
         public async UniTask BattleLaunch()
         {
-            await SetupVisual();
-        }
-
-        private async UniTask SetupVisual()
-        {
-            if (_visual != null)
-            {
-                Notebook.NoteError($"Visual already exists for {typeof(GridSelectionVisual)}");
-                return;
-            }
-
-            await CreateVisual();
-            
-            // Initialize visual with camera
-            var camera = Camera.main;
-
-            _visual.Initialize(camera);
-            _visual.gameObject.SetActive(false);
+            _camera = Camera.main;
+            await UniTask.CompletedTask;
         }
 
         public void Start()
         {
             Record.IsSelectionEnabled = true;
-            _visual.gameObject.SetActive(true);
         }
 
         public void Halt()
         {
             Record.IsSelectionEnabled = false;
-            _visual.gameObject.SetActive(false);
             
             // Deselect current hex when halting
             if (_currentlySelectedHex != null)
@@ -64,6 +48,53 @@ namespace Game
             
             // Hide the battle GUI
             BattleGUI.HideUnitSelection();
+        }
+        
+        public void HandleMouseClick()
+        {
+            // Check if selection is enabled
+            if (!Record.IsSelectionEnabled)
+            {
+                return;
+            }
+            
+            // Don't process selection if mouse is over UI
+            if (IsPointerOverUI())
+            {
+                return;
+            }
+            
+            // Create raycast from camera through mouse position
+            Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+            
+            // Check for Hex layer first
+            int hexLayerMask = LayerMask.GetMask("Hex");
+            
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, hexLayerMask))
+            {
+                // Check if we hit a hex with detection script
+                HexDetection hexDetection = hit.collider.GetComponent<HexDetection>();
+                
+                if (hexDetection != null)
+                {
+                    OnHexClicked(hexDetection.Operator);
+                    return;
+                }
+            }
+            
+            // Check for Bottom layer to deselect
+            int bottomLayerMask = LayerMask.GetMask("Bottom");
+            
+            if (Physics.Raycast(ray, out RaycastHit bottomHit, Mathf.Infinity, bottomLayerMask))
+            {
+                DeselectHex();
+            }
+        }
+        
+        private bool IsPointerOverUI()
+        {
+            // Check if the pointer is over a UI element
+            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
         }
 
         public void SetAbilityMode(AbilityMode mode)

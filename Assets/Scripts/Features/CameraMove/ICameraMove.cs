@@ -9,5 +9,6 @@ namespace Game
         void Start();
         void Halt();
         void LerpToCoordinate(Vector2Int coordinate);
+        void HandleDrag(Vector2 dragDelta);
     }
 }

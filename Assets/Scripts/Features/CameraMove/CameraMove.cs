@@ -70,5 +70,16 @@ namespace Game
             Vector3 worldPosition = Grid.GetWorldPosition(coordinate);
             _visual.LerpToWorldPosition(worldPosition);
         }
+        
+        public void HandleDrag(Vector2 dragDelta)
+        {
+            if (_visual == null)
+            {
+                Notebook.NoteError("CameraMoveVisual not initialized. Call SetupVisual first.");
+                return;
+            }
+
+            _visual.MoveCameraByDrag(dragDelta);
+        }
     }
 }

@@ -17,6 +17,7 @@ namespace Game
                 .AddParallel(() => bootstrap.Features.Get<IBattleUnits>().SpawnAllUnits())
                 .AddNext(action: () => bootstrap.Features.Get<ICameraMove>().InitializeBounds())
                 .AddNext(action: () => bootstrap.Features.Get<ICameraMove>().Start())
+                .AddNext(action: () => bootstrap.Features.Get<IInputDetection>().Start())
                 .AddNext(action: () => bootstrap.Features.Get<IGridSelection>().Start())
                 .AddNext(action: () => bootstrap.Features.Get<ILoadingScreen>().Hide())
                 ;

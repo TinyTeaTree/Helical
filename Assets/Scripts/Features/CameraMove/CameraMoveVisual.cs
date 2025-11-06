@@ -237,5 +237,53 @@ namespace Game
                 _lerpToHex.LerpToWorldPosition(worldPosition, Camera.transform);
             }
         }
+        
+        public void MoveCameraByDrag(Vector2 dragDelta)
+        {
+            if (Camera == null)
+            {
+                return;
+            }
+            
+            // Cancel any active lerp when user drags
+            if (_lerpToHex.IsLerping())
+            {
+                _lerpToHex.CancelLerp();
+            }
+            
+            // Convert screen space drag delta to world space
+            // Negative dragDelta to create the "pull" feel (camera moves opposite to mouse)
+            // We need to project the screen space movement onto the world XZ plane
+            
+            // Calculate the scale factor based on the camera's distance to the ground
+            float cameraHeight = Camera.transform.position.y;
+            float fieldOfView = Camera.fieldOfView * Mathf.Deg2Rad;
+            float worldHeightAtDistance = 2f * cameraHeight * Mathf.Tan(fieldOfView / 2f);
+            float scale = worldHeightAtDistance / Screen.height;
+            
+            // Convert drag delta to world space movement (inverted for pull feel)
+            Vector3 right = Camera.transform.right;
+            Vector3 forward = Camera.transform.forward;
+            
+            // Project forward onto XZ plane
+            forward.y = 0f;
+            forward = forward.normalized;
+            
+            // Right is already on XZ plane for top-down camera, but normalize to be safe
+            right.y = 0f;
+            right = right.normalized;
+            
+            Vector3 moveDirection = -right * dragDelta.x * scale - forward * dragDelta.y * scale;
+            
+            Vector3 newPosition = Camera.transform.position + moveDirection;
+            
+            // Apply clamping if bounds are initialized
+            if (_boundsInitialized)
+            {
+                newPosition = ApplyClamping(newPosition);
+            }
+            
+            Camera.transform.position = newPosition;
+        }
     }
 }

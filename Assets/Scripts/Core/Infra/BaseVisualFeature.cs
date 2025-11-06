@@ -3,6 +3,10 @@ using Cysharp.Threading.Tasks;
 
 namespace Core
 {
+    /// <summary>
+    /// A visual based Feature Script
+    /// </summary>
+    /// <typeparam name="VisualType"></typeparam>
     public class BaseVisualFeature<VisualType> : BaseFeature
         where VisualType : BaseVisual
     {

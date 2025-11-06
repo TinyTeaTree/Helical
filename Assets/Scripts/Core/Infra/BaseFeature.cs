@@ -2,6 +2,9 @@ using System;
 
 namespace Core
 {
+    /// <summary>
+    /// Feature Script
+    /// </summary>
     public abstract class BaseFeature : IFeature
     {
         protected IBootstrap _bootstrap;
