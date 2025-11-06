@@ -11,5 +11,6 @@ namespace Game
         Vector3 GetWorldPosition(Vector2Int coordinate);
         bool IsValidHex(Vector2Int coordinate);
         HexData GetHexData(Vector2Int coordinate);
+        HexOperator GetHexOperatorAtCoordinate(Vector2Int coordinate);
     }
 }

@@ -128,5 +128,10 @@ namespace Game
 
             return Record.GridData.GetCell(coordinate);
         }
+        
+        public HexOperator GetHexOperatorAtCoordinate(Vector2Int coordinate)
+        {
+            return _visual.GetHexOperatorAtCoordinate(coordinate);
+        }
     }
 }

@@ -58,5 +58,17 @@ namespace Game
         {
             return _hexCache;
         }
+        
+        /// <summary>
+        /// Gets the HexOperator at a specific coordinate
+        /// </summary>
+        public HexOperator GetHexOperatorAtCoordinate(Vector2Int coordinate)
+        {
+            if (_hexCache.TryGetValue(coordinate, out var cached))
+            {
+                return cached.instance.GetComponent<HexOperator>();
+            }
+            return null;
+        }
     }
 }

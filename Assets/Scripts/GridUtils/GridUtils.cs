@@ -1,15 +1,5 @@
 using UnityEngine;
 
-public enum HexDirection
-{
-    North = 0,
-    NorthEast = 60,
-    SouthEast = 120,
-    South = 180,
-    SouthWest = 240,
-    NorthWest = 300
-}
-
 public static class GridUtils
 {
     public const float NextGridStep = 1f;
@@ -33,15 +23,5 @@ public static class GridUtils
         pos.y += (coord.x % 2) * HexUpStep;
         
         return pos;
-    }
-
-    public static Quaternion ToRotation(this HexDirection direction)
-    {
-        return Quaternion.Euler(0f, (float)direction, 0f);
-    }
-
-    public static float ToAngle(this HexDirection direction)
-    {
-        return (float)direction;
     }
 }

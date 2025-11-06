@@ -11,6 +11,7 @@ namespace Game
         [Inject] public BattleUnitsRecord Record { get; set; }
         [Inject] public ILocalConfigService ConfigService { get; set; }
         [Inject] public IGrid Grid { get; set; }
+        [Inject] public IGridSelection GridSelection { get; set; }
 
         private BattleUnitsConfig _config;
         private BattleUnitsAssetPack _assetPack;
@@ -132,9 +133,98 @@ namespace Game
                 return;
             }
             
+            // Get the unit data to get current direction
+            var unitData = GetUnitData(attackerCoordinate);
+            if (unitData != null)
+            {
+                // Execute rotation (in parallel with attack)
+                // The rotator will calculate the target direction and return it
+                attackerUnit.Rotate(attackerCoordinate, targetCoordinate, unitData.Direction, (newDirection) =>
+                {
+                    // Update direction after rotation completes
+                    unitData.Direction = newDirection;
+                });
+            }
+            
+            // Execute attack (in parallel with rotation)
             attackerUnit.Attack();
             
             Notebook.NoteData($"Unit at {attackerCoordinate} attacked target at {targetCoordinate}");
+        }
+        
+        public void ExecuteMove(Vector2Int unitCoordinate, Vector2Int targetCoordinate)
+        {
+            var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
+            
+            if (unit == null)
+            {
+                Notebook.NoteError("Move failed: No unit found at coordinate");
+                return;
+            }
+            
+            // Get the unit data
+            var unitData = GetUnitData(unitCoordinate);
+            if (unitData == null)
+            {
+                Notebook.NoteError("Move failed: No unit data found");
+                return;
+            }
+            
+            // Execute rotation (in parallel with move)
+            // The rotator will calculate the target direction and return it
+            unit.Rotate(unitCoordinate, targetCoordinate, unitData.Direction, (newDirection) =>
+            {
+                // Update direction after rotation completes
+                unitData.Direction = newDirection;
+            });
+            
+            // Execute move (in parallel with rotation)
+            var targetWorldPosition = Grid.GetWorldPosition(targetCoordinate);
+            unit.Move(targetWorldPosition, () =>
+            {
+                // Update the unit coordinate in the record after movement is complete
+                unitData.Coordinate = targetCoordinate;
+                
+                // Update the visual's coordinate tracking
+                _visual.UpdateUnitCoordinate(unitCoordinate, targetCoordinate);
+                
+                // Update the GridSelection coordinate to track the unit's new position
+                // Only update if this unit was the one selected
+                if (GridSelection.IsCoordinateSelected(unitCoordinate))
+                {
+                    GridSelection.UpdateSelectedCoordinate(targetCoordinate);
+                }
+                
+                Notebook.NoteData($"Unit moved from {unitCoordinate} to {targetCoordinate}");
+            });
+        }
+        
+        public void ExecuteRotate(Vector2Int unitCoordinate, Vector2Int targetCoordinate)
+        {
+            var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
+            
+            if (unit == null)
+            {
+                Notebook.NoteError("Rotate failed: No unit found at coordinate");
+                return;
+            }
+            
+            // Get the unit data
+            var unitData = GetUnitData(unitCoordinate);
+            if (unitData == null)
+            {
+                Notebook.NoteError("Rotate failed: No unit data found");
+                return;
+            }
+            
+            // Execute the rotation - rotator will calculate and return the target direction
+            unit.Rotate(unitCoordinate, targetCoordinate, unitData.Direction, (newDirection) =>
+            {
+                // Update the unit data direction after rotation is complete
+                unitData.Direction = newDirection;
+                
+                Notebook.NoteData($"Unit rotated to {newDirection}");
+            });
         }
         
         private void ClearUnitSelection()

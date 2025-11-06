@@ -8,7 +8,7 @@ namespace Game
         
         private static readonly int AttackTrigger = Animator.StringToHash("Attack");
         private static readonly int GetHitTrigger = Animator.StringToHash("GetHit");
-        private static readonly int IsMoveBool = Animator.StringToHash("IsMove");
+        private static readonly int IsMoveBool = Animator.StringToHash("IsWalk");
         private static readonly int IsDeadBool = Animator.StringToHash("IsDead");
 
         protected override void OnInitialized(string unitId)

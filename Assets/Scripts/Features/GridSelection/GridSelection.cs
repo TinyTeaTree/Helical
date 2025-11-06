@@ -12,6 +12,7 @@ namespace Game
         [Inject] public IBattleUnits BattleUnits { get; set; }
         [Inject] public IBattleGUI BattleGUI { get; set; }
         [Inject] public ICameraMove CameraMove { get; set; }
+        [Inject] public IGrid Grid { get; set; }
         
         private HexOperator _currentlySelectedHex;
 
@@ -70,8 +71,30 @@ namespace Game
             Record.SetAbilityMode(mode);
             Notebook.NoteData($"Ability mode set to: {mode}");
         }
+        
+        public void UpdateSelectedCoordinate(Vector2Int newCoordinate)
+        {
+            // Get the HexOperator at the new coordinate
+            var hexOperator = Grid.GetHexOperatorAtCoordinate(newCoordinate);
+            
+            if (hexOperator != null)
+            {
+                // Properly update the selection with all visual effects
+                SelectHex(hexOperator, newCoordinate);
+            }
+            else
+            {
+                // Fallback: just update the coordinate if hex operator not found
+                Record.SelectedCoordinate = newCoordinate;
+            }
+        }
+        
+        public bool IsCoordinateSelected(Vector2Int coordinate)
+        {
+            return Record.SelectedCoordinate.HasValue && Record.SelectedCoordinate.Value == coordinate;
+        }
 
-        public void SelectHex(HexOperator hexOperator)
+        public void OnHexClicked(HexOperator hexOperator)
         {
             Vector2Int coordinate = hexOperator.Coordinate;
             
@@ -82,6 +105,36 @@ namespace Game
                 return;
             }
             
+            // Check if we're in Move mode
+            if (Record.CurrentAbilityMode == AbilityMode.Move)
+            {
+                HandleMoveMode(coordinate);
+                return;
+            }
+            
+            // Check if we're in Rotate mode
+            if (Record.CurrentAbilityMode == AbilityMode.Rotate)
+            {
+                HandleRotateMode(coordinate);
+                return;
+            }
+            
+            SelectHex(hexOperator, coordinate);
+            
+            var unitData = BattleUnits.GetUnitData(coordinate);
+            if (unitData != null)
+            {
+                CameraMove.LerpToCoordinate(coordinate);
+            }
+
+            // Play select sound
+            DJ.Play(DJ.SelectOn_Sound);
+            
+            Notebook.NoteData($"Selected hex at coordinate: {coordinate}");
+        }
+
+        private void SelectHex(HexOperator hexOperator, Vector2Int coordinate)
+        {
             // Normal selection mode
             // Deselect previous hex if there is one (without playing sound - we're changing selection)
             if (_currentlySelectedHex != null)
@@ -104,20 +157,13 @@ namespace Game
             if (unitData != null)
             {
                 BattleGUI.ShowUnitSelection();
-
-                CameraMove.LerpToCoordinate(coordinate);
             }
             else
             {
                 BattleGUI.HideUnitSelection();
             }
-            
-            // Play select sound
-            DJ.Play(DJ.SelectOn_Sound);
-            
-            Notebook.NoteData($"Selected hex at coordinate: {coordinate}");
         }
-        
+
         private void HandleAttackMode(Vector2Int targetCoordinate)
         {
             // Check if there's a selected unit (the attacker)
@@ -136,6 +182,53 @@ namespace Game
             Record.ClearAbilityMode();
             
             Notebook.NoteData($"Attack executed from {attackerCoordinate} to {targetCoordinate}");
+        }
+        
+        private void HandleMoveMode(Vector2Int targetCoordinate)
+        {
+            // Check if there's a selected unit (the unit to move)
+            if (!Record.HasSelection)
+            {
+                Notebook.NoteWarning("No unit selected to move");
+                return;
+            }
+            
+            Vector2Int unitCoordinate = Record.SelectedCoordinate.Value;
+            
+            // Check if the target coordinate is different from the unit's current coordinate
+            if (unitCoordinate == targetCoordinate)
+            {
+                Notebook.NoteWarning("Unit is already at that location");
+                return;
+            }
+            
+            // Execute the move
+            BattleUnits.ExecuteMove(unitCoordinate, targetCoordinate);
+            
+            // Clear ability mode after move
+            Record.ClearAbilityMode();
+            
+            Notebook.NoteData($"Move executed from {unitCoordinate} to {targetCoordinate}");
+        }
+        
+        private void HandleRotateMode(Vector2Int targetCoordinate)
+        {
+            // Check if there's a selected unit (the unit to rotate)
+            if (!Record.HasSelection)
+            {
+                Notebook.NoteWarning("No unit selected to rotate");
+                return;
+            }
+            
+            Vector2Int unitCoordinate = Record.SelectedCoordinate.Value;
+            
+            // Execute the rotation
+            BattleUnits.ExecuteRotate(unitCoordinate, targetCoordinate);
+            
+            // Clear ability mode after rotation
+            Record.ClearAbilityMode();
+            
+            Notebook.NoteData($"Rotate executed for unit at {unitCoordinate} towards {targetCoordinate}");
         }
         
         public void DeselectHex()

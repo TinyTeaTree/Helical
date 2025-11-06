@@ -48,7 +48,7 @@ namespace Game
                 
                 if (hexDetection != null)
                 {
-                    Feature.SelectHex(hexDetection.Operator);
+                    Feature.OnHexClicked(hexDetection.Operator);
                     return;
                 }
             }

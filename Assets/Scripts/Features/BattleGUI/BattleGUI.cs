@@ -1,6 +1,7 @@
 using Agents;
 using Core;
 using Cysharp.Threading.Tasks;
+using Services;
 
 namespace Game
 {
@@ -38,7 +39,22 @@ namespace Game
         public void OnAttackButtonClicked()
         {
             GridSelection.SetAbilityMode(AbilityMode.Attack);
+            DJ.Play(DJ.Tick_Sound);
             Notebook.NoteData("Attack mode activated");
+        }
+        
+        public void OnMoveButtonClicked()
+        {
+            DJ.Play(DJ.Tick_Sound);
+            GridSelection.SetAbilityMode(AbilityMode.Move);
+            Notebook.NoteData("Move mode activated");
+        }
+        
+        public void OnRotateButtonClicked()
+        {
+            DJ.Play(DJ.Tick_Sound);
+            GridSelection.SetAbilityMode(AbilityMode.Rotate);
+            Notebook.NoteData("Rotate mode activated");
         }
     }
 }

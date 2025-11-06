@@ -59,5 +59,17 @@ namespace Game
             _unitsByCoordinate.TryGetValue(coordinate, out var unit);
             return unit;
         }
+        
+        /// <summary>
+        /// Updates the coordinate tracking when a unit moves from one coordinate to another
+        /// </summary>
+        public void UpdateUnitCoordinate(Vector2Int oldCoordinate, Vector2Int newCoordinate)
+        {
+            if (_unitsByCoordinate.TryGetValue(oldCoordinate, out var unit))
+            {
+                _unitsByCoordinate.Remove(oldCoordinate);
+                _unitsByCoordinate[newCoordinate] = unit;
+            }
+        }
     }
 }

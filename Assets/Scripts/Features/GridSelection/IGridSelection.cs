@@ -1,4 +1,5 @@
 using Core;
+using UnityEngine;
 
 namespace Game
 {
@@ -7,5 +8,7 @@ namespace Game
         void Start();
         void Halt();
         void SetAbilityMode(AbilityMode mode);
+        void UpdateSelectedCoordinate(Vector2Int newCoordinate);
+        bool IsCoordinateSelected(Vector2Int coordinate);
     }
 }
