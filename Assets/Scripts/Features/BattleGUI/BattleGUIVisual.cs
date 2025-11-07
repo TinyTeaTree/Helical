@@ -7,7 +7,9 @@ namespace Game
 {
     public class BattleGUIVisual : BaseVisual<BattleGUI>
     {
-        [SerializeField] private BattleUnitSelectionOperator _unitSelectionOperator;
+        [SerializeField] private GameObject _gui;
+        [SerializeField] private GameObject _controls;
+        
         [SerializeField] private Button _attackButton;
         [SerializeField] private Button _moveButton;
         [SerializeField] private Button _rotateButton;
@@ -56,14 +58,15 @@ namespace Game
             }
         }
 
-        public void ShowUnitSelection()
+        public void ShowUnitSelection(bool isMyUnit)
         {
-            _unitSelectionOperator.Show();
+            _gui.SetActive(true);
+            _controls.SetActive(isMyUnit);
         }
 
         public void HideUnitSelection()
         {
-            _unitSelectionOperator.Hide();
+            _gui.SetActive(false);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Game
     {
         [Inject] public IGridSelection GridSelection { get; set; }
         [Inject] public ILocalConfigService ConfigService { get; set; }
+        [Inject] public IPlayerAccount PlayerAccount { get; set; }
 
         private BattleUnitsConfig _config;
         private BattleUnitsAssetPack _assetPack;
@@ -30,6 +31,7 @@ namespace Game
 
             await CreateVisual();
             _visual.gameObject.SetActive(true);
+            HideUnitSelection();
         }
 
         public void ShowUnitSelection(BattleUnitData unitData)
@@ -43,7 +45,7 @@ namespace Game
             
             // Update the visual with name, level, and photo
             _visual.UpdateUnitInfo(displayName, unitData.Level, photo);
-            _visual.ShowUnitSelection();
+            _visual.ShowUnitSelection(unitData.PlayerId == PlayerAccount.PlayerId);
         }
 
         public void HideUnitSelection()

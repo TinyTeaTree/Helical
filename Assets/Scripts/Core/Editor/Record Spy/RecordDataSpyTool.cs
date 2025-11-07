@@ -139,29 +139,87 @@ public class RecordDataSpyTool : EditorWindow
         {
             EditorGUILayout.TextField($"{propName} - {prop}", textStyle);
         }
-        else if(prop is IEnumerable enumerable && prop is ICollection collection)
+        else if (prop is IEnumerable enumerable && prop is ICollection)
         {
             EditorGUI.indentLevel++;
             {
+                var index = 0;
+                var hasElements = false;
                 foreach (var e in enumerable)
                 {
-                    DrawPropVisual(propName, e, level + 1);
+                    hasElements = true;
+                    DrawPropVisual($"{propName}[{index}]", e, level + 1);
+                    index++;
+                }
+
+                if (!hasElements)
+                {
+                    EditorGUILayout.TextField($"{propName} - empty", textStyle);
                 }
             }
             EditorGUI.indentLevel--;
         }
-        else if (propType.Assembly != typeof(BaseRecord).Assembly) //We dont want to start drilling down mscorelib or Newtonsoft objects, they throw exceptions in getters
-        {
-            EditorGUILayout.TextField($"{propName} - {prop}", textStyle);
-        }
         else
         {
-            EditorGUILayout.TextField($"{propName} - {prop}", textStyle);
-            EditorGUI.indentLevel++;
+            if (ShouldDrillInto(propType))
             {
-                DrawRecord(prop, level + 1);
+                EditorGUILayout.TextField($"{propName} - {prop}", textStyle);
+                EditorGUI.indentLevel++;
+                {
+                    DrawRecord(prop, level + 1);
+                }
+                EditorGUI.indentLevel--;
             }
-            EditorGUI.indentLevel--;
+            else
+            {
+                EditorGUILayout.TextField($"{propName} - {prop}", textStyle);
+            }
         }
+    }
+
+    private static bool ShouldDrillInto(Type type)
+    {
+        if (type == null)
+        {
+            return false;
+        }
+
+        if (!type.IsClass)
+        {
+            return false;
+        }
+
+        if (type == typeof(string) || typeof(JToken).IsAssignableFrom(type))
+        {
+            return false;
+        }
+
+        var assemblyName = type.Assembly.GetName().Name;
+        var baseRecordAssemblyName = typeof(BaseRecord).Assembly.GetName().Name;
+
+        if (assemblyName == baseRecordAssemblyName)
+        {
+            return true;
+        }
+
+        if (assemblyName.StartsWith("System", StringComparison.OrdinalIgnoreCase) ||
+            assemblyName.StartsWith("Unity", StringComparison.OrdinalIgnoreCase) ||
+            assemblyName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase) ||
+            assemblyName.Equals("netstandard", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var ns = type.Namespace ?? string.Empty;
+        if (ns.StartsWith("System", StringComparison.Ordinal) ||
+            ns.StartsWith("UnityEngine", StringComparison.Ordinal) ||
+            ns.StartsWith("UnityEditor", StringComparison.Ordinal) ||
+            ns.StartsWith("TMPro", StringComparison.Ordinal) ||
+            ns.StartsWith("Newtonsoft", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return true;
     }
 }

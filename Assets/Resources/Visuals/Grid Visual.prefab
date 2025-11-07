@@ -120,7 +120,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2450647860878657030}
-  - component: {fileID: 6991995446582969607}
   - component: {fileID: 8147035560066507775}
   m_Layer: 0
   m_Name: Grid Visual
@@ -145,31 +144,6 @@ Transform:
   - {fileID: 4609967277110261734}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6991995446582969607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3126479616612762850}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76264b70c86084fbd9b86dcae7f57043, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  Hexs:
-  - {fileID: 1411991481385686, guid: d4c13e0a31c558d44a8f388a79193a00, type: 3}
-  - {fileID: 1307014298151480, guid: f7ff2900d66e7bc4fa8b3214486aa170, type: 3}
-  - {fileID: 1513751033591328, guid: acb86a1738de1364cad1d7ac4f60f2ed, type: 3}
-  - {fileID: 1009527748241020, guid: 3b1bf2bdbb915ea458933b1fe51224fc, type: 3}
-  - {fileID: 1500024321721894, guid: 3c21bb32e8e806e4fa9258820dfebadf, type: 3}
-  - {fileID: 1942471274379096, guid: 393103ee2798fb34e9ea8dbd780cc4bc, type: 3}
-  - {fileID: 1991328963452212, guid: dc899da57486f4c4fa53c3bb800568d6, type: 3}
-  - {fileID: 1388657164994780, guid: dcf682d7e73d63e4db2f3cea8bdac239, type: 3}
-  - {fileID: 1332557941698796, guid: db872996fbfe6514f8d44df93b2d8380, type: 3}
-  - {fileID: 1994085010386688, guid: 408ff2acb0a41b24dbed2426e39d1530, type: 3}
-  - {fileID: 1114219214756384, guid: 2fb98c264fc22154ca2c06b5921a1717, type: 3}
-  - {fileID: 1787952542435520, guid: f5738bfb06b8b664f8165c74ec50881a, type: 3}
 --- !u!114 &8147035560066507775
 MonoBehaviour:
   m_ObjectHideFlags: 0
