@@ -28,7 +28,7 @@ namespace Game
                 return null;
             }
 
-            var gridData = new GridData(gridSO.Width, gridSO.Height);
+            var gridData = new GridData(gridSO.Width, gridSO.Height, gridSO.Id);
             
             foreach (var hexData in gridSO.Cells)
             {
@@ -41,6 +41,13 @@ namespace Game
         public UniTask LoadGrid(string gridId)
         {
             var gridSO = _gridResourcePack.GetGrid(gridId);
+            if (gridSO == null)
+            {
+                Notebook.NoteError($"GridSO with id {gridId} not found.");
+                Record.GridData = null;
+                return UniTask.CompletedTask;
+            }
+
             var gridData = ToGridData(gridSO);
 
             // Store grid data in record for later access
@@ -96,6 +103,13 @@ namespace Game
         public HexOperator GetHexOperatorAtCoordinate(Vector2Int coordinate)
         {
             return _visual.GetHexOperatorAtCoordinate(coordinate);
+        }
+
+        public void GetCameraAnchor(out Vector3 position, out Quaternion rotation)
+        {
+            var gridSO = _gridResourcePack.GetGrid(Record.GridData.Id);
+            position = gridSO.CameraAnchorPrefab.transform.position;
+            rotation = gridSO.CameraAnchorPrefab.transform.rotation;
         }
     }
 }

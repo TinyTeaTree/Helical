@@ -4,15 +4,17 @@ namespace Game
 {
     public class GridData
     {
+        public string Id;
         public readonly int Width;
         public readonly int Height;
         private readonly HexData[,] Cells;
 
-        public GridData(int width, int height)
+        public GridData(int width, int height, string id)
         {
             Width = width;
             Height = height;
             Cells = new HexData[width, height];
+            Id = id;
         }
 
         public void SetCell(HexData hex)

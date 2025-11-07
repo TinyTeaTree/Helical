@@ -22,6 +22,9 @@ namespace Game
         [SerializeField]
         private GameObject _gluePrefab;
 
+        [SerializeField]
+        private GameObject _cameraAnchorPrefab;
+
         public string Id 
         { 
             get => _id; 
@@ -50,6 +53,12 @@ namespace Game
         {
             get => _gluePrefab;
             set => _gluePrefab = value;
+        }
+
+        public GameObject CameraAnchorPrefab
+        {
+            get => _cameraAnchorPrefab;
+            set => _cameraAnchorPrefab = value;
         }
     }
 }

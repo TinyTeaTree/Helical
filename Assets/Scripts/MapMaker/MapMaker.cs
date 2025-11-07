@@ -11,10 +11,16 @@ public class MapMaker : MonoBehaviour
     [SerializeField] private GridSO _grid;
     [SerializeField] private GridResourcePack _resourcePack;
     [SerializeField] private Transform _gridRoot;
+    [SerializeField] private Camera _sceneCamera;
 
 #if UNITY_EDITOR
     public GridSO Grid => _grid;
     private GameObject _glueInstance;
+    private GameObject _cameraAnchorInstance;
+    private Transform _originalCameraParent;
+    private Vector3 _originalCameraLocalPosition;
+    private Quaternion _originalCameraLocalRotation;
+    private bool _cameraStateStored;
 
     public void PopulateLevel()
     {
@@ -33,9 +39,11 @@ public class MapMaker : MonoBehaviour
         var parent = _gridRoot != null ? _gridRoot : transform;
         Undo.RegisterFullObjectHierarchyUndo(parent.gameObject, "Populate Grid");
 
+        RestoreCameraState();
+
         ClearGridInternal(parent);
 
-        var gridData = new GridData(_grid.Width, _grid.Height);
+        var gridData = new GridData(_grid.Width, _grid.Height, _grid.Id);
 
         foreach (var hex in _grid.Cells)
         {
@@ -93,22 +101,49 @@ public class MapMaker : MonoBehaviour
             }
         }
 
+        if (_grid.GluePrefab != null)
+        {
+            var glue = PrefabUtility.InstantiatePrefab(_grid.GluePrefab, null) as GameObject;
+            if (glue != null)
+            {
+                Undo.RegisterCreatedObjectUndo(glue, "Create Glue Object");
+                glue.name = $"{_grid.GluePrefab.name}_Glue";
+                glue.transform.localPosition = Vector3.zero;
+                _glueInstance = glue;
+            }
+        }
+        else
+        {
+            _glueInstance = null;
+        }
 
-        var glue = PrefabUtility.InstantiatePrefab(_grid.GluePrefab, null) as GameObject;
-
-        Undo.RegisterCreatedObjectUndo(glue, "Create Glue Object");
-        glue.name = $"{_grid.GluePrefab.name}_Glue";
-        glue.transform.localPosition = Vector3.zero;
-        _glueInstance = glue;
+        if (_grid.CameraAnchorPrefab != null)
+        {
+            var anchor = PrefabUtility.InstantiatePrefab(_grid.CameraAnchorPrefab, null) as GameObject;
+            if (anchor != null)
+            {
+                anchor.transform.position = _grid.CameraAnchorPrefab.transform.position;
+                anchor.transform.rotation = _grid.CameraAnchorPrefab.transform.rotation;
+                Undo.RegisterCreatedObjectUndo(anchor, "Create Camera Anchor");
+                anchor.name = $"{_grid.CameraAnchorPrefab.name}_Anchor";
+                _cameraAnchorInstance = anchor;
+                AlignCameraToAnchor(anchor.transform);
+            }
+        }
+        else
+        {
+            _cameraAnchorInstance = null;
+        }
     }
 
     public void ClearLevel()
     {
         var parent = _gridRoot != null ? _gridRoot : transform;
         Undo.RegisterFullObjectHierarchyUndo(parent.gameObject, "Clear Grid");
-        ClearGridInternal(parent);
+        RestoreCameraState();
         DestroyImmediate(_glueInstance);
-        _glueInstance = null;
+        DestroyImmediate(_cameraAnchorInstance);
+        ClearGridInternal(parent);
     }
 
     private void ClearGridInternal(Transform parent)
@@ -119,6 +154,65 @@ public class MapMaker : MonoBehaviour
             Undo.DestroyObjectImmediate(child.gameObject);
         }
         _glueInstance = null;
+        _cameraAnchorInstance = null;
+    }
+
+    private Camera GetTargetCamera()
+    {
+        if (_sceneCamera != null)
+        {
+            return _sceneCamera;
+        }
+
+        return Camera.main;
+    }
+
+    private void AlignCameraToAnchor(Transform anchorTransform)
+    {
+        var camera = GetTargetCamera();
+        if (camera == null)
+        {
+            Debug.LogWarning("MapMaker: No camera available to align with anchor.", this);
+            return;
+        }
+
+        StoreCameraState(camera.transform);
+
+        Undo.SetTransformParent(camera.transform, anchorTransform, "Parent Camera to Anchor");
+        camera.transform.localPosition = Vector3.zero;
+        camera.transform.localRotation = Quaternion.identity;
+    }
+
+    private void StoreCameraState(Transform cameraTransform)
+    {
+        if (_cameraStateStored)
+        {
+            return;
+        }
+
+        _originalCameraParent = cameraTransform.parent;
+        _originalCameraLocalPosition = cameraTransform.localPosition;
+        _originalCameraLocalRotation = cameraTransform.localRotation;
+        _cameraStateStored = true;
+    }
+
+    private void RestoreCameraState()
+    {
+        if (!_cameraStateStored)
+        {
+            return;
+        }
+
+        var camera = GetTargetCamera();
+        if (camera == null)
+        {
+            return;
+        }
+
+        Undo.SetTransformParent(camera.transform, _originalCameraParent, "Restore Camera Parent");
+        camera.transform.localPosition = _originalCameraLocalPosition;
+        camera.transform.localRotation = _originalCameraLocalRotation;
+        _cameraStateStored = false;
     }
 #endif
 }

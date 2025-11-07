@@ -12,5 +12,6 @@ namespace Game
         bool IsValidHex(Vector2Int coordinate);
         HexData GetHexData(Vector2Int coordinate);
         HexOperator GetHexOperatorAtCoordinate(Vector2Int coordinate);
+        void GetCameraAnchor(out Vector3 position, out Quaternion rotation);
     }
 }

@@ -18,12 +18,6 @@ namespace Game
                 return;
             }
 
-            if (_glueInstance != null)
-            {
-                Destroy(_glueInstance);
-                _glueInstance = null;
-            }
-
             // Create Row transforms and instantiate hexes
             for (int x = 0; x < gridData.Width; x++)
             {
@@ -41,6 +35,7 @@ namespace Game
                     var coordinate = new Vector2Int(x, y);
 
                     var prefab = resourcePack.GetHex(cell.Type);
+
                     var instance = Summoner.CreateAsset(prefab, rowObject.transform);
                     instance.name = $"Hex_({x},{y})";
                     
@@ -63,14 +58,8 @@ namespace Game
 
         public void BuildGlue(GameObject glue)
         {
-            if (glue != null)
-            {
-                _glueInstance = Summoner.CreateAsset(glue, _gridTransform);
-                if (_glueInstance != null)
-                {
-                    _glueInstance.transform.localPosition = Vector3.zero;
-                }
-            }
+            _glueInstance = Summoner.CreateAsset(glue, _gridTransform);
+            _glueInstance.transform.localPosition = Vector3.zero;
         }
 
         public Dictionary<Vector2Int, (HexData hexData, HexOperator instance)> GetHexCache()

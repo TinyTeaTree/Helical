@@ -12,6 +12,9 @@ namespace Game
         public async UniTask BattleLaunch()
         {
             await SetupVisual();
+
+            Grid.GetCameraAnchor(out var position, out var rotation);
+            ApplyAnchor(position, rotation);
         }
 
         private async UniTask SetupVisual()
@@ -80,6 +83,13 @@ namespace Game
             }
 
             _visual.MoveCameraByDrag(dragDelta);
+        }
+
+        private void ApplyAnchor(Vector3 position, Quaternion rotation)
+        {
+            var cameraTransform = _visual.Camera.transform;
+            cameraTransform.position = position;
+            cameraTransform.rotation = rotation;
         }
     }
 }
