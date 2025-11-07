@@ -14,6 +14,7 @@ public class MapMaker : MonoBehaviour
 
 #if UNITY_EDITOR
     public GridSO Grid => _grid;
+    private GameObject _glueInstance;
 
     public void PopulateLevel()
     {
@@ -35,6 +36,7 @@ public class MapMaker : MonoBehaviour
         ClearGridInternal(parent);
 
         var gridData = new GridData(_grid.Width, _grid.Height);
+
         foreach (var hex in _grid.Cells)
         {
             gridData.SetCell(hex);
@@ -90,6 +92,14 @@ public class MapMaker : MonoBehaviour
                 Undo.DestroyObjectImmediate(rowObject);
             }
         }
+
+
+        var glue = PrefabUtility.InstantiatePrefab(_grid.GluePrefab, null) as GameObject;
+
+        Undo.RegisterCreatedObjectUndo(glue, "Create Glue Object");
+        glue.name = $"{_grid.GluePrefab.name}_Glue";
+        glue.transform.localPosition = Vector3.zero;
+        _glueInstance = glue;
     }
 
     public void ClearLevel()
@@ -97,6 +107,8 @@ public class MapMaker : MonoBehaviour
         var parent = _gridRoot != null ? _gridRoot : transform;
         Undo.RegisterFullObjectHierarchyUndo(parent.gameObject, "Clear Grid");
         ClearGridInternal(parent);
+        DestroyImmediate(_glueInstance);
+        _glueInstance = null;
     }
 
     private void ClearGridInternal(Transform parent)
@@ -106,6 +118,7 @@ public class MapMaker : MonoBehaviour
             var child = parent.GetChild(i);
             Undo.DestroyObjectImmediate(child.gameObject);
         }
+        _glueInstance = null;
     }
 #endif
 }

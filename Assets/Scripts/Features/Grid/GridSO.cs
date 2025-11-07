@@ -19,6 +19,9 @@ namespace Game
         [SerializeField]
         private int _height;
 
+        [SerializeField]
+        private GameObject _gluePrefab;
+
         public string Id 
         { 
             get => _id; 
@@ -41,6 +44,12 @@ namespace Game
         { 
             get => _cells; 
             set => _cells = value ?? new List<HexData>(); 
+        }
+
+        public GameObject GluePrefab
+        {
+            get => _gluePrefab;
+            set => _gluePrefab = value;
         }
     }
 }

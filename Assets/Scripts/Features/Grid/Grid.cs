@@ -38,43 +38,6 @@ namespace Game
             return gridData;
         }
 
-        public GridSO FromGridData(GridData gridData, string id)
-        {
-            if (gridData == null)
-            {
-                return null;
-            }
-
-            var gridSO = ScriptableObject.CreateInstance<GridSO>();
-            gridSO.Id = id;
-            gridSO.Width = gridData.Width;
-            gridSO.Height = gridData.Height;
-            
-            var cells = new System.Collections.Generic.List<HexData>();
-            
-            for (int x = 0; x < gridData.Width; x++)
-            {
-                for (int y = 0; y < gridData.Height; y++)
-                {
-                    var cell = gridData.GetCell(x, y);
-                    if (cell.Type != HexType.None)
-                    {
-                        // Ensure coordinate matches grid position
-                        var hexData = new HexData
-                        {
-                            Coordinate = new Vector2Int(x, y),
-                            Type = cell.Type
-                        };
-                        cells.Add(hexData);
-                    }
-                }
-            }
-
-            gridSO.Cells = cells;
-            
-            return gridSO;
-        }
-
         public UniTask LoadGrid(string gridId)
         {
             var gridSO = _gridResourcePack.GetGrid(gridId);
@@ -84,6 +47,7 @@ namespace Game
             Record.GridData = gridData;
 
             _visual.Build(gridData, _gridResourcePack);
+            _visual.BuildGlue(gridSO.GluePrefab);
             return UniTask.CompletedTask;
         }
 

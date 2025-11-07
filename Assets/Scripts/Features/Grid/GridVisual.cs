@@ -9,12 +9,19 @@ namespace Game
     {
         [SerializeField] private Transform _gridTransform;
         private Dictionary<Vector2Int, (HexData hexData, HexOperator instance)> _hexCache = new();
+        private GameObject _glueInstance;
 
         public void Build(GridData gridData, GridResourcePack resourcePack)
         {
             if (gridData == null || resourcePack == null)
             {
                 return;
+            }
+
+            if (_glueInstance != null)
+            {
+                Destroy(_glueInstance);
+                _glueInstance = null;
             }
 
             // Create Row transforms and instantiate hexes
@@ -50,6 +57,18 @@ namespace Game
 
                     // Cache the hex data with its instance
                     _hexCache[coordinate] = (cell, instance);
+                }
+            }
+        }
+
+        public void BuildGlue(GameObject glue)
+        {
+            if (glue != null)
+            {
+                _glueInstance = Summoner.CreateAsset(glue, _gridTransform);
+                if (_glueInstance != null)
+                {
+                    _glueInstance.transform.localPosition = Vector3.zero;
                 }
             }
         }

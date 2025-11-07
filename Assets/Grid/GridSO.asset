@@ -1816,3 +1816,4 @@ MonoBehaviour:
     Type: 1
   _width: 30
   _height: 30
+  _gluePrefab: {fileID: 4731352953195900519, guid: 73b13c449d4d349f9a142ba388385f11, type: 3}
