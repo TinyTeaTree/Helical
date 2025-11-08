@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class HudVisual : BaseVisual<Hud>
+    public class HudVisual : BaseVisual<HudFeature>
     {
         public Camera HudCamera { get; set; }
     

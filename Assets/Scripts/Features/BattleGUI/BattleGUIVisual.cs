@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Game
 {
-    public class BattleGUIVisual : BaseVisual<BattleGUI>
+    public class BattleGUIVisual : BaseVisual<BattleGUIFeature>
     {
         [SerializeField] private GameObject _gui;
         [SerializeField] private GameObject _controls;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class GridVisual : BaseVisual<Grid>
+    public class GridVisual : BaseVisual<GridFeature>
     {
         [SerializeField] private Transform _gridTransform;
         private Dictionary<Vector2Int, (HexData hexData, HexOperator instance)> _hexCache = new();

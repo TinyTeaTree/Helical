@@ -2,7 +2,7 @@ using Core;
 
 namespace Game
 {
-    public class Castle : BaseVisualFeature<CastleVisual>, ICastle
+    public class CastleFeature : BaseVisualFeature<CastleVisual>, ICastle
     {
         [Inject] public CastleRecord Record { get; set; }
     }

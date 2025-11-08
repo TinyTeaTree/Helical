@@ -2,7 +2,7 @@ using Core;
 
 namespace Game
 {
-    public class <FeatureName> : BaseVisualFeature<<FeatureName>Visual>, I<FeatureName>
+    public class <FeatureClassName> : BaseVisualFeature<<FeatureName>Visual>, I<FeatureName>
     {
         //<Extra>
     }

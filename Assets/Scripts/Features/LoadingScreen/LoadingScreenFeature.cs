@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class LoadingScreen : BaseVisualFeature<LoadingScreenVisual>, ILoadingScreen, IAppLaunchAgent
+    public class LoadingScreenFeature : BaseVisualFeature<LoadingScreenVisual>, ILoadingScreen, IAppLaunchAgent
     {
         [Inject] public LoadingScreenRecord Record { get; set; }
         [Inject] public ISummoningService Summoner { get; set; }

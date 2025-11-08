@@ -2,7 +2,7 @@ using Core;
 
 namespace Game
 {
-    public class MobsVisual : BaseVisual<Mobs>
+    public class MobsVisual : BaseVisual<MobsFeature>
     {
         
     }

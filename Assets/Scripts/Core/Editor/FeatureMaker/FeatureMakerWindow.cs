@@ -403,6 +403,7 @@ namespace CoreEditor.FeatureMaker
                 return;
             }
 
+            var featureClassName = $"{_featureName}Feature";
             var dataPath = Application.dataPath;
             var featurePath = Path.Combine(dataPath, "Scripts", "Features");
 
@@ -494,7 +495,8 @@ namespace CoreEditor.FeatureMaker
                     if (!featureExists)
                     {
                         var visualFeatureTemplate = File.ReadAllText(Path.Combine(dataPath, "Editor", "FeatureTemplate", "VisualFeature.txt"));
-                        var visualFeatureText = visualFeatureTemplate.Replace("<FeatureName>", $"{_featureName}");
+                        var visualFeatureText = visualFeatureTemplate.Replace("<FeatureClassName>", $"{featureClassName}")
+                                                                       .Replace("<FeatureName>", $"{_featureName}");
 
                         if (_withRecord)
                         {
@@ -505,7 +507,8 @@ namespace CoreEditor.FeatureMaker
                             visualFeatureText = visualFeatureText.Replace("//<Extra>", "");
                         }
 
-                        File.WriteAllText(Path.Combine(featureDirectoryPath, $"{_featureName}.cs"), visualFeatureText);
+                        var featureScriptPath = Path.Combine(featureDirectoryPath, $"{featureClassName}.cs");
+                        File.WriteAllText(featureScriptPath, visualFeatureText);
                     }
                 }
             }
@@ -514,7 +517,8 @@ namespace CoreEditor.FeatureMaker
                 if (!featureExists)
                 {
                     var featureTemplate = File.ReadAllText(Path.Combine(dataPath, "Editor", "FeatureTemplate", "Feature.txt"));
-                    var featureText = featureTemplate.Replace("<FeatureName>", $"{_featureName}");
+                    var featureText = featureTemplate.Replace("<FeatureClassName>", $"{featureClassName}")
+                                                     .Replace("<FeatureName>", $"{_featureName}");
 
                     if (_withRecord)
                     {
@@ -525,7 +529,8 @@ namespace CoreEditor.FeatureMaker
                         featureText = featureText.Replace("//<Extra>", "");
                     }
 
-                    File.WriteAllText(Path.Combine(featureDirectoryPath, $"{_featureName}.cs"), featureText);
+                    var featureScriptPath = Path.Combine(featureDirectoryPath, $"{featureClassName}.cs");
+                    File.WriteAllText(featureScriptPath, featureText);
                 }
             }
 
@@ -542,7 +547,7 @@ namespace CoreEditor.FeatureMaker
 
                     if (line.Contains("//<New Feature>"))
                     {
-                        lines.Insert(i, line.Replace("//<New Feature>", "") + $"_features.Add<I{_featureName}>(new {_featureName}());");
+                        lines.Insert(i, line.Replace("//<New Feature>", "") + $"_features.Add<I{_featureName}>(new {featureClassName}());");
                         break;
                     }
                 }

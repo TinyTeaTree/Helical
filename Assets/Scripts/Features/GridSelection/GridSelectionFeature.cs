@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace Game
 {
-    public class GridSelection : BaseFeature, IGridSelection, IBattleLaunchAgent
+    public class GridSelectionFeature : BaseFeature, IGridSelection, IBattleLaunchAgent
     {
         [Inject] public GridSelectionRecord Record { get; set; }
         [Inject] public IBattleUnits BattleUnits { get; set; }

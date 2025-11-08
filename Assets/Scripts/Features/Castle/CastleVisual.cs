@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class CastleVisual : BaseVisual<Castle>
+    public class CastleVisual : BaseVisual<CastleFeature>
     {
         
     }

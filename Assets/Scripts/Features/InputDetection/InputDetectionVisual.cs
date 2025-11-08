@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class InputDetectionVisual : BaseVisual<InputDetection>
+    public class InputDetectionVisual : BaseVisual<InputDetectionFeature>
     {
         [Header("Detection Settings")]
         [SerializeField] private float _dragThreshold = 5f; // Pixels before it's considered a drag

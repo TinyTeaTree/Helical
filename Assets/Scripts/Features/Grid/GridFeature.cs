@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class Grid : BaseVisualFeature<GridVisual>, IGrid, IAppLaunchAgent
+    public class GridFeature : BaseVisualFeature<GridVisual>, IGrid, IAppLaunchAgent
     {
         [Inject] public GridRecord Record { get; set; }
 

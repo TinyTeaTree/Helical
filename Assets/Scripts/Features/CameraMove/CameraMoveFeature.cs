@@ -5,7 +5,7 @@ using Cysharp.Threading.Tasks;
 
 namespace Game
 {
-    public class CameraMove : BaseVisualFeature<CameraMoveVisual>, ICameraMove, IBattleLaunchAgent
+    public class CameraMoveFeature : BaseVisualFeature<CameraMoveVisual>, ICameraMove, IBattleLaunchAgent
     {
         [Inject] public IGrid Grid { get; set; }
 

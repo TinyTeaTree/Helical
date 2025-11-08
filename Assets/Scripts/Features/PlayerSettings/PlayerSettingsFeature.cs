@@ -2,7 +2,7 @@ using Core;
 
 namespace Game
 {
-    public class PlayerSettings : BaseFeature, IPlayerSettings
+    public class PlayerSettingsFeature : BaseFeature, IPlayerSettings
     {
         [Inject] public PlayerSettingsRecord Record { get; set; }
         [Inject] public IPlayerSaveService PlayerSaveService { get; set; }

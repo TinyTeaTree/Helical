@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class <FeatureName>Visual : BaseVisual<<FeatureName>>
+    public class <FeatureName>Visual : BaseVisual<<FeatureClassName>>
     {
         
     }

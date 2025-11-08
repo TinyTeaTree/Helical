@@ -2,7 +2,7 @@ using Core;
 
 namespace Game
 {
-    public class <FeatureName> : BaseFeature, I<FeatureName>
+    public class <FeatureClassName> : BaseFeature, I<FeatureName>
     {
         //<Extra>
     }

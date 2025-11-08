@@ -2,7 +2,7 @@ using Core;
 
 namespace Game
 {
-    public class Mobs : BaseVisualFeature<MobsVisual>, IMobs
+    public class MobsFeature : BaseVisualFeature<MobsVisual>, IMobs
     {
         [Inject] public MobsRecord Record { get; set; }
     }

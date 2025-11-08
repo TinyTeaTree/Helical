@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class LoadingScreenVisual : BaseVisual<LoadingScreen>
+    public class LoadingScreenVisual : BaseVisual<LoadingScreenFeature>
     {
         [SerializeField] private Canvas _canvas;
         public Canvas Canvas => _canvas;

@@ -5,7 +5,7 @@ using Services;
 
 namespace Game
 {
-    public class BattleGUI : BaseVisualFeature<BattleGUIVisual>, IBattleGUI, IBattleLaunchAgent
+    public class BattleGUIFeature : BaseVisualFeature<BattleGUIVisual>, IBattleGUI, IBattleLaunchAgent
     {
         [Inject] public IGridSelection GridSelection { get; set; }
         [Inject] public ILocalConfigService ConfigService { get; set; }

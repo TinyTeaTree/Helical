@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class LobbyVisual : BaseVisual<Lobby>
+    public class LobbyVisual : BaseVisual<LobbyFeature>
     {
         [SerializeField] private CanvasGroup _cg;
         [SerializeField] private GameObject _options;

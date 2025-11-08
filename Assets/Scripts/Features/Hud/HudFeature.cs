@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class Hud : BaseVisualFeature<HudVisual>, IHud, IAppLaunchAgent
+    public class HudFeature : BaseVisualFeature<HudVisual>, IHud, IAppLaunchAgent
     {
         public bool IsReady { get; private set; }
         public Camera HudCamera => _visual?.HudCamera;

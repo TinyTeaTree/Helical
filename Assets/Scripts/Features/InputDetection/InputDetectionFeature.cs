@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 
 namespace Game
 {
-    public class InputDetection : BaseVisualFeature<InputDetectionVisual>, IInputDetection, IBattleLaunchAgent
+    public class InputDetectionFeature : BaseVisualFeature<InputDetectionVisual>, IInputDetection, IBattleLaunchAgent
     {
         [Inject] public InputDetectionRecord Record { get; set; }
         [Inject] public IGridSelection GridSelection { get; set; }

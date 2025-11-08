@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class Lobby : BaseVisualFeature<LobbyVisual>, ILobby, IAppLaunchAgent, ILoggedInAgent
+    public class LobbyFeature : BaseVisualFeature<LobbyVisual>, ILobby, IAppLaunchAgent, ILoggedInAgent
     {
         [Inject] public LobbyRecord Record { get; set; }
         [Inject] public IHud Hud { get; set; }

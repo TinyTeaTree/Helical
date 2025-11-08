@@ -23,20 +23,20 @@ namespace Game
 
         protected override void AddFeatures()
         {
-            _features.Add<ILoadingScreen>(new LoadingScreen());
-            _features.Add<IHud>(new Hud());
-            _features.Add<ILobby>(new Lobby());
-            _features.Add<IArena>(new Arena());
-            _features.Add<IGrid>(new Grid());
-            _features.Add<IMobs>(new Mobs());
-            _features.Add<IPlayerAccount>(new PlayerAccount());
-            _features.Add<IPlayerSettings>(new PlayerSettings());
-            _features.Add<ICameraMove>(new CameraMove());
-            _features.Add<IBattleUnits>(new BattleUnits());
-            _features.Add<IGridSelection>(new GridSelection());
-            _features.Add<IBattleGUI>(new BattleGUI());
-            _features.Add<IInputDetection>(new InputDetection());
-            _features.Add<ICastle>(new Castle());
+            _features.Add<ILoadingScreen>(new LoadingScreenFeature());
+            _features.Add<IHud>(new HudFeature());
+            _features.Add<ILobby>(new LobbyFeature());
+            _features.Add<IArena>(new ArenaFeature());
+            _features.Add<IGrid>(new GridFeature());
+            _features.Add<IMobs>(new MobsFeature());
+            _features.Add<IPlayerAccount>(new PlayerAccountFeature());
+            _features.Add<IPlayerSettings>(new PlayerSettingsFeature());
+            _features.Add<ICameraMove>(new CameraMoveFeature());
+            _features.Add<IBattleUnits>(new BattleUnitsFeature());
+            _features.Add<IGridSelection>(new GridSelectionFeature());
+            _features.Add<IBattleGUI>(new BattleGUIFeature());
+            _features.Add<IInputDetection>(new InputDetectionFeature());
+            _features.Add<ICastle>(new CastleFeature());
             //<New Feature>
         }
 

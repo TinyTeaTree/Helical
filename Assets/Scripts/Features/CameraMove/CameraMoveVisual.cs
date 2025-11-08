@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class CameraMoveVisual : BaseVisual<CameraMove>
+    public class CameraMoveVisual : BaseVisual<CameraMoveFeature>
     {
         [Header("References")]
         [SerializeField] private CameraLerpToHex _lerpToHex;
@@ -183,7 +183,7 @@ namespace Game
 
         private void CalculateGridBounds(IGrid grid)
         {
-            if (grid is Grid gridFeature)
+            if (grid is GridFeature gridFeature)
             {
                 var hexCache = gridFeature.Visual.GetHexCache();
                 

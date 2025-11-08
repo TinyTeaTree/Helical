@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class BattleUnits : BaseVisualFeature<BattleUnitsVisual>, IBattleUnits, IAppLaunchAgent, IBattleLaunchAgent
+    public class BattleUnitsFeature : BaseVisualFeature<BattleUnitsVisual>, IBattleUnits, IAppLaunchAgent, IBattleLaunchAgent
     {
         [Inject] public BattleUnitsRecord Record { get; set; }
         [Inject] public ILocalConfigService ConfigService { get; set; }

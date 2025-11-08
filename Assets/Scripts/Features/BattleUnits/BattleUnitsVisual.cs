@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class BattleUnitsVisual : BaseVisual<BattleUnits>
+    public class BattleUnitsVisual : BaseVisual<BattleUnitsFeature>
     {
         private Dictionary<Vector2Int, BaseBattleUnit> _unitsByCoordinate = new Dictionary<Vector2Int, BaseBattleUnit>();
 
