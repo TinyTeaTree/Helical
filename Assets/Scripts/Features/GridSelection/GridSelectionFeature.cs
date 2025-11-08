@@ -14,8 +14,10 @@ namespace Game
         [Inject] public IBattleGUI BattleGUI { get; set; }
         [Inject] public ICameraMove CameraMove { get; set; }
         [Inject] public IGrid Grid { get; set; }
+        [Inject] public ICastle Castle { get; set; }
         
         private HexOperator _currentlySelectedHex;
+        private CastleOperator _currentlySelectedCastle;
         private Camera _camera;
 
         public async UniTask BattleLaunch()
@@ -38,6 +40,13 @@ namespace Game
             {
                 _currentlySelectedHex.SetNormalState();
                 _currentlySelectedHex = null;
+            }
+
+            // Deselect current castle when halting
+            if (_currentlySelectedCastle != null)
+            {
+                _currentlySelectedCastle.SetNormalState();
+                _currentlySelectedCastle = null;
             }
             
             Record.ClearSelection();
@@ -69,25 +78,41 @@ namespace Game
             
             // Check for Hex layer first
             int hexLayerMask = LayerMask.GetMask("Hex");
-            
+
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, hexLayerMask))
             {
                 // Check if we hit a hex with detection script
                 HexDetection hexDetection = hit.collider.GetComponent<HexDetection>();
-                
+
                 if (hexDetection != null)
                 {
                     OnHexClicked(hexDetection.Operator);
                     return;
                 }
             }
-            
+
+            // Check for Castle layer
+            int castleLayerMask = LayerMask.GetMask("Castle");
+
+            if (Physics.Raycast(ray, out RaycastHit castleHit, Mathf.Infinity, castleLayerMask))
+            {
+                // Check if we hit a castle with CastleOperator
+                CastleOperator castleOperator = castleHit.collider.GetComponent<CastleOperator>();
+
+                if (castleOperator != null)
+                {
+                    OnCastleClicked(castleOperator);
+                    return;
+                }
+            }
+
             // Check for Bottom layer to deselect
             int bottomLayerMask = LayerMask.GetMask("Bottom");
-            
+
             if (Physics.Raycast(ray, out RaycastHit bottomHit, Mathf.Infinity, bottomLayerMask))
             {
                 DeselectHex();
+                DeselectCastle();
             }
         }
         
@@ -128,30 +153,30 @@ namespace Game
         public void OnHexClicked(HexOperator hexOperator)
         {
             Vector2Int coordinate = hexOperator.Coordinate;
-            
+
             // Check if we're in Attack mode
             if (Record.CurrentAbilityMode == AbilityMode.Attack)
             {
                 HandleAttackMode(coordinate);
                 return;
             }
-            
+
             // Check if we're in Move mode
             if (Record.CurrentAbilityMode == AbilityMode.Move)
             {
                 HandleMoveMode(coordinate);
                 return;
             }
-            
+
             // Check if we're in Rotate mode
             if (Record.CurrentAbilityMode == AbilityMode.Rotate)
             {
                 HandleRotateMode(coordinate);
                 return;
             }
-            
+
             SelectHex(hexOperator, coordinate);
-            
+
             var unitData = BattleUnits.GetUnitData(coordinate);
             if (unitData != null)
             {
@@ -160,8 +185,55 @@ namespace Game
 
             // Play select sound
             DJ.Play(DJ.SelectOn_Sound);
-            
+
             Notebook.NoteData($"Selected hex at coordinate: {coordinate}");
+        }
+
+        public void OnCastleClicked(CastleOperator castleOperator)
+        {
+            Vector2Int coordinate = castleOperator.Coordinate;
+
+            // Check if we're in Attack mode
+            if (Record.CurrentAbilityMode == AbilityMode.Attack)
+            {
+                HandleAttackMode(coordinate);
+                return;
+            }
+
+            // Check if we're in Move mode
+            if (Record.CurrentAbilityMode == AbilityMode.Move)
+            {
+                // Select the castle normally, but clear the ability mode to prevent bugs
+                SelectCastle(castleOperator, coordinate);
+                Record.ClearAbilityMode();
+
+                // Lerp camera to castle coordinate
+                CameraMove.LerpToCoordinate(coordinate);
+
+                // Play select sound
+                DJ.Play(DJ.SelectOn_Sound);
+
+                Notebook.NoteData($"Selected castle at coordinate: {coordinate} (cleared Move mode)");
+                return;
+            }
+
+            // Check if we're in Rotate mode
+            if (Record.CurrentAbilityMode == AbilityMode.Rotate)
+            {
+                HandleRotateMode(coordinate);
+                return;
+            }
+
+            // Normal selection mode
+            SelectCastle(castleOperator, coordinate);
+
+            // Lerp camera to castle coordinate
+            CameraMove.LerpToCoordinate(coordinate);
+
+            // Play select sound
+            DJ.Play(DJ.SelectOn_Sound);
+
+            Notebook.NoteData($"Selected castle at coordinate: {coordinate}");
         }
 
         private void SelectHex(HexOperator hexOperator, Vector2Int coordinate)
@@ -172,17 +244,24 @@ namespace Game
             {
                 _currentlySelectedHex.SetNormalState();
             }
-            
+
+            // Deselect castle if selecting hex
+            if (_currentlySelectedCastle != null)
+            {
+                _currentlySelectedCastle.SetNormalState();
+                _currentlySelectedCastle = null;
+            }
+
             // Select new hex
             hexOperator.SetGlowingState();
-            
+
             // Update tracking
             _currentlySelectedHex = hexOperator;
             Record.SelectedCoordinate = coordinate;
-            
+
             // Update battle unit selection based on the selected coordinate
             BattleUnits.UpdateUnitSelection(coordinate);
-            
+
             // Check if there's a unit at this coordinate via BattleUnits API
             var unitData = BattleUnits.GetUnitData(coordinate);
             if (unitData != null)
@@ -192,6 +271,42 @@ namespace Game
             else
             {
                 BattleGUI.HideUnitSelection();
+            }
+        }
+
+        private void SelectCastle(CastleOperator castleOperator, Vector2Int coordinate)
+        {
+            // Deselect previous castle if there is one
+            if (_currentlySelectedCastle != null)
+            {
+                _currentlySelectedCastle.SetNormalState();
+            }
+
+            // Deselect hex if selecting castle
+            if (_currentlySelectedHex != null)
+            {
+                _currentlySelectedHex.SetNormalState();
+                _currentlySelectedHex = null;
+            }
+
+            // Select new castle
+            castleOperator.SetGlowingState();
+
+            // Update tracking
+            _currentlySelectedCastle = castleOperator;
+            Record.SelectedCoordinate = coordinate;
+
+            // Clear battle unit selection since we selected a castle
+            BattleUnits.UpdateUnitSelection(null);
+            BattleGUI.HideUnitSelection();
+        }
+
+        private void DeselectCastle()
+        {
+            if (_currentlySelectedCastle != null)
+            {
+                _currentlySelectedCastle.SetNormalState();
+                _currentlySelectedCastle = null;
             }
         }
 
