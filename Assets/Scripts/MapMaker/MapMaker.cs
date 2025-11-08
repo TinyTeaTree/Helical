@@ -58,6 +58,7 @@ public class MapMaker : MonoBehaviour
                 var prefab = _resourcePack.GetHex(cell.Type);
 
                 var instance = PrefabUtility.InstantiatePrefab(prefab.gameObject, rowObject.transform) as GameObject;
+                instance.GetComponent<HexOperator>().SetNormalState();
 
                 instance.name = $"Hex_({x},{y})";
 

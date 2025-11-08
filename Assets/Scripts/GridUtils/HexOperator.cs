@@ -11,17 +11,17 @@ namespace Game
         [SerializeField] private GameObject outline;
         [SerializeField] private Transform mesh;
 
-        private Vector3 _normalPosition;
-        private Vector3 _elevatedPosition;
+        //private Vector3 _normalPosition;
+        //private Vector3 _elevatedPosition;
         private bool _isGlowing;
         private Vector2Int _coordinate;
 
-        private const float ElevationHeight = 0.1f;
+        //private const float ElevationHeight = 0.1f;
 
         private void Awake()
         {
-            _normalPosition = mesh.localPosition;
-            _elevatedPosition = _normalPosition + new Vector3(0, ElevationHeight, 0);
+            //_normalPosition = mesh.localPosition;
+            //_elevatedPosition = _normalPosition + new Vector3(0, ElevationHeight, 0);
             
             // Start in normal state
             SetNormalState();
@@ -34,7 +34,7 @@ namespace Game
         {
             _isGlowing = false;
             outline.SetActive(false);
-            mesh.localPosition = _normalPosition;
+            //mesh.localPosition = _normalPosition;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Game
         {
             _isGlowing = true;
             outline.SetActive(true);
-            mesh.localPosition = _elevatedPosition;
+            //mesh.localPosition = _elevatedPosition;
         }
 
         /// <summary>
