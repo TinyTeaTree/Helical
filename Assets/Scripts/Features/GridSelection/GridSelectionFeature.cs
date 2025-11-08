@@ -265,23 +265,18 @@ namespace Game
         public void DeselectHex()
         {
             // Only deselect if something is actually selected
-            if (_currentlySelectedHex == null)
-                return;
-            
-            // Deselect the hex
-            _currentlySelectedHex.SetNormalState();
-            _currentlySelectedHex = null;
-            
-            // Clear selection data
+            if (_currentlySelectedHex != null)
+            {
+                _currentlySelectedHex.SetNormalState();
+                _currentlySelectedHex = null;
+            }
+
             Record.ClearSelection();
             
-            // Clear battle unit selection
             BattleUnits.UpdateUnitSelection(null);
             
-            // Hide the battle GUI
             BattleGUI.HideUnitSelection();
             
-            // Play deselect sound
             DJ.Play(DJ.SelectOff_Sound);
             
             Notebook.NoteData("Deselected hex");

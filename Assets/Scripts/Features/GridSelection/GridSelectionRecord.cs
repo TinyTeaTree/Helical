@@ -20,6 +20,7 @@ namespace Game
         public void ClearSelection()
         {
             SelectedCoordinate = null;
+            CurrentAbilityMode = AbilityMode.None;
         }
         
         /// <summary>
