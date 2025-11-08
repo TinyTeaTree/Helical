@@ -10,6 +10,7 @@ public class MapMaker : MonoBehaviour
 {
     [SerializeField] private GridSO _grid;
     [SerializeField] private GridResourcePack _resourcePack;
+    [SerializeField] private CastleAssetPack _castleAssetPack;
     [SerializeField] private Transform _gridRoot;
     [SerializeField] private Camera _sceneCamera;
     [SerializeField] private HexOperator _hexNone;
@@ -55,6 +56,15 @@ public class MapMaker : MonoBehaviour
             if (!rowHasChildren)
             {
                 Undo.DestroyObjectImmediate(rowObject);
+            }
+        }
+
+        // Spawn castles
+        if (gridData.Castles != null)
+        {
+            foreach (var castleData in gridData.Castles)
+            {
+                CreateCastleInstance(castleData, parent);
             }
         }
 
@@ -145,6 +155,30 @@ public class MapMaker : MonoBehaviour
         AttachEditorHexOperator(instance, type);
 
         return instance;
+    }
+
+    private void CreateCastleInstance(CastleData castleData, Transform parent)
+    {
+        var worldPosition = castleData.Coordinate.ToWorldXZ();
+        var rotation = castleData.Direction.ToRotation();
+
+        var prefab = _castleAssetPack.GetCastle(castleData.CastleType);
+        if (prefab == null)
+        {
+            Debug.LogWarning($"Castle prefab not found for type: {castleData.CastleType}");
+            return;
+        }
+
+        var instance = PrefabUtility.InstantiatePrefab(prefab.gameObject, parent) as GameObject;
+        Undo.RegisterCreatedObjectUndo(instance, "Create Castle");
+
+        instance.name = $"Castle_{castleData.CastleType}_{castleData.Coordinate.x}_{castleData.Coordinate.y}";
+        instance.transform.localPosition = new Vector3(worldPosition.x, 0f, worldPosition.y);
+        instance.transform.localRotation = rotation;
+
+        var castleOperator = instance.GetComponent<CastleOperator>();
+        castleOperator.Initialize(castleData.Coordinate);
+        castleOperator.SetNormalState();
     }
 
     private void AttachEditorHexOperator(GameObject instance, HexType hexType)
