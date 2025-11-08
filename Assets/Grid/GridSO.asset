@@ -174,7 +174,7 @@ MonoBehaviour:
     - Coordinate: {x: 17, y: 2}
       Type: 3
     - Coordinate: {x: 18, y: 2}
-      Type: 2
+      Type: 1
     - Coordinate: {x: 19, y: 2}
       Type: 1
     - Coordinate: {x: 20, y: 2}
@@ -242,7 +242,7 @@ MonoBehaviour:
     - Coordinate: {x: 21, y: 3}
       Type: 1
     - Coordinate: {x: 22, y: 3}
-      Type: 1
+      Type: 0
     - Coordinate: {x: 23, y: 3}
       Type: 1
     - Coordinate: {x: 24, y: 3}
