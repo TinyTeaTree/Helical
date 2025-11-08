@@ -75,45 +75,49 @@ namespace Game
             
             // Create raycast from camera through mouse position
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-            
-            // Check for Hex layer first
-            int hexLayerMask = LayerMask.GetMask("Hex");
 
-            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, hexLayerMask))
+            // Single raycast to hit all layers and get the topmost object
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
             {
-                // Check if we hit a hex with detection script
-                HexDetection hexDetection = hit.collider.GetComponent<HexDetection>();
+                // Check what layer the hit object is on
+                int hitLayer = hit.collider.gameObject.layer;
 
-                if (hexDetection != null)
+                // Check for Castle layer first (since castles are on top of hexes)
+                if (hitLayer == LayerMask.NameToLayer("Castle"))
                 {
-                    OnHexClicked(hexDetection.Operator);
+                    // Check if we hit a castle with CastleOperator
+                    CastleOperator castleOperator = hit.collider.GetComponent<CastleOperator>();
+
+                    if (castleOperator != null)
+                    {
+                        OnCastleClicked(castleOperator);
+                        return;
+                    }
+                }
+                // Check for Hex layer
+                else if (hitLayer == LayerMask.NameToLayer("Hex"))
+                {
+                    // Check if we hit a hex with detection script
+                    HexDetection hexDetection = hit.collider.GetComponent<HexDetection>();
+
+                    if (hexDetection != null)
+                    {
+                        OnHexClicked(hexDetection.Operator);
+                        return;
+                    }
+                }
+                // Check for Bottom layer to deselect
+                else if (hitLayer == LayerMask.NameToLayer("Bottom"))
+                {
+                    DeselectHex();
+                    DeselectCastle();
                     return;
                 }
             }
 
-            // Check for Castle layer
-            int castleLayerMask = LayerMask.GetMask("Castle");
-
-            if (Physics.Raycast(ray, out RaycastHit castleHit, Mathf.Infinity, castleLayerMask))
-            {
-                // Check if we hit a castle with CastleOperator
-                CastleOperator castleOperator = castleHit.collider.GetComponent<CastleOperator>();
-
-                if (castleOperator != null)
-                {
-                    OnCastleClicked(castleOperator);
-                    return;
-                }
-            }
-
-            // Check for Bottom layer to deselect
-            int bottomLayerMask = LayerMask.GetMask("Bottom");
-
-            if (Physics.Raycast(ray, out RaycastHit bottomHit, Mathf.Infinity, bottomLayerMask))
-            {
-                DeselectHex();
-                DeselectCastle();
-            }
+            // If no hit at all, deselect everything
+            DeselectHex();
+            DeselectCastle();
         }
         
         private bool IsPointerOverUI()
