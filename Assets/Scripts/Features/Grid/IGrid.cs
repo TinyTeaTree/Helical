@@ -6,11 +6,12 @@ namespace Game
 {
     public interface IGrid : IFeature
     {
-        GridVisual Visual { get; }
+
         UniTask LoadGrid(string gridId);
+        GridData GetGridData();
+        GridVisual GetGridVisual();
         Vector3 GetWorldPosition(Vector2Int coordinate);
         bool IsValidHex(Vector2Int coordinate);
-        HexData GetHexData(Vector2Int coordinate);
         HexOperator GetHexOperatorAtCoordinate(Vector2Int coordinate);
         void GetCameraAnchor(out Vector3 position, out Quaternion rotation);
     }

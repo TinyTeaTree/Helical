@@ -10,6 +10,7 @@ namespace Services
         public const string LoadingScreenStart = "Loading Screens/Loading Screen Start";
         public const string BattleUnitsAssetPack = "Packs/BattleUnitsAssetPack";
         public const string GridResourcePack = "Packs/GridResourcePack";
+        public const string CastleAssetPack = "Packs/CastleAssetPack";
         public const string BattleGUIVisual = "Visuals/BattleGUI Visual";
         public const string CameraMoveVisual = "Visuals/Camera Move Visual";
         public const string GridVisual = "Visuals/Grid Visual";

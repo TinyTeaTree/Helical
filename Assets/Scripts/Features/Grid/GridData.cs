@@ -3,11 +3,20 @@ using UnityEngine;
 namespace Game
 {
     [System.Serializable]
+    public struct CastleData
+    {
+        public Vector2Int Coordinate;
+        public HexDirection Direction;
+        public string CastleType;
+    }
+
+    [System.Serializable]
     public class GridData
     {
         public int Width;
         public int Height;
         public HexData[] Cells;
+        public CastleData[] Castles;
 
         public void SetCell(HexData hex)
         {

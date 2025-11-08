@@ -190,7 +190,7 @@ namespace Game
         {
             if (grid is GridFeature gridFeature)
             {
-                var hexCache = gridFeature.Visual.GetHexCache();
+                var hexCache = gridFeature.GetGridVisual().GetHexCache();
                 
                 if (hexCache == null || hexCache.Count == 0)
                 {

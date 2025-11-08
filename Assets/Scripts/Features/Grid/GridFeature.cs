@@ -12,8 +12,6 @@ namespace Game
 
         private GridResourcePack _gridResourcePack;
         
-        public GridVisual Visual => _visual;
-        
         public async UniTask AppLaunch()
         {
             await CreateVisual();
@@ -41,6 +39,16 @@ namespace Game
             return new Vector3(worldXZ.x, 0f, worldXZ.y);
         }
 
+        public GridData GetGridData()
+        {
+            return Record.GridData;
+        }
+
+        public GridVisual GetGridVisual()
+        {
+            return _visual;
+        }
+
         public bool IsValidHex(Vector2Int coordinate)
         {
             if (Record.GridData == null)
@@ -58,23 +66,6 @@ namespace Game
             // Check if hex type is not None (empty)
             var hexData = Record.GridData.GetCell(coordinate);
             return hexData.Type != HexType.None;
-        }
-
-        public HexData GetHexData(Vector2Int coordinate)
-        {
-            if (Record.GridData == null)
-            {
-                return new HexData { Type = HexType.None };
-            }
-
-            // Check bounds
-            if (coordinate.x < 0 || coordinate.x >= Record.GridData.Width ||
-                coordinate.y < 0 || coordinate.y >= Record.GridData.Height)
-            {
-                return new HexData { Type = HexType.None };
-            }
-
-            return Record.GridData.GetCell(coordinate);
         }
         
         public HexOperator GetHexOperatorAtCoordinate(Vector2Int coordinate)

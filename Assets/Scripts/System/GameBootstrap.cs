@@ -50,6 +50,7 @@ namespace Game
             _factories.Add(typeof(BattleGUIVisual), new ResourceFactory(Addresses.BattleGUIVisual));
             _factories.Add(typeof(CameraMoveVisual), new ResourceFactory(Addresses.CameraMoveVisual));
             _factories.Add(typeof(InputDetectionVisual), new GenerateVisualFactory());
+            _factories.Add(typeof(CastleVisual), new GenerateVisualFactory());
         }
 
         protected override void AddAgents()
@@ -131,6 +132,7 @@ namespace Game
             //Add Provider for each Asset Pack type
             summoner.SetProvider(typeof(GridResourcePack), new ResourceAssetPackProvider(Addresses.GridResourcePack));
             summoner.SetProvider(typeof(BattleUnitsAssetPack), new ResourceAssetPackProvider(Addresses.BattleUnitsAssetPack));
+            summoner.SetProvider(typeof(CastleAssetPack), new ResourceAssetPackProvider(Addresses.CastleAssetPack));
         }
 
         protected override void StartGame()
