@@ -11,18 +11,10 @@ namespace Game.Editor
     public class GridSOEditor : UnityEditor.Editor
     {
         private GridSO _target;
-        private SerializedProperty _idProperty;
-        private SerializedProperty _cellsProperty;
-        private SerializedProperty _widthProperty;
-        private SerializedProperty _heightProperty;
 
         private void OnEnable()
         {
             _target = (GridSO)target;
-            _idProperty = serializedObject.FindProperty("_id");
-            _cellsProperty = serializedObject.FindProperty("_cells");
-            _widthProperty = serializedObject.FindProperty("_width");
-            _heightProperty = serializedObject.FindProperty("_height");
         }
 
         public override void OnInspectorGUI()
@@ -55,10 +47,10 @@ namespace Game.Editor
             }
 
             Undo.RecordObject(_target, "Random Seed Grid");
-            
-            var cells = new List<HexData>();
-            var width = _widthProperty.intValue;
-            var height = _heightProperty.intValue;
+
+            var data = _target.GetData();
+            var width = data.Width;
+            var height = data.Height;
 
             if (width <= 0 || height <= 0)
             {
@@ -66,12 +58,14 @@ namespace Game.Editor
                 return;
             }
 
+            data.Cells = new HexData[width * height];
+
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
                     var hexType = availableTypes[Random.Range(0, availableTypes.Count)];
-                    cells.Add(new HexData
+                    data.SetCell(new HexData
                     {
                         Coordinate = new Vector2Int(x, y),
                         Type = hexType
@@ -79,7 +73,6 @@ namespace Game.Editor
                 }
             }
 
-            _target.Cells = cells;
             EditorUtility.SetDirty(_target);
         }
 
@@ -101,10 +94,10 @@ namespace Game.Editor
             }
 
             Undo.RecordObject(_target, "Perlin Noise Seed Grid");
-            
-            var cells = new List<HexData>();
-            var width = _widthProperty.intValue;
-            var height = _heightProperty.intValue;
+
+            var data = _target.GetData();
+            var width = data.Width;
+            var height = data.Height;
 
             if (width <= 0 || height <= 0)
             {
@@ -115,12 +108,14 @@ namespace Game.Editor
             float scale = 0.1f; // Adjust this to change the noise frequency
             float threshold = 0.3f; // Below this threshold, use None, above use terrain
 
+            data.Cells = new HexData[width * height];
+
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
                     float noiseValue = Mathf.PerlinNoise(x * scale, y * scale);
-                    
+
                     HexType hexType;
                     if (noiseValue < threshold)
                     {
@@ -135,7 +130,7 @@ namespace Game.Editor
                         hexType = terrainTypes[typeIndex];
                     }
 
-                    cells.Add(new HexData
+                    data.SetCell(new HexData
                     {
                         Coordinate = new Vector2Int(x, y),
                         Type = hexType
@@ -143,7 +138,6 @@ namespace Game.Editor
                 }
             }
 
-            _target.Cells = cells;
             EditorUtility.SetDirty(_target);
         }
 

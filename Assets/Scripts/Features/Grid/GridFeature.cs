@@ -21,37 +21,14 @@ namespace Game
             _gridResourcePack = await Summoner.SummoningService.LoadAssetPack<GridResourcePack>();
         }
 
-        public GridData ToGridData(GridSO gridSO)
-        {
-            if (gridSO == null)
-            {
-                return null;
-            }
-
-            var gridData = new GridData(gridSO.Width, gridSO.Height, gridSO.Id);
-            
-            foreach (var hexData in gridSO.Cells)
-            {
-                gridData.SetCell(hexData);
-            }
-
-            return gridData;
-        }
-
         public UniTask LoadGrid(string gridId)
         {
-            var gridSO = _gridResourcePack.GetGrid(gridId);
-            if (gridSO == null)
-            {
-                Notebook.NoteError($"GridSO with id {gridId} not found.");
-                Record.GridData = null;
-                return UniTask.CompletedTask;
-            }
+            var gridSO = UnityEngine.Object.Instantiate(_gridResourcePack.GetGrid(gridId)); //Duplicate SO to not modify Resources
 
-            var gridData = ToGridData(gridSO);
+            var gridData = gridSO.GetData();
 
-            // Store grid data in record for later access
             Record.GridData = gridData;
+            Record.GridId = gridId;
 
             _visual.Build(gridData, _gridResourcePack);
             _visual.BuildGlue(gridSO.GluePrefab);
@@ -107,7 +84,7 @@ namespace Game
 
         public void GetCameraAnchor(out Vector3 position, out Quaternion rotation)
         {
-            var gridSO = _gridResourcePack.GetGrid(Record.GridData.Id);
+            var gridSO = _gridResourcePack.GetGrid(Record.GridId);
             position = gridSO.CameraAnchorPrefab.transform.position;
             rotation = gridSO.CameraAnchorPrefab.transform.rotation;
         }

@@ -2,34 +2,31 @@ using UnityEngine;
 
 namespace Game
 {
+    [System.Serializable]
     public class GridData
     {
-        public string Id;
-        public readonly int Width;
-        public readonly int Height;
-        private readonly HexData[,] Cells;
-
-        public GridData(int width, int height, string id)
-        {
-            Width = width;
-            Height = height;
-            Cells = new HexData[width, height];
-            Id = id;
-        }
+        public int Width;
+        public int Height;
+        public HexData[] Cells;
 
         public void SetCell(HexData hex)
         {
-            Cells[hex.Coordinate.x, hex.Coordinate.y] = hex;
+            Cells[GetIndex(hex.Coordinate.x, hex.Coordinate.y)] = hex;
         }
 
         public HexData GetCell(Vector2Int coordinate)
         {
-            return Cells[coordinate.x, coordinate.y];
+            return Cells[GetIndex(coordinate.x, coordinate.y)];
         }
         
         public HexData GetCell(int x, int y)
         {
-            return Cells[x, y];
+            return Cells[GetIndex(x, y)];
+        }
+
+        private int GetIndex(int x, int y)
+        {
+            return y * Width + x;
         }
     }
 }

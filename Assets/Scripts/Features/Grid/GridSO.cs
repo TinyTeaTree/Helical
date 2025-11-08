@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using Core;
 using UnityEngine;
 
@@ -10,14 +10,8 @@ namespace Game
         [SerializeField]
         private string _id;
 
-        [SerializeField]
-        private List<HexData> _cells = new List<HexData>();
-
-        [SerializeField]
-        private int _width;
-
-        [SerializeField]
-        private int _height;
+        [SerializeField] 
+        private GridData _data;
 
         [SerializeField]
         private GameObject _gluePrefab;
@@ -33,20 +27,23 @@ namespace Game
         
         public int Width 
         { 
-            get => _width; 
-            set => _width = value; 
+            get => _data.Width; 
+            set => _data.Width = value; 
         }
         
         public int Height 
         { 
-            get => _height; 
-            set => _height = value; 
+            get => _data.Height; 
+            set => _data.Height = value; 
         }
         
-        public List<HexData> Cells 
-        { 
-            get => _cells; 
-            set => _cells = value ?? new List<HexData>(); 
+        public HexData[] Cells
+        {
+            get => _data.Cells;
+            set
+            {
+                _data.Cells = value ?? Array.Empty<HexData>();
+            }
         }
 
         public GameObject GluePrefab
@@ -59,6 +56,17 @@ namespace Game
         {
             get => _cameraAnchorPrefab;
             set => _cameraAnchorPrefab = value;
+        }
+
+        public GridData GetData()
+        {
+            return _data;
+        }
+
+        private bool IsWithinBounds(Vector2Int coordinate)
+        {
+            return coordinate.x >= 0 && coordinate.x < Width &&
+                   coordinate.y >= 0 && coordinate.y < Height;
         }
     }
 }

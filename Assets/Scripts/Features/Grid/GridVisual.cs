@@ -13,11 +13,6 @@ namespace Game
 
         public void Build(GridData gridData, GridResourcePack resourcePack)
         {
-            if (gridData == null || resourcePack == null)
-            {
-                return;
-            }
-
             // Create Row transforms and instantiate hexes
             for (int x = 0; x < gridData.Width; x++)
             {

@@ -31,26 +31,8 @@ public class MapMaker : MonoBehaviour
         RestoreCameraState();
 
         ClearGridInternal(parent);
-
-        var gridData = new GridData(_grid.Width, _grid.Height, _grid.Id);
-
-        for (int x = 0; x < gridData.Width; x++)
-        {
-            for (int y = 0; y < gridData.Height; y++)
-            {
-                var coordinate = new Vector2Int(x, y);
-                gridData.SetCell(new HexData
-                {
-                    Coordinate = coordinate,
-                    Type = HexType.None
-                });
-            }
-        }
-
-        foreach (var hex in _grid.Cells)
-        {
-            gridData.SetCell(hex);
-        }
+        
+        var gridData = _grid.GetData();
 
         for (int x = 0; x < gridData.Width; x++)
         {
@@ -215,22 +197,13 @@ public class MapMaker : MonoBehaviour
     {
         var cells = _grid.Cells;
         var index = -1;
-        for (int i = 0; i < cells.Count; i++)
+        for (int i = 0; i < cells.Length; i++)
         {
             if (cells[i].Coordinate == coordinate)
             {
                 index = i;
                 break;
             }
-        }
-
-        if (newType == HexType.None)
-        {
-            if (index >= 0)
-            {
-                cells.RemoveAt(index);
-            }
-            return;
         }
 
         var updated = new HexData
@@ -245,7 +218,7 @@ public class MapMaker : MonoBehaviour
         }
         else
         {
-            cells.Add(updated);
+            //cells.Add(updated); //TODO: Fixe me
         }
     }
 
