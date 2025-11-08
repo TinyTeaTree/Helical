@@ -84,15 +84,20 @@ namespace Game
 
         private Vector3 CalculateEdgeScrollDirection()
         {
+            if (Application.isEditor)
+            {
+                return Vector3.zero;
+            }
+
             Vector3 direction = Vector3.zero;
             Vector3 mousePos = Input.mousePosition;
-            
+
             float screenWidth = Screen.width;
             float screenHeight = Screen.height;
-            
+
             float edgeThresholdPixelsX = screenWidth * _edgeScrollThreshold;
             float edgeThresholdPixelsY = screenHeight * _edgeScrollThreshold;
-            
+
             // Check left edge
             if (mousePos.x < edgeThresholdPixelsX)
             {
@@ -105,7 +110,7 @@ namespace Game
                 float normalizedDistance = (mousePos.x - (screenWidth - edgeThresholdPixelsX)) / edgeThresholdPixelsX;
                 direction += Vector3.right * normalizedDistance;
             }
-            
+
             // Check bottom edge
             if (mousePos.y < edgeThresholdPixelsY)
             {
@@ -118,7 +123,7 @@ namespace Game
                 float normalizedDistance = (mousePos.y - (screenHeight - edgeThresholdPixelsY)) / edgeThresholdPixelsY;
                 direction += Vector3.forward * normalizedDistance;
             }
-            
+
             return direction;
         }
 
