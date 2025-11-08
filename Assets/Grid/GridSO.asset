@@ -503,7 +503,7 @@ MonoBehaviour:
   - Coordinate: {x: 8, y: 3}
     Type: 0
   - Coordinate: {x: 8, y: 4}
-    Type: 0
+    Type: 2
   - Coordinate: {x: 8, y: 5}
     Type: 0
   - Coordinate: {x: 8, y: 6}
@@ -558,12 +558,10 @@ MonoBehaviour:
     Type: 1
   - Coordinate: {x: 9, y: 1}
     Type: 1
-  - Coordinate: {x: 9, y: 2}
-    Type: 1
   - Coordinate: {x: 9, y: 3}
     Type: 1
   - Coordinate: {x: 9, y: 4}
-    Type: 0
+    Type: 2
   - Coordinate: {x: 9, y: 5}
     Type: 0
   - Coordinate: {x: 9, y: 6}
@@ -1035,9 +1033,9 @@ MonoBehaviour:
   - Coordinate: {x: 16, y: 29}
     Type: 1
   - Coordinate: {x: 17, y: 0}
-    Type: 4
+    Type: 5
   - Coordinate: {x: 17, y: 1}
-    Type: 4
+    Type: 5
   - Coordinate: {x: 17, y: 2}
     Type: 2
   - Coordinate: {x: 17, y: 3}
@@ -1097,7 +1095,7 @@ MonoBehaviour:
   - Coordinate: {x: 18, y: 0}
     Type: 2
   - Coordinate: {x: 18, y: 1}
-    Type: 2
+    Type: 3
   - Coordinate: {x: 18, y: 2}
     Type: 2
   - Coordinate: {x: 18, y: 3}
@@ -1157,7 +1155,7 @@ MonoBehaviour:
   - Coordinate: {x: 19, y: 0}
     Type: 2
   - Coordinate: {x: 19, y: 1}
-    Type: 2
+    Type: 3
   - Coordinate: {x: 19, y: 2}
     Type: 1
   - Coordinate: {x: 19, y: 3}
@@ -1340,8 +1338,6 @@ MonoBehaviour:
     Type: 1
   - Coordinate: {x: 22, y: 2}
     Type: 0
-  - Coordinate: {x: 22, y: 3}
-    Type: 1
   - Coordinate: {x: 22, y: 4}
     Type: 1
   - Coordinate: {x: 22, y: 5}
@@ -1397,7 +1393,7 @@ MonoBehaviour:
   - Coordinate: {x: 23, y: 0}
     Type: 1
   - Coordinate: {x: 23, y: 1}
-    Type: 1
+    Type: 4
   - Coordinate: {x: 23, y: 2}
     Type: 1
   - Coordinate: {x: 23, y: 3}

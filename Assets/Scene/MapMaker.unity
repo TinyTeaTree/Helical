@@ -447,6 +447,7 @@ MonoBehaviour:
   _resourcePack: {fileID: 11400000, guid: b0913cc5760864c3988d0eb77ac06355, type: 2}
   _gridRoot: {fileID: 1528848219}
   _sceneCamera: {fileID: 961739752}
+  _hexNone: {fileID: 3398057374557846970, guid: 71c71d5fcf05049318387c6fa8130145, type: 3}
 --- !u!4 &1950843459
 Transform:
   m_ObjectHideFlags: 0

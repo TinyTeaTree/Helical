@@ -12,6 +12,7 @@ public class MapMaker : MonoBehaviour
     [SerializeField] private GridResourcePack _resourcePack;
     [SerializeField] private Transform _gridRoot;
     [SerializeField] private Camera _sceneCamera;
+    [SerializeField] private HexOperator _hexNone;
 
 #if UNITY_EDITOR
     public GridSO Grid => _grid;
@@ -33,6 +34,19 @@ public class MapMaker : MonoBehaviour
 
         var gridData = new GridData(_grid.Width, _grid.Height, _grid.Id);
 
+        for (int x = 0; x < gridData.Width; x++)
+        {
+            for (int y = 0; y < gridData.Height; y++)
+            {
+                var coordinate = new Vector2Int(x, y);
+                gridData.SetCell(new HexData
+                {
+                    Coordinate = coordinate,
+                    Type = HexType.None
+                });
+            }
+        }
+
         foreach (var hex in _grid.Cells)
         {
             gridData.SetCell(hex);
@@ -49,26 +63,10 @@ public class MapMaker : MonoBehaviour
 
             for (int y = 0; y < gridData.Height; y++)
             {
+                var coordinate = new Vector2Int(x, y);
                 var cell = gridData.GetCell(x, y);
-                if (cell.Type == HexType.None)
-                {
-                    continue;
-                }
 
-                var prefab = _resourcePack.GetHex(cell.Type);
-
-                var instance = PrefabUtility.InstantiatePrefab(prefab.gameObject, rowObject.transform) as GameObject;
-                instance.GetComponent<HexOperator>().SetNormalState();
-
-                instance.name = $"Hex_({x},{y})";
-
-                var worldXZ = cell.Coordinate.ToWorldXZ();
-                instance.transform.localPosition = new Vector3(worldXZ.x, 0f, worldXZ.y);
-                instance.transform.localScale = Vector3.one * GridUtils.HexScaleModifier;
-
-                var hexOperator = instance.GetComponent<HexOperator>();
-                hexOperator.Initialize(cell.Coordinate);
-
+                CreateHexInstance(cell.Type, coordinate, rowObject.transform, false);
                 rowHasChildren = true;
             }
 
@@ -103,6 +101,25 @@ public class MapMaker : MonoBehaviour
         ClearGridInternal(parent);
     }
 
+    public void UpdateHexType(Vector2Int coordinate, HexType newType, Transform hexTransform)
+    {
+        Undo.RegisterCompleteObjectUndo(_grid, "Change Hex Type");
+        UpdateGridCellData(coordinate, newType);
+
+        var parent = hexTransform.parent;
+        Undo.RegisterFullObjectHierarchyUndo(parent.gameObject, "Change Hex Type");
+
+        var localPosition = hexTransform.localPosition;
+        var localRotation = hexTransform.localRotation;
+        var localScale = hexTransform.localScale;
+
+        CreateHexInstance(newType, coordinate, parent, true, localPosition, localRotation, localScale);
+
+        Undo.DestroyObjectImmediate(hexTransform.gameObject);
+
+        MarkGridDirty();
+    }
+
     private void ClearGridInternal(Transform parent)
     {
         for (int i = parent.childCount - 1; i >= 0; i--)
@@ -112,6 +129,51 @@ public class MapMaker : MonoBehaviour
         }
         _glueInstance = null;
         _cameraAnchorInstance = null;
+    }
+
+    private GameObject CreateHexInstance(HexType type, Vector2Int coordinate, Transform parent, bool registerUndo, Vector3? localPosition = null, Quaternion? localRotation = null, Vector3? localScale = null)
+    {
+        var prefab = type == HexType.None ? _hexNone : _resourcePack.GetHex(type);
+        var instance = PrefabUtility.InstantiatePrefab(prefab.gameObject, parent) as GameObject;
+
+        if (registerUndo)
+        {
+            Undo.RegisterCreatedObjectUndo(instance, "Create Hex");
+        }
+
+        instance.name = $"Hex_({coordinate.x},{coordinate.y})";
+
+        if (localPosition.HasValue)
+        {
+            instance.transform.localPosition = localPosition.Value;
+            instance.transform.localRotation = localRotation ?? Quaternion.identity;
+            instance.transform.localScale = localScale ?? Vector3.one;
+        }
+        else
+        {
+            var worldXZ = coordinate.ToWorldXZ();
+            instance.transform.localPosition = new Vector3(worldXZ.x, 0f, worldXZ.y);
+            instance.transform.localRotation = Quaternion.identity;
+            instance.transform.localScale = Vector3.one * GridUtils.HexScaleModifier;
+        }
+
+        var hexOperator = instance.GetComponent<HexOperator>();
+        hexOperator.SetNormalState();
+        hexOperator.Initialize(coordinate);
+        AttachEditorHexOperator(instance, type);
+
+        return instance;
+    }
+
+    private void AttachEditorHexOperator(GameObject instance, HexType hexType)
+    {
+        var editorOperator = instance.GetComponent<EditorHexOperator>();
+        if (editorOperator == null)
+        {
+            editorOperator = instance.AddComponent<EditorHexOperator>();
+        }
+
+        editorOperator.Initialize(this, hexType);
     }
 
     private void AlignCameraToAnchor(Transform anchorTransform)
@@ -147,6 +209,50 @@ public class MapMaker : MonoBehaviour
         _sceneCamera.transform.localPosition = _originalCameraLocalPosition;
         _sceneCamera.transform.localRotation = _originalCameraLocalRotation;
         _cameraStateStored = false;
+    }
+
+    private void UpdateGridCellData(Vector2Int coordinate, HexType newType)
+    {
+        var cells = _grid.Cells;
+        var index = -1;
+        for (int i = 0; i < cells.Count; i++)
+        {
+            if (cells[i].Coordinate == coordinate)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (newType == HexType.None)
+        {
+            if (index >= 0)
+            {
+                cells.RemoveAt(index);
+            }
+            return;
+        }
+
+        var updated = new HexData
+        {
+            Coordinate = coordinate,
+            Type = newType
+        };
+
+        if (index >= 0)
+        {
+            cells[index] = updated;
+        }
+        else
+        {
+            cells.Add(updated);
+        }
+    }
+
+    private void MarkGridDirty()
+    {
+        EditorUtility.SetDirty(_grid);
+        AssetDatabase.SaveAssets();
     }
 #endif
 }
