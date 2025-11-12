@@ -7,8 +7,9 @@ namespace Game
     {
         [Header("Detection Settings")]
         [SerializeField] private float _dragThreshold = 5f; // Pixels before it's considered a drag
-        
-        private bool _isMouseDown = false;
+
+        private bool _isLeftMouseDown = false;
+        private bool _isRightMouseDown = false;
         private Vector2 _mouseDownPosition;
         private Vector2 _lastMousePosition;
         private bool _isDragging = false;
@@ -19,18 +20,24 @@ namespace Game
             {
                 return;
             }
-            
-            // Detect mouse button down
+
+            // Detect left mouse button down (for selection and dragging)
             if (Input.GetMouseButtonDown(0))
             {
-                OnMouseDown();
+                OnLeftMouseDown();
             }
-            
-            // Track mouse movement while button is held
-            if (_isMouseDown)
+
+            // Detect right mouse button down (for deselection)
+            if (Input.GetMouseButtonDown(1))
+            {
+                OnRightMouseDown();
+            }
+
+            // Track mouse movement while left button is held (for dragging)
+            if (_isLeftMouseDown)
             {
                 Vector2 currentMousePosition = Input.mousePosition;
-                
+
                 // Check if we've moved enough to start dragging
                 if (!_isDragging)
                 {
@@ -40,43 +47,63 @@ namespace Game
                         _isDragging = true;
                     }
                 }
-                
+
                 // If we're dragging, send drag delta
                 if (_isDragging)
                 {
                     Vector2 dragDelta = currentMousePosition - _lastMousePosition;
                     Feature.HandleDrag(dragDelta);
                 }
-                
+
                 _lastMousePosition = currentMousePosition;
             }
-            
-            // Detect mouse button up
+
+            // Detect left mouse button up
             if (Input.GetMouseButtonUp(0))
             {
-                OnMouseUp();
+                OnLeftMouseUp();
+            }
+
+            // Detect right mouse button up
+            if (Input.GetMouseButtonUp(1))
+            {
+                OnRightMouseUp();
             }
         }
         
-        private void OnMouseDown()
+        private void OnLeftMouseDown()
         {
-            _isMouseDown = true;
+            _isLeftMouseDown = true;
             _mouseDownPosition = Input.mousePosition;
             _lastMousePosition = Input.mousePosition;
             _isDragging = false;
         }
-        
-        private void OnMouseUp()
+
+        private void OnLeftMouseUp()
         {
             // Only trigger click if we weren't dragging
             if (!_isDragging)
             {
-                Feature.HandleClick();
+                Feature.HandleLeftClick();
             }
-            
+
             // Reset state
-            _isMouseDown = false;
+            _isLeftMouseDown = false;
             _isDragging = false;
+        }
+
+        private void OnRightMouseDown()
+        {
+            _isRightMouseDown = true;
+        }
+
+        private void OnRightMouseUp()
+        {
+            // Right click is immediate - no drag consideration needed
+            Feature.HandleRightClick();
+
+            // Reset state
+            _isRightMouseDown = false;
         }
     }
 }

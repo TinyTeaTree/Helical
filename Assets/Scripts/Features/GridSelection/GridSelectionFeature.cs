@@ -59,14 +59,14 @@ namespace Game
             BattleGUI.HideUnitSelection();
         }
         
-        public void HandleMouseClick()
+        public void HandleLeftClick()
         {
             // Check if selection is enabled
             if (!Record.IsSelectionEnabled)
             {
                 return;
             }
-            
+
             // Don't process selection if mouse is over UI
             if (IsPointerOverUI())
             {
@@ -312,6 +312,21 @@ namespace Game
                 _currentlySelectedCastle.SetNormalState();
                 _currentlySelectedCastle = null;
             }
+        }
+
+        public void HandleRightClick()
+        {
+            // Check if selection is enabled
+            if (!Record.IsSelectionEnabled)
+            {
+                return;
+            }
+
+            // Deselect everything and clear ability mode
+            DeselectHex();
+            DeselectCastle();
+            Record.ClearSelection();
+            Record.ClearAbilityMode();
         }
 
         private void HandleAttackMode(Vector2Int targetCoordinate)

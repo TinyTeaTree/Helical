@@ -45,9 +45,14 @@ namespace Game
             }
         }
 
-        public void HandleClick()
+        public void HandleLeftClick()
         {
-            GridSelection.HandleMouseClick();
+            GridSelection.HandleLeftClick();
+        }
+
+        public void HandleRightClick()
+        {
+            GridSelection.HandleRightClick();
         }
 
         public void HandleDrag(UnityEngine.Vector2 dragDelta)

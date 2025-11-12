@@ -10,6 +10,7 @@ namespace Game
         void SetAbilityMode(AbilityMode mode);
         void UpdateSelectedCoordinate(Vector2Int newCoordinate);
         bool IsCoordinateSelected(Vector2Int coordinate);
-        void HandleMouseClick();
+        void HandleLeftClick();
+        void HandleRightClick();
     }
 }
