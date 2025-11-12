@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31a7238aca81a440ea335c0c9a0841be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game::Game.CastleGUIVisual
+  _root: {fileID: 7202622189474575198}
   _locationLabel: {fileID: 3300628310105156799}
   _nameLabel: {fileID: 5734130719975698008}
   _unitIconPrefab: {fileID: 8090047498526346501}

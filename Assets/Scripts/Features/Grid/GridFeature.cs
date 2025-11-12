@@ -9,6 +9,7 @@ namespace Game
     public class GridFeature : BaseVisualFeature<GridVisual>, IGrid, IAppLaunchAgent
     {
         [Inject] public GridRecord Record { get; set; }
+        [Inject] public IBattleUnits BattleUnits { get; set; }
 
         private GridResourcePack _gridResourcePack;
         
@@ -49,7 +50,7 @@ namespace Game
             return _visual;
         }
 
-        public bool IsValidHex(Vector2Int coordinate)
+        public bool IsValidForAbility(AbilityMode ability, Vector2Int coordinate)
         {
             if (Record.GridData == null)
             {
@@ -63,9 +64,47 @@ namespace Game
                 return false;
             }
 
-            // Check if hex type is not None (empty)
             var hexData = Record.GridData.GetCell(coordinate);
-            return hexData.Type != HexType.None;
+
+            // Check if hex type is not None (empty)
+            if (hexData.Type == HexType.None)
+            {
+                return false;
+            }
+
+            // Check ability-specific rules
+            switch (ability)
+            {
+                case AbilityMode.Move:
+                case AbilityMode.Spawn:
+                    // Cannot move or spawn on water
+                    if (hexData.Type == HexType.Water)
+                    {
+                        return false;
+                    }
+                    // Cannot move to hexes that already have units
+                    if (BattleUnits.GetUnitData(coordinate) != null)
+                    {
+                        return false;
+                    }
+                    break;
+
+                case AbilityMode.Attack:
+                    // For attack, we might want different rules later
+                    // For now, allow attacking any valid hex
+                    break;
+
+                case AbilityMode.Rotate:
+                    // For rotate, we might want different rules later
+                    // For now, allow rotating on any valid hex
+                    break;
+
+                default:
+                    // For other abilities, just check basic validity
+                    break;
+            }
+
+            return true;
         }
         
         public HexOperator GetHexOperatorAtCoordinate(Vector2Int coordinate)

@@ -70,7 +70,7 @@ namespace Game
                     continue;
                 }
 
-                if (!Grid.IsValidHex(randomCoordinate))
+                if (!Grid.IsValidForAbility(AbilityMode.Spawn, randomCoordinate))
                 {
                     continue;
                 }   

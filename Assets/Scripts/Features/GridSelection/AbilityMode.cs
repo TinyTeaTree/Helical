@@ -7,7 +7,8 @@ namespace Game
         Move,
         Rotate,
         Wait,
-        Shield
+        Shield,
+        Spawn
     }
 }
 

@@ -52,6 +52,7 @@ namespace Game
             _factories.Add(typeof(CameraMoveVisual), new ResourceFactory(Addresses.CameraMoveVisual));
             _factories.Add(typeof(InputDetectionVisual), new GenerateVisualFactory());
             _factories.Add(typeof(CastleVisual), new GenerateVisualFactory());
+            _factories.Add(typeof(CastleGUIVisual), new ResourceFactory(Addresses.CastleGUIVisual));
         }
 
         protected override void AddAgents()

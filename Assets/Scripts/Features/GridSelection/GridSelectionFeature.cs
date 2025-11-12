@@ -15,6 +15,7 @@ namespace Game
         [Inject] public ICameraMove CameraMove { get; set; }
         [Inject] public IGrid Grid { get; set; }
         [Inject] public ICastle Castle { get; set; }
+        [Inject] public ICastleGUI CastleGUI { get; set; }
         
         private HexOperator _currentlySelectedHex;
         private CastleOperator _currentlySelectedCastle;
@@ -254,6 +255,7 @@ namespace Game
             {
                 _currentlySelectedCastle.SetNormalState();
                 _currentlySelectedCastle = null;
+                CastleGUI.HideCastleSelection();
             }
 
             // Select new hex
@@ -300,9 +302,10 @@ namespace Game
             _currentlySelectedCastle = castleOperator;
             Record.SelectedCoordinate = coordinate;
 
-            // Clear battle unit selection since we selected a castle
+            // Clear battle unit selection and show castle selection
             BattleUnits.UpdateUnitSelection(null);
             BattleGUI.HideUnitSelection();
+            CastleGUI.ShowCastleSelection(coordinate);
         }
 
         private void DeselectCastle()
@@ -311,6 +314,7 @@ namespace Game
             {
                 _currentlySelectedCastle.SetNormalState();
                 _currentlySelectedCastle = null;
+                CastleGUI.HideCastleSelection();
             }
         }
 
@@ -337,15 +341,22 @@ namespace Game
                 Notebook.NoteWarning("No unit selected to perform attack");
                 return;
             }
-            
+
             Vector2Int attackerCoordinate = Record.SelectedCoordinate.Value;
-            
+
+            // Validate that the target coordinate is valid for attacking
+            if (!Grid.IsValidForAbility(AbilityMode.Attack, targetCoordinate))
+            {
+                Notebook.NoteWarning($"Cannot attack coordinate {targetCoordinate} - invalid target");
+                return;
+            }
+
             // Execute the attack
             BattleUnits.ExecuteAttack(attackerCoordinate, targetCoordinate);
-            
+
             // Clear ability mode after attack
             Record.ClearAbilityMode();
-            
+
             Notebook.NoteData($"Attack executed from {attackerCoordinate} to {targetCoordinate}");
         }
         
@@ -357,22 +368,29 @@ namespace Game
                 Notebook.NoteWarning("No unit selected to move");
                 return;
             }
-            
+
             Vector2Int unitCoordinate = Record.SelectedCoordinate.Value;
-            
+
             // Check if the target coordinate is different from the unit's current coordinate
             if (unitCoordinate == targetCoordinate)
             {
                 Notebook.NoteWarning("Unit is already at that location");
                 return;
             }
-            
+
+            // Validate that the target coordinate is valid for moving
+            if (!Grid.IsValidForAbility(AbilityMode.Move, targetCoordinate))
+            {
+                Notebook.NoteWarning($"Cannot move to coordinate {targetCoordinate} - invalid location");
+                return;
+            }
+
             // Execute the move
             BattleUnits.ExecuteMove(unitCoordinate, targetCoordinate);
-            
+
             // Clear ability mode after move
             Record.ClearAbilityMode();
-            
+
             Notebook.NoteData($"Move executed from {unitCoordinate} to {targetCoordinate}");
         }
         
