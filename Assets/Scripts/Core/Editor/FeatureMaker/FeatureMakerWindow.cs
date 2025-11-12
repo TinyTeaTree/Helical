@@ -489,7 +489,8 @@ namespace CoreEditor.FeatureMaker
                 if (!File.Exists(visualPath))
                 {
                     var visualTemplate = File.ReadAllText(Path.Combine(dataPath, "Editor", "FeatureTemplate", "Visual.txt"));
-                    var visualText = visualTemplate.Replace("<FeatureName>", $"{_featureName}");
+                    var visualText = visualTemplate.Replace("<FeatureName>", $"{_featureName}")
+                                                    .Replace("<FeatureClassName>", $"{featureClassName}");
                     File.WriteAllText(visualPath, visualText);
 
                     if (!featureExists)

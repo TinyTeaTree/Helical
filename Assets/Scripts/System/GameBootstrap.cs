@@ -37,6 +37,7 @@ namespace Game
             _features.Add<IBattleGUI>(new BattleGUIFeature());
             _features.Add<IInputDetection>(new InputDetectionFeature());
             _features.Add<ICastle>(new CastleFeature());
+            _features.Add<ICastleGUI>(new CastleGUIFeature());
             //<New Feature>
         }
 
