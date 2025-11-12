@@ -9,7 +9,6 @@ namespace Game
         [SerializeField] private float _dragThreshold = 5f; // Pixels before it's considered a drag
 
         private bool _isLeftMouseDown = false;
-        private bool _isRightMouseDown = false;
         private Vector2 _mouseDownPosition;
         private Vector2 _lastMousePosition;
         private bool _isDragging = false;
@@ -92,18 +91,10 @@ namespace Game
             _isDragging = false;
         }
 
-        private void OnRightMouseDown()
-        {
-            _isRightMouseDown = true;
-        }
-
         private void OnRightMouseUp()
         {
             // Right click is immediate - no drag consideration needed
             Feature.HandleRightClick();
-
-            // Reset state
-            _isRightMouseDown = false;
         }
     }
 }
