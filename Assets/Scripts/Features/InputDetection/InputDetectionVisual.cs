@@ -26,12 +26,6 @@ namespace Game
                 OnLeftMouseDown();
             }
 
-            // Detect right mouse button down (for deselection)
-            if (Input.GetMouseButtonDown(1))
-            {
-                OnRightMouseDown();
-            }
-
             // Track mouse movement while left button is held (for dragging)
             if (_isLeftMouseDown)
             {
