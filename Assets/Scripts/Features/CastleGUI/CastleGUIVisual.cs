@@ -51,9 +51,14 @@ namespace Game
         private void CreateUnitIcon(PurchasableUnitData unitData)
         {
             var unitIcon = Instantiate(_unitIconPrefab, _unitsRoot);
-            unitIcon.SetupUnit(unitData.UnitIcon, unitData.UnitName, unitData.GoldCost);
+            unitIcon.SetupUnit(OnUnitPurchaseRequested, unitData.UnitId, unitData.UnitIcon, unitData.UnitName, unitData.GoldCost);
             unitIcon.gameObject.SetActive(true);
             _unitIcons.Add(unitIcon);
+        }
+
+        private void OnUnitPurchaseRequested(string unitId)
+        {
+            Feature.PurchaseUnit(unitId);
         }
 
         private void ClearUnitIcons()

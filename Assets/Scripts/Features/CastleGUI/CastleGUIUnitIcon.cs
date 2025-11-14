@@ -12,11 +12,25 @@ namespace Game
 
         [SerializeField] private Button _unitButton;
 
-        public void SetupUnit(Sprite icon, string name, int goldCost)
+        private string _unitId;
+        private System.Action<string> _onPurchaseRequested;
+
+        public void SetupUnit(System.Action<string> onPurchaseRequested, string unitId, Sprite icon, string name, int goldCost)
         {
+            _onPurchaseRequested = onPurchaseRequested;
+            _unitId = unitId;
             _unitIcon.sprite = icon;
             _unitName.text = name;
             _unitGoldPrice.text = goldCost.ToString();
+
+            // Wire up button click
+            _unitButton.onClick.RemoveAllListeners();
+            _unitButton.onClick.AddListener(OnPurchaseButtonClicked);
+        }
+
+        private void OnPurchaseButtonClicked()
+        {
+            _onPurchaseRequested?.Invoke(_unitId);
         }
     }
 }

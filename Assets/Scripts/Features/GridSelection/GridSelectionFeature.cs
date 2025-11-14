@@ -155,6 +155,11 @@ namespace Game
             return Record.SelectedCoordinate.HasValue && Record.SelectedCoordinate.Value == coordinate;
         }
 
+        public Vector2Int GetSelectedCoordinate()
+        {
+            return Record.SelectedCoordinate.Value;
+        }
+
         public void OnHexClicked(HexOperator hexOperator)
         {
             Vector2Int coordinate = hexOperator.Coordinate;

@@ -20,6 +20,8 @@ namespace Game
         [Inject] public ICastle Castle { get; set; }
         [Inject] public ILocalConfigService ConfigService { get; set; }
         [Inject] public IGrid Grid { get; set; }
+        [Inject] public IBattleUnits BattleUnits { get; set; }
+        [Inject] public IGridSelection GridSelection { get; set; }
 
         private BattleUnitsConfig _battleUnitsConfig;
         private BattleUnitsAssetPack _battleUnitsAssetPack;
@@ -49,27 +51,15 @@ namespace Game
 
         public void ShowCastleSelection(Vector2Int coordinate)
         {
-            // Get castle type from grid data
             string castleType = GetCastleTypeAtCoordinate(coordinate);
-
-            // Get purchasable units for this castle type
             List<PurchasableUnitData> purchasableUnits = GetPurchasableUnits(castleType);
-
-            // Get castle display name
             string castleName = GetCastleDisplayName(castleType);
-
-            // Show the castle GUI with unit data
             _visual.ShowCastleSelection(coordinate, castleName, purchasableUnits);
         }
 
         private string GetCastleTypeAtCoordinate(Vector2Int coordinate)
         {
             var gridData = Grid.GetGridData();
-            if (gridData.Castles == null)
-            {
-                return null;
-            }
-
             foreach (var castleData in gridData.Castles)
             {
                 if (castleData.Coordinate == coordinate)
@@ -78,7 +68,7 @@ namespace Game
                 }
             }
 
-            return null;
+            return "";
         }
 
         private string GetCastleDisplayName(string castleType)
@@ -108,6 +98,33 @@ namespace Game
             }
 
             return purchasableUnits;
+        }
+
+        public void PurchaseUnit(string unitId)
+        {
+            Vector2Int castleCoordinate = GridSelection.GetSelectedCoordinate();
+            string castleType = GetCastleTypeAtCoordinate(castleCoordinate);
+            HexDirection castleDirection = GetCastleDirectionAtCoordinate(castleCoordinate);
+            Vector2Int spawnCoordinate = GridUtils.NextHex(castleCoordinate, castleDirection);
+            int unitCost = Castle.GetUnitCost(castleType, unitId);
+
+            Notebook.NoteData($"Purchasing {unitId} for {unitCost} gold at {castleType}");
+            BattleUnits.SpawnUnitAtCoordinate(unitId, spawnCoordinate);
+        }
+
+        private HexDirection GetCastleDirectionAtCoordinate(Vector2Int coordinate)
+        {
+            var gridData = Grid.GetGridData();
+
+            foreach (var castleData in gridData.Castles)
+            {
+                if (castleData.Coordinate == coordinate)
+                {
+                    return castleData.Direction;
+                }
+            }
+
+            return default;
         }
 
         public void HideCastleSelection()

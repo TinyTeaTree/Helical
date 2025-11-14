@@ -12,6 +12,7 @@ namespace Game
         [Inject] public ILocalConfigService ConfigService { get; set; }
         [Inject] public IGrid Grid { get; set; }
         [Inject] public IGridSelection GridSelection { get; set; }
+        [Inject] public IPlayerAccount PlayerAccount { get; set; }
 
         private BattleUnitsConfig _config;
         private BattleUnitsAssetPack _assetPack;
@@ -216,13 +217,13 @@ namespace Game
         public void ExecuteRotate(Vector2Int unitCoordinate, Vector2Int targetCoordinate)
         {
             var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
-            
+
             if (unit == null)
             {
                 Notebook.NoteError("Rotate failed: No unit found at coordinate");
                 return;
             }
-            
+
             // Get the unit data
             var unitData = GetUnitData(unitCoordinate);
             if (unitData == null)
@@ -230,15 +231,59 @@ namespace Game
                 Notebook.NoteError("Rotate failed: No unit data found");
                 return;
             }
-            
+
             // Execute the rotation - rotator will calculate and return the target direction
             unit.Rotate(unitCoordinate, targetCoordinate, unitData.Direction, (newDirection) =>
             {
                 // Update the unit data direction after rotation is complete
                 unitData.Direction = newDirection;
-                
+
                 Notebook.NoteData($"Unit rotated to {newDirection}");
             });
+        }
+
+        public bool SpawnUnitAtCoordinate(string unitId, Vector2Int coordinate)
+        {
+            // Validate that the coordinate is valid for spawning
+            if (!Grid.IsValidForAbility(AbilityMode.Spawn, coordinate))
+            {
+                Notebook.NoteWarning($"Cannot spawn unit at {coordinate} - invalid location");
+                return false;
+            }
+
+            // Check if a unit already exists at this coordinate
+            if (GetUnitData(coordinate) != null)
+            {
+                Notebook.NoteWarning($"Cannot spawn unit at {coordinate} - location occupied");
+                return false;
+            }
+
+            // Get unit config
+            var unitConfig = _config.GetBattleUnit(unitId);
+
+            // Get player ID
+            var playerId = PlayerAccount.PlayerId;
+
+            // Create unit data
+            var unitData = new BattleUnitData()
+            {
+                BattleUnitId = unitId,
+                Coordinate = coordinate,
+                Direction = HexDirection.North, // Default direction
+                Health = unitConfig.MaxHealth,
+                Level = 1, // Starting level
+                IsDead = false,
+                PlayerId = playerId
+            };
+
+            // Add to record
+            Record.BattleUnits.Add(unitData);
+
+            // Spawn visually
+            _visual.SpawnUnit(unitData);
+
+            Notebook.NoteData($"Spawned {unitId} for player {playerId} at {coordinate}");
+            return true;
         }
         
         private void ClearUnitSelection()
