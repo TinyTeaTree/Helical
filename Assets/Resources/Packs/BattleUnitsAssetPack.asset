@@ -19,3 +19,6 @@ MonoBehaviour:
   - UnitId: SwampMonster
     Prefab: {fileID: 7848765859527338972, guid: f865ed432e3c64a639c3c6e39fb45a66, type: 3}
     Photo: {fileID: 21300000, guid: ee0a694da971a4fe194c9ae34d20e0e8, type: 3}
+  - UnitId: Axeman
+    Prefab: {fileID: 2921704868182811208, guid: c2a69675c41b64014bb430794cae2bb6, type: 3}
+    Photo: {fileID: 21300000, guid: ec66658a06b144b549c45ebaf3971d9c, type: 3}

@@ -26,3 +26,9 @@ MonoBehaviour:
       _attackPower: 7
       _defense: 2
       _moveRange: 1
+    - _id: Axeman
+      _displayName: Axeman
+      _maxHealth: 55
+      _attackPower: 4
+      _defense: 1
+      _moveRange: 3
