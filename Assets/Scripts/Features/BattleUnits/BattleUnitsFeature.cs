@@ -94,7 +94,7 @@ namespace Game
                     Health = unitHealth,
                     Level = random.Next(1, 6), // Random level between 1 and 5
                     IsDead = false,
-                    PlayerId = "Bot"
+                    PlayerId = "Bot" //These units should belong to Bot
                 });
             }
 
@@ -206,6 +206,14 @@ namespace Game
                 // Update the visual's coordinate tracking
                 _visual.UpdateUnitCoordinate(unitCoordinate, targetCoordinate);
                 
+                // Clear ownership from the old hex position
+                var oldHexOperator = Grid.GetHexOperatorAtCoordinate(unitCoordinate);
+                if (oldHexOperator != null)
+                {
+                    oldHexOperator.SetHasPlayerUnit(false);
+                    oldHexOperator.SetHasBotUnit(false);
+                }
+
                 // Update the GridSelection coordinate to track the unit's new position
                 // Only update if this unit was the one selected
                 if (GridSelection.IsCoordinateSelected(unitCoordinate))
