@@ -68,13 +68,13 @@ namespace Game
                 }
             }
 
-            return "";
+            throw new System.InvalidOperationException($"No castle found at coordinate {coordinate}");
         }
 
         private string GetCastleDisplayName(string castleType)
         {
             var castleConfig = Castle.Config.GetCastleConfig(castleType);
-            return castleConfig != null ? castleConfig.DisplayName : castleType;
+            return castleConfig.DisplayName;
         }
 
         private List<PurchasableUnitData> GetPurchasableUnits(string castleType)
@@ -124,7 +124,7 @@ namespace Game
                 }
             }
 
-            return default;
+            throw new System.InvalidOperationException($"No castle found at coordinate {coordinate}");
         }
 
         public void HideCastleSelection()
