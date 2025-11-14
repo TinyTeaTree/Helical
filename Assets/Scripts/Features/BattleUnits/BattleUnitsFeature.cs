@@ -94,7 +94,7 @@ namespace Game
                     Health = unitHealth,
                     Level = random.Next(1, 6), // Random level between 1 and 5
                     IsDead = false,
-                    PlayerId = playerId
+                    PlayerId = "Bot"
                 });
             }
 
