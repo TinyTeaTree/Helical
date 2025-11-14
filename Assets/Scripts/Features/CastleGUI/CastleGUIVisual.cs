@@ -12,24 +12,60 @@ namespace Game
         [SerializeField] private TMP_Text _nameLabel;
 
         [SerializeField] private CastleGUIUnitIcon _unitIconPrefab;
+        [SerializeField] private Transform _unitsRoot;
 
         private List<CastleGUIUnitIcon> _unitIcons;
 
-        public void ShowCastleSelection(Vector2Int coordinate)
+        private void Awake()
+        {
+            _unitIcons = new List<CastleGUIUnitIcon>();
+            _unitIconPrefab.gameObject.SetActive(false);
+        }
+
+        public void ShowCastleSelection(Vector2Int coordinate, string castleName, List<PurchasableUnitData> purchasableUnits)
         {
             _root.SetActive(true);
 
             // Update location info
             _locationLabel.text = $"Location: ({coordinate.x}, {coordinate.y})";
 
-            // For now, just show a basic name
-            // TODO: Get castle name from castle data
-            _nameLabel.text = "Castle";
+            // Update castle name
+            _nameLabel.text = castleName;
+
+            // Clear existing unit icons
+            ClearUnitIcons();
+
+            // Create unit icons for each purchasable unit
+            foreach (var unitData in purchasableUnits)
+            {
+                CreateUnitIcon(unitData);
+            }
         }
 
         public void HideCastleSelection()
         {
             _root.SetActive(false);
+            ClearUnitIcons();
+        }
+
+        private void CreateUnitIcon(PurchasableUnitData unitData)
+        {
+            var unitIcon = Instantiate(_unitIconPrefab, _unitsRoot);
+            unitIcon.SetupUnit(unitData.UnitIcon, unitData.UnitName, unitData.GoldCost);
+            unitIcon.gameObject.SetActive(true);
+            _unitIcons.Add(unitIcon);
+        }
+
+        private void ClearUnitIcons()
+        {
+            foreach (var unitIcon in _unitIcons)
+            {
+                if (unitIcon != null)
+                {
+                    Destroy(unitIcon.gameObject);
+                }
+            }
+            _unitIcons.Clear();
         }
     }
 }

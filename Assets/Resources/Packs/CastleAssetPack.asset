@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: CastleAssetPack
   m_EditorClassIdentifier: Game::Game.CastleAssetPack
   _castleEntries:
-  - CastleType: Lord
+  - CastleType: Castle
     Prefab: {fileID: 5079234108012623557, guid: 5c66ef0bcea754ebdbb7965432a5f10d, type: 3}
