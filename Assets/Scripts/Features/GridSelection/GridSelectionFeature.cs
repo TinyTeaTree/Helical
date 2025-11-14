@@ -10,12 +10,13 @@ namespace Game
     public class GridSelectionFeature : BaseFeature, IGridSelection, IBattleLaunchAgent
     {
         [Inject] public GridSelectionRecord Record { get; set; }
+        [Inject] public BattleUnitsRecord BattleUnitsRecord { get; set; }
         [Inject] public IBattleUnits BattleUnits { get; set; }
         [Inject] public IBattleGUI BattleGUI { get; set; }
         [Inject] public ICameraMove CameraMove { get; set; }
         [Inject] public IGrid Grid { get; set; }
-        [Inject] public ICastle Castle { get; set; }
         [Inject] public ICastleGUI CastleGUI { get; set; }
+        [Inject] public IPlayerAccount PlayerAccount { get; set; }
         
         private HexOperator _currentlySelectedHex;
         private CastleOperator _currentlySelectedCastle;
@@ -336,6 +337,40 @@ namespace Game
             DeselectCastle();
             Record.ClearSelection();
             Record.ClearAbilityMode();
+        }
+
+        /// <summary>
+        /// Updates hex ownership indicators based on unit positions.
+        /// </summary>
+        public void UpdateHexOwnershipIndicators()
+        {
+            // Clear ownership from all hexes that currently have units
+            foreach (var unitData in BattleUnitsRecord.BattleUnits)
+            {
+                var hexOperator = Grid.GetHexOperatorAtCoordinate(unitData.Coordinate);
+                if (hexOperator != null)
+                {
+                    hexOperator.SetHasPlayerUnit(false);
+                    hexOperator.SetHasBotUnit(false);
+                }
+            }
+
+            // Apply ownership based on current unit positions
+            foreach (var unitData in BattleUnitsRecord.BattleUnits)
+            {
+                var hexOperator = Grid.GetHexOperatorAtCoordinate(unitData.Coordinate);
+                if (hexOperator != null)
+                {
+                    if (unitData.PlayerId == PlayerAccount.PlayerId)
+                    {
+                        hexOperator.SetHasPlayerUnit(true);
+                    }
+                    else
+                    {
+                        hexOperator.SetHasBotUnit(true);
+                    }
+                }
+            }
         }
 
         private void HandleAttackMode(Vector2Int targetCoordinate)

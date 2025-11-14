@@ -8,64 +8,77 @@ namespace Game
     /// </summary>
     public class HexOperator : MonoBehaviour
     {
-        [SerializeField] private GameObject outline;
-        [SerializeField] private Transform mesh;
+        [SerializeField] private MeshRenderer _meshRenderer;
+        [SerializeField] private MeshRenderer _outlineMeshRenderer;
 
-        //private Vector3 _normalPosition;
-        //private Vector3 _elevatedPosition;
-        private bool _isGlowing;
+        [SerializeField] private GameObject _playerOutline;
+        [SerializeField] private GameObject _botOutline;
+        
         private Vector2Int _coordinate;
 
         //private const float ElevationHeight = 0.1f;
 
         private void Awake()
         {
-            //_normalPosition = mesh.localPosition;
-            //_elevatedPosition = _normalPosition + new Vector3(0, ElevationHeight, 0);
-            
             // Start in normal state
-            SetNormalState();
+            UpdateSelectedMaterial(false);
+            UpdatePlayerUnit(false, false);
         }
 
         /// <summary>
-        /// Sets the hex to normal state: outline hidden, mesh at origin.
+        /// Sets the hex selection state.
+        /// </summary>
+        public void SetSelected(bool selected)
+        {
+            UpdateSelectedMaterial(selected);
+        }
+
+        /// <summary>
+        /// Sets whether this hex has a player unit.
+        /// </summary>
+        public void SetHasPlayerUnit(bool hasUnit)
+        {
+            UpdatePlayerUnit(hasUnit, false);
+        }
+
+        /// <summary>
+        /// Sets whether this hex has a bot unit.
+        /// </summary>
+        public void SetHasBotUnit(bool hasUnit)
+        {
+            UpdatePlayerUnit(false, hasUnit);
+        }
+
+        /// <summary>
+        /// Updates the material based on current state.
+        /// Priority: Selection > Bot Outline > Player Outline > Normal
+        /// </summary>
+        private void UpdateSelectedMaterial(bool isSelected)
+        {
+            _meshRenderer.material.SetFloat("_GlowIntensity", isSelected ? 0.5f : 0f);
+        }
+        
+        private void UpdatePlayerUnit(bool isPlayer, bool isBot)
+        {
+            _playerOutline.gameObject.SetActive(isPlayer);
+            _botOutline.gameObject.SetActive(isBot);
+        }
+
+        /// <summary>
+        /// Legacy method for compatibility - sets selected state.
         /// </summary>
         public void SetNormalState()
         {
-            _isGlowing = false;
-            outline.SetActive(false);
-            //mesh.localPosition = _normalPosition;
+            SetSelected(false);
         }
 
         /// <summary>
-        /// Sets the hex to glowing state: outline visible, mesh elevated.
+        /// Legacy method for compatibility - sets selected state.
         /// </summary>
         public void SetGlowingState()
         {
-            _isGlowing = true;
-            outline.SetActive(true);
-            //mesh.localPosition = _elevatedPosition;
+            SetSelected(true);
         }
-
-        /// <summary>
-        /// Toggles between normal and glowing states.
-        /// </summary>
-        public void ToggleState()
-        {
-            if (_isGlowing)
-            {
-                SetNormalState();
-            }
-            else
-            {
-                SetGlowingState();
-            }
-        }
-
-        /// <summary>
-        /// Gets whether the hex is currently in glowing state.
-        /// </summary>
-        public bool IsGlowing => _isGlowing;
 
         /// <summary>
         /// Initializes the hex with its grid coordinate.

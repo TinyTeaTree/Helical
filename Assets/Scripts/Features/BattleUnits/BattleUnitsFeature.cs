@@ -97,7 +97,10 @@ namespace Game
                     PlayerId = playerId
                 });
             }
-            
+
+            // Update hex ownership indicators after spawning all units
+            GridSelection.UpdateHexOwnershipIndicators();
+
             Notebook.NoteData($"TMP: Spawned {Record.BattleUnits.Count} randomized battle units");
         }
 
@@ -209,7 +212,10 @@ namespace Game
                 {
                     GridSelection.UpdateSelectedCoordinate(targetCoordinate);
                 }
-                
+
+                // Update hex ownership indicators after movement
+                GridSelection.UpdateHexOwnershipIndicators();
+
                 Notebook.NoteData($"Unit moved from {unitCoordinate} to {targetCoordinate}");
             });
         }
@@ -218,19 +224,8 @@ namespace Game
         {
             var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
 
-            if (unit == null)
-            {
-                Notebook.NoteError("Rotate failed: No unit found at coordinate");
-                return;
-            }
-
             // Get the unit data
             var unitData = GetUnitData(unitCoordinate);
-            if (unitData == null)
-            {
-                Notebook.NoteError("Rotate failed: No unit data found");
-                return;
-            }
 
             // Execute the rotation - rotator will calculate and return the target direction
             unit.Rotate(unitCoordinate, targetCoordinate, unitData.Direction, (newDirection) =>
@@ -263,6 +258,11 @@ namespace Game
 
             // Get player ID
             var playerId = PlayerAccount.PlayerId;
+            if (string.IsNullOrEmpty(playerId))
+            {
+                Notebook.NoteError("Cannot spawn unit - no player logged in");
+                return false;
+            }
 
             // Create unit data
             var unitData = new BattleUnitData()
@@ -281,6 +281,9 @@ namespace Game
 
             // Spawn visually
             _visual.SpawnUnit(unitData);
+
+            // Update hex ownership indicators
+            GridSelection.UpdateHexOwnershipIndicators();
 
             Notebook.NoteData($"Spawned {unitId} for player {playerId} at {coordinate}");
             return true;

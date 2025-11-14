@@ -11,6 +11,7 @@ namespace Game
         void UpdateSelectedCoordinate(Vector2Int newCoordinate);
         bool IsCoordinateSelected(Vector2Int coordinate);
         Vector2Int GetSelectedCoordinate();
+        void UpdateHexOwnershipIndicators();
         void HandleLeftClick();
         void HandleRightClick();
     }
