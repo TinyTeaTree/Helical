@@ -58,9 +58,44 @@ namespace Game
             set => _cameraAnchorPrefab = value;
         }
 
+        public PredeterminedUnitData[] PredeterminedUnits
+        {
+            get => _data.PredeterminedUnits ?? Array.Empty<PredeterminedUnitData>();
+            set => _data.PredeterminedUnits = value ?? Array.Empty<PredeterminedUnitData>();
+        }
+
         public GridData GetData()
         {
             return _data;
+        }
+
+        public void AddPredeterminedUnit(string unitId, Vector2Int coordinate, int level, string playerId)
+        {
+            var unitData = new PredeterminedUnitData
+            {
+                UnitId = unitId,
+                Coordinate = coordinate,
+                Level = level,
+                PlayerId = playerId
+            };
+
+            var currentUnits = PredeterminedUnits;
+            Array.Resize(ref currentUnits, currentUnits.Length + 1);
+            currentUnits[currentUnits.Length - 1] = unitData;
+            PredeterminedUnits = currentUnits;
+        }
+
+        public void RemovePredeterminedUnit(Vector2Int coordinate)
+        {
+            var currentUnits = PredeterminedUnits;
+            var filteredUnits = Array.FindAll(currentUnits, unit => unit.Coordinate != coordinate);
+            PredeterminedUnits = filteredUnits;
+        }
+
+        public PredeterminedUnitData? GetPredeterminedUnitAt(Vector2Int coordinate)
+        {
+            var unit = Array.Find(PredeterminedUnits, u => u.Coordinate == coordinate);
+            return unit.UnitId != null ? unit : (PredeterminedUnitData?)null;
         }
 
         private bool IsWithinBounds(Vector2Int coordinate)

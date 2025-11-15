@@ -30,78 +30,60 @@ namespace Game
         public UniTask BattleLaunch()
         {
             Record.BattleUnits.Clear();
-            
-            TMP_PopulateTestBattleUnits();
-            
+
+            // Load predetermined units from grid data
+            LoadPredeterminedUnits();
+
             return UniTask.CompletedTask;
         }
         
-        // TODO: Remove this temporary function - for testing only
-        private void TMP_PopulateTestBattleUnits()
+        private void LoadPredeterminedUnits()
         {
-            var playerId = _bootstrap.Features.Get<IPlayerAccount>().PlayerId;
-            var random = new System.Random();
-            var directions = System.Enum.GetValues(typeof(HexDirection));
-            
-            // Get available unit IDs from the asset pack
-            var availableUnitIds = _assetPack.GetAvailableUnitIds();
-            if (availableUnitIds.Count == 0)
+            var gridData = Grid.GetGridData();
+
+            if (gridData.PredeterminedUnits == null || gridData.PredeterminedUnits.Length == 0)
             {
-                Notebook.NoteError("No units available in asset pack!");
+                Notebook.NoteData("No predetermined units found in grid data");
                 return;
             }
-            
-            int unitsToSpawn = 16;
-            int attempts = 0;
-            int maxAttempts = 100; // Prevent infinite loop
-            
-            while (Record.BattleUnits.Count < unitsToSpawn && attempts < maxAttempts)
+
+            foreach (var unitData in gridData.PredeterminedUnits)
             {
-                attempts++;
-                
-                // Generate random coordinate (spread across the map)
-                var randomCoordinate = new Vector2Int(
-                    random.Next(5, 25),  // x between 5 and 25
-                    random.Next(5, 25)   // y between 5 and 25
-                );
-                
-                // Check if a unit already exists at this coordinate
-                if (Record.BattleUnits.Exists(u => u.Coordinate == randomCoordinate))
+                // Get unit config to get proper health value
+                var unitConfig = _config.GetBattleUnit(unitData.UnitId);
+                if (unitConfig == null)
                 {
+                    Notebook.NoteWarning($"Unit config not found for {unitData.UnitId}, skipping");
                     continue;
                 }
 
-                if (!Grid.IsValidForAbility(AbilityMode.Spawn, randomCoordinate))
+                // Validate that the spawn location is valid
+                if (!Grid.IsValidForAbility(AbilityMode.Spawn, unitData.Coordinate))
                 {
+                    Notebook.NoteWarning($"Invalid spawn location for {unitData.UnitId} at {unitData.Coordinate}, skipping");
                     continue;
-                }   
-                
-                // Randomly select a unit type from available units
-                var randomUnitId = availableUnitIds[random.Next(availableUnitIds.Count)];
-                
-                // Get unit config to get proper health value
-                var unitConfig = _config.GetBattleUnit(randomUnitId);
-                int unitHealth = unitConfig != null ? unitConfig.MaxHealth : 40; // Fallback to 40 if config not found
-                
-                // Random direction
-                var randomDirection = (HexDirection)directions.GetValue(random.Next(directions.Length));
-                
-                Record.BattleUnits.Add(new BattleUnitData()
+                }
+
+                // Create the battle unit data
+                var battleUnitData = new BattleUnitData()
                 {
-                    BattleUnitId = randomUnitId,
-                    Coordinate = randomCoordinate,
-                    Direction = randomDirection,
-                    Health = unitHealth,
-                    Level = random.Next(1, 6), // Random level between 1 and 5
+                    BattleUnitId = unitData.UnitId,
+                    Coordinate = unitData.Coordinate,
+                    Direction = unitData.PlayerId == "Bot" ? HexDirection.South : HexDirection.North,
+                    Health = unitConfig.MaxHealth,
+                    Level = unitData.Level,
                     IsDead = false,
-                    PlayerId = "Bot" //These units should belong to Bot
-                });
+                    PlayerId = unitData.PlayerId
+                };
+
+                Record.BattleUnits.Add(battleUnitData);
+                Notebook.NoteData($"Loaded predetermined unit: {unitData.UnitId} (Lv.{unitData.Level}) for {unitData.PlayerId} at {unitData.Coordinate}");
             }
 
-            // Update hex ownership indicators after spawning all units
+            // Update hex ownership indicators after loading all units
             GridSelection.UpdateHexOwnershipIndicators();
 
-            Notebook.NoteData($"TMP: Spawned {Record.BattleUnits.Count} randomized battle units");
+            Notebook.NoteData($"Loaded {Record.BattleUnits.Count} predetermined battle units");
         }
 
         public void SpawnAllUnits()

@@ -6,6 +6,9 @@ using UnityEngine;
 public class EditorHexOperator : MonoBehaviour
 {
     [SerializeField] private HexType _selectedType;
+    [SerializeField] private string _selectedUnitId = "";
+    [SerializeField] private int _selectedUnitLevel = 1;
+    [SerializeField] private string _selectedPlayerId = "Bot";
 
     private MapMaker _mapMaker;
     private HexOperator _hexOperator;
@@ -28,6 +31,29 @@ public class EditorHexOperator : MonoBehaviour
     public void ApplySelectedType()
     {
         _mapMaker.UpdateHexType(Coordinate, _selectedType, transform);
+    }
+
+    public void PlaceUnit()
+    {
+        if (!string.IsNullOrEmpty(_selectedUnitId))
+        {
+            _mapMaker.PlaceUnitAtHex(Coordinate, _selectedUnitId, _selectedUnitLevel, _selectedPlayerId);
+        }
+    }
+
+    public void RemoveUnit()
+    {
+        _mapMaker.RemoveUnitFromHex(Coordinate);
+    }
+
+    public bool HasUnit()
+    {
+        return _mapMaker.HasUnitAtHex(Coordinate);
+    }
+
+    public string GetUnitInfo()
+    {
+        return _mapMaker.GetUnitInfoAtHex(Coordinate);
     }
 }
 #endif

@@ -1821,5 +1821,10 @@ MonoBehaviour:
     - Coordinate: {x: 22, y: 2}
       Direction: 240
       CastleType: Castle
+    PredeterminedUnits:
+    - UnitId: Skeleton
+      Coordinate: {x: 19, y: 3}
+      Level: 1
+      PlayerId: Bot
   _gluePrefab: {fileID: 4731352953195900519, guid: 73b13c449d4d349f9a142ba388385f11, type: 3}
   _cameraAnchorPrefab: {fileID: 4133344158574701148, guid: f6064ee5e180f49b3a724661f2fc9517, type: 3}

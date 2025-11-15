@@ -11,9 +11,12 @@ public class MapMaker : MonoBehaviour
     [SerializeField] private GridSO _grid;
     [SerializeField] private GridResourcePack _resourcePack;
     [SerializeField] private CastleAssetPack _castleAssetPack;
+    [SerializeField] private BattleUnitsAssetPack _battleUnitsAssetPack;
     [SerializeField] private Transform _gridRoot;
     [SerializeField] private Camera _sceneCamera;
     [SerializeField] private HexOperator _hexNone;
+
+    public CastleAssetPack CastleAssetPack => _castleAssetPack;
 
 #if UNITY_EDITOR
     public GridSO Grid => _grid;
@@ -65,6 +68,15 @@ public class MapMaker : MonoBehaviour
             foreach (var castleData in gridData.Castles)
             {
                 CreateCastleInstance(castleData, parent);
+            }
+        }
+
+        // Spawn predetermined units
+        if (gridData.PredeterminedUnits != null)
+        {
+            foreach (var unitData in gridData.PredeterminedUnits)
+            {
+                CreateUnitInstance(unitData, parent);
             }
         }
 
@@ -150,14 +162,12 @@ public class MapMaker : MonoBehaviour
         }
 
         var hexOperator = instance.GetComponent<HexOperator>();
-        hexOperator.SetNormalState();
-        hexOperator.Initialize(coordinate);
         AttachEditorHexOperator(instance, type);
 
         return instance;
     }
 
-    private void CreateCastleInstance(CastleData castleData, Transform parent)
+    public void CreateCastleInstance(CastleData castleData, Transform parent)
     {
         var worldPosition = castleData.Coordinate.ToWorldXZ();
         var rotation = castleData.Direction.ToRotation();
@@ -179,6 +189,27 @@ public class MapMaker : MonoBehaviour
         var castleOperator = instance.GetComponent<CastleOperator>();
         castleOperator.Initialize(castleData.Coordinate);
         castleOperator.SetNormalState();
+    }
+
+    private void CreateUnitInstance(PredeterminedUnitData unitData, Transform parent)
+    {
+        var worldPosition = unitData.Coordinate.ToWorldXZ();
+
+        var prefab = _battleUnitsAssetPack.GetUnitPrefab(unitData.UnitId);
+        if (prefab == null)
+        {
+            Debug.LogWarning($"Unit prefab not found for type: {unitData.UnitId}");
+            return;
+        }
+
+        var instance = PrefabUtility.InstantiatePrefab(prefab.gameObject, parent) as GameObject;
+        Undo.RegisterCreatedObjectUndo(instance, "Create Unit");
+
+        instance.name = $"Unit_{unitData.UnitId}_{unitData.Coordinate.x}_{unitData.Coordinate.y}";
+        instance.transform.localPosition = new Vector3(worldPosition.x, 0f, worldPosition.y);
+        instance.transform.localRotation = Quaternion.identity;
+
+        var baseUnit = instance.GetComponent<BaseBattleUnit>();
     }
 
     private void AttachEditorHexOperator(GameObject instance, HexType hexType)
@@ -260,6 +291,35 @@ public class MapMaker : MonoBehaviour
     {
         EditorUtility.SetDirty(_grid);
         AssetDatabase.SaveAssets();
+    }
+
+    public void PlaceUnitAtHex(Vector2Int coordinate, string unitId, int level, string playerId)
+    {
+        Undo.RegisterCompleteObjectUndo(_grid, "Place Unit");
+        _grid.AddPredeterminedUnit(unitId, coordinate, level, playerId);
+        MarkGridDirty();
+    }
+
+    public void RemoveUnitFromHex(Vector2Int coordinate)
+    {
+        Undo.RegisterCompleteObjectUndo(_grid, "Remove Unit");
+        _grid.RemovePredeterminedUnit(coordinate);
+        MarkGridDirty();
+    }
+
+    public bool HasUnitAtHex(Vector2Int coordinate)
+    {
+        return _grid.GetPredeterminedUnitAt(coordinate).HasValue;
+    }
+
+    public string GetUnitInfoAtHex(Vector2Int coordinate)
+    {
+        var unitData = _grid.GetPredeterminedUnitAt(coordinate);
+        if (unitData.HasValue)
+        {
+            return $"{unitData.Value.UnitId} (Lv.{unitData.Value.Level}) - {unitData.Value.PlayerId}";
+        }
+        return "No Unit";
     }
 #endif
 }

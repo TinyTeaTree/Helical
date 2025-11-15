@@ -445,6 +445,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game::MapMaker
   _grid: {fileID: 11400000, guid: 050624fc5beb44e58b53eccab7ffb2e8, type: 2}
   _resourcePack: {fileID: 11400000, guid: b0913cc5760864c3988d0eb77ac06355, type: 2}
+  _castleAssetPack: {fileID: 11400000, guid: e97cd84be737741ff8ee8cf713c52889, type: 2}
+  _battleUnitsAssetPack: {fileID: 11400000, guid: 258b0a00f6e61401f911c66f01bf9b44, type: 2}
   _gridRoot: {fileID: 1528848219}
   _sceneCamera: {fileID: 961739752}
   _hexNone: {fileID: 3398057374557846970, guid: 71c71d5fcf05049318387c6fa8130145, type: 3}
