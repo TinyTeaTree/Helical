@@ -9,6 +9,7 @@ public class EditorHexOperator : MonoBehaviour
     [SerializeField] private string _selectedUnitId = "";
     [SerializeField] private int _selectedUnitLevel = 1;
     [SerializeField] private string _selectedPlayerId = "Bot";
+    [SerializeField] private HexDirection _selectedUnitDirection = HexDirection.South;
 
     private MapMaker _mapMaker;
     private HexOperator _hexOperator;
@@ -37,7 +38,7 @@ public class EditorHexOperator : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(_selectedUnitId))
         {
-            _mapMaker.PlaceUnitAtHex(Coordinate, _selectedUnitId, _selectedUnitLevel, _selectedPlayerId);
+            _mapMaker.PlaceUnitAtHex(Coordinate, _selectedUnitId, _selectedUnitLevel, _selectedPlayerId, _selectedUnitDirection);
         }
     }
 

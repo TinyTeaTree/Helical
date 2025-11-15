@@ -69,14 +69,15 @@ namespace Game
             return _data;
         }
 
-        public void AddPredeterminedUnit(string unitId, Vector2Int coordinate, int level, string playerId)
+        public void AddPredeterminedUnit(string unitId, Vector2Int coordinate, int level, string playerId, HexDirection direction)
         {
             var unitData = new PredeterminedUnitData
             {
                 UnitId = unitId,
                 Coordinate = coordinate,
                 Level = level,
-                PlayerId = playerId
+                PlayerId = playerId,
+                Direction = direction
             };
 
             var currentUnits = PredeterminedUnits;

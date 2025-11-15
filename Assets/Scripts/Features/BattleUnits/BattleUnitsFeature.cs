@@ -69,7 +69,7 @@ namespace Game
                 {
                     BattleUnitId = unitData.UnitId,
                     Coordinate = unitData.Coordinate,
-                    Direction = unitData.PlayerId == "Bot" ? HexDirection.South : HexDirection.North,
+                    Direction = unitData.Direction,
                     Health = unitConfig.MaxHealth,
                     Level = unitData.Level,
                     IsDead = false,

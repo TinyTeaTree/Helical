@@ -57,6 +57,13 @@ public class EditorHexOperatorEditor : Editor
             SetSerializedFieldValue(editorHex, "_selectedPlayerId", selectedPlayerId);
         }
 
+        EditorGUI.BeginChangeCheck();
+        HexDirection selectedDirection = (HexDirection)EditorGUILayout.EnumPopup("Direction", GetSerializedFieldValue<HexDirection>(editorHex, "_selectedUnitDirection"));
+        if (EditorGUI.EndChangeCheck())
+        {
+            SetSerializedFieldValue(editorHex, "_selectedUnitDirection", selectedDirection);
+        }
+
         // Unit action buttons
         EditorGUILayout.BeginHorizontal();
 

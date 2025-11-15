@@ -207,9 +207,14 @@ public class MapMaker : MonoBehaviour
 
         instance.name = $"Unit_{unitData.UnitId}_{unitData.Coordinate.x}_{unitData.Coordinate.y}";
         instance.transform.localPosition = new Vector3(worldPosition.x, 0f, worldPosition.y);
-        instance.transform.localRotation = Quaternion.identity;
+        instance.transform.localRotation = unitData.Direction.ToRotation();
 
+        // Initialize the unit ID for editor preview (don't use full Initialize as it may require runtime systems)
         var baseUnit = instance.GetComponent<BaseBattleUnit>();
+        if (baseUnit != null)
+        {
+            baseUnit.Initialize(unitData.UnitId);
+        }
     }
 
     private void AttachEditorHexOperator(GameObject instance, HexType hexType)
@@ -293,11 +298,21 @@ public class MapMaker : MonoBehaviour
         AssetDatabase.SaveAssets();
     }
 
-    public void PlaceUnitAtHex(Vector2Int coordinate, string unitId, int level, string playerId)
+    public void PlaceUnitAtHex(Vector2Int coordinate, string unitId, int level, string playerId, HexDirection direction)
     {
+        // Check if there's already a unit at this coordinate
+        if (_grid.GetPredeterminedUnitAt(coordinate).HasValue)
+        {
+            // Remove existing unit first
+            _grid.RemovePredeterminedUnit(coordinate);
+        }
+
         Undo.RegisterCompleteObjectUndo(_grid, "Place Unit");
-        _grid.AddPredeterminedUnit(unitId, coordinate, level, playerId);
+        _grid.AddPredeterminedUnit(unitId, coordinate, level, playerId, direction);
         MarkGridDirty();
+
+        // Update the level to show the new unit
+        PopulateLevel();
     }
 
     public void RemoveUnitFromHex(Vector2Int coordinate)
@@ -305,6 +320,9 @@ public class MapMaker : MonoBehaviour
         Undo.RegisterCompleteObjectUndo(_grid, "Remove Unit");
         _grid.RemovePredeterminedUnit(coordinate);
         MarkGridDirty();
+
+        // Update the level to remove the unit visually
+        PopulateLevel();
     }
 
     public bool HasUnitAtHex(Vector2Int coordinate)
@@ -317,7 +335,7 @@ public class MapMaker : MonoBehaviour
         var unitData = _grid.GetPredeterminedUnitAt(coordinate);
         if (unitData.HasValue)
         {
-            return $"{unitData.Value.UnitId} (Lv.{unitData.Value.Level}) - {unitData.Value.PlayerId}";
+            return $"{unitData.Value.UnitId} (Lv.{unitData.Value.Level}) - {unitData.Value.PlayerId} - {unitData.Value.Direction}";
         }
         return "No Unit";
     }

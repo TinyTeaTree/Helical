@@ -17,6 +17,7 @@ namespace Game
         public Vector2Int Coordinate;
         public int Level;
         public string PlayerId; // "Bot" for bot units, player ID for player units
+        public HexDirection Direction;
     }
 
     [System.Serializable]
