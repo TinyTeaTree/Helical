@@ -118,5 +118,21 @@ namespace Game
             position = gridSO.CameraAnchorPrefab.transform.position;
             rotation = gridSO.CameraAnchorPrefab.transform.rotation;
         }
+
+        // IHexProvider implementation
+        GridData IHexProvider.GetGridData()
+        {
+            return Record.GridData;
+        }
+
+        bool IHexProvider.IsValidForMovement(Vector2Int coordinate)
+        {
+            return IsValidForAbility(AbilityMode.Move, coordinate);
+        }
+
+        bool IHexProvider.IsOccupied(Vector2Int coordinate)
+        {
+            return BattleUnits.GetUnitData(coordinate) != null;
+        }
     }
 }

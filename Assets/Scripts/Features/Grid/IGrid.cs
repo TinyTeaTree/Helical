@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public interface IGrid : IFeature
+    public interface IGrid : IFeature, IHexProvider
     {
 
         UniTask LoadGrid(string gridId);

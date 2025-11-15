@@ -173,13 +173,13 @@ namespace Game
         public void ExecuteMove(Vector2Int unitCoordinate, Vector2Int targetCoordinate)
         {
             var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
-            
+
             if (unit == null)
             {
                 Notebook.NoteError("Move failed: No unit found at coordinate");
                 return;
             }
-            
+
             // Get the unit data
             var unitData = GetUnitData(unitCoordinate);
             if (unitData == null)
@@ -187,44 +187,90 @@ namespace Game
                 Notebook.NoteError("Move failed: No unit data found");
                 return;
             }
-            
+
+            // Calculate path using A* pathfinding
+            var path = HexPathfinder.CalculatePath(Grid, unitCoordinate, targetCoordinate);
+
+            if (!path.IsValid)
+            {
+                Notebook.NoteWarning($"No valid path found from {unitCoordinate} to {targetCoordinate}");
+                return;
+            }
+
+            // Execute movement along the path
+            ExecutePathMovement(unit, unitData, path);
+        }
+
+        private void ExecutePathMovement(BaseBattleUnit unit, BattleUnitData unitData, TravelPath path)
+        {
+            if (path.TotalSteps == 0)
+            {
+                // Already at destination, just update ownership indicators
+                GridSelection.UpdateHexOwnershipIndicators();
+                Notebook.NoteData($"Unit is already at destination {path.EndCoordinate}");
+                return;
+            }
+
+            // Clear ownership from starting position
+            var startHexOperator = Grid.GetHexOperatorAtCoordinate(path.StartCoordinate);
+            if (startHexOperator != null)
+            {
+                startHexOperator.SetHasPlayerUnit(false);
+                startHexOperator.SetHasBotUnit(false);
+            }
+
+            // Execute movement step by step
+            ExecutePathStep(unit, unitData, path, 0);
+        }
+
+        private void ExecutePathStep(BaseBattleUnit unit, BattleUnitData unitData, TravelPath path, int stepIndex)
+        {
+            if (stepIndex >= path.TotalSteps)
+            {
+                // Movement complete
+                unitData.Coordinate = path.EndCoordinate;
+
+                // Update GridSelection coordinate if this unit was selected
+                if (GridSelection.IsCoordinateSelected(path.StartCoordinate))
+                {
+                    GridSelection.UpdateSelectedCoordinate(path.EndCoordinate);
+                }
+
+                // Update hex ownership indicators
+                GridSelection.UpdateHexOwnershipIndicators();
+
+                Notebook.NoteData($"Unit completed path movement to {path.EndCoordinate}");
+                return;
+            }
+
+            var step = path.Steps[stepIndex];
+            var targetWorldPosition = Grid.GetWorldPosition(step.Coordinate);
+
             // Execute rotation (in parallel with move)
-            // The rotator will calculate the target direction and return it
-            unit.Rotate(unitCoordinate, targetCoordinate, unitData.Direction, (newDirection) =>
+            unit.Rotate(unitData.Coordinate, step.Coordinate, unitData.Direction, (newDirection) =>
             {
                 // Update direction after rotation completes
                 unitData.Direction = newDirection;
             });
-            
-            // Execute move (in parallel with rotation)
-            var targetWorldPosition = Grid.GetWorldPosition(targetCoordinate);
+
+            // Execute move to this step
             unit.Move(targetWorldPosition, () =>
             {
-                // Update the unit coordinate in the record after movement is complete
-                unitData.Coordinate = targetCoordinate;
-                
-                // Update the visual's coordinate tracking
-                _visual.UpdateUnitCoordinate(unitCoordinate, targetCoordinate);
-                
-                // Clear ownership from the old hex position
-                var oldHexOperator = Grid.GetHexOperatorAtCoordinate(unitCoordinate);
-                if (oldHexOperator != null)
+                // Update current position
+                unitData.Coordinate = step.Coordinate;
+
+                // Update visual coordinate tracking
+                if (stepIndex == 0)
                 {
-                    oldHexOperator.SetHasPlayerUnit(false);
-                    oldHexOperator.SetHasBotUnit(false);
+                    _visual.UpdateUnitCoordinate(path.StartCoordinate, step.Coordinate);
+                }
+                else
+                {
+                    _visual.UpdateUnitCoordinate(path.Steps[stepIndex - 1].Coordinate, step.Coordinate);
                 }
 
-                // Update the GridSelection coordinate to track the unit's new position
-                // Only update if this unit was the one selected
-                if (GridSelection.IsCoordinateSelected(unitCoordinate))
-                {
-                    GridSelection.UpdateSelectedCoordinate(targetCoordinate);
-                }
-
-                // Update hex ownership indicators after movement
-                GridSelection.UpdateHexOwnershipIndicators();
-
-                Notebook.NoteData($"Unit moved from {unitCoordinate} to {targetCoordinate}");
+                // Continue to next step
+                ExecutePathStep(unit, unitData, path, stepIndex + 1);
             });
         }
         
