@@ -2426,7 +2426,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game::Game.BattleUnitMover
   _moveDuration: 0.5
   _moveEase: 7
-  _jumpHeight: 0.5
+  _jumpHeight: 0
 --- !u!114 &2730430511404531632
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -22,6 +22,7 @@ namespace Game
         [Inject] public IGrid Grid { get; set; }
         [Inject] public IBattleUnits BattleUnits { get; set; }
         [Inject] public IGridSelection GridSelection { get; set; }
+        [Inject] public IBattleAssets BattleAssets { get; set; }
 
         private BattleUnitsConfig _battleUnitsConfig;
         private BattleUnitsAssetPack _battleUnitsAssetPack;
@@ -107,6 +108,30 @@ namespace Game
             HexDirection castleDirection = GetCastleDirectionAtCoordinate(castleCoordinate);
             Vector2Int spawnCoordinate = GridUtils.NextHex(castleCoordinate, castleDirection);
             int unitCost = Castle.GetUnitCost(castleType, unitId);
+
+            // Check if player can afford the unit
+            if (!BattleAssets.CanAfford(unitCost))
+            {
+                Notebook.NoteWarning($"Cannot afford {unitId} - costs {unitCost} gold, have {BattleAssets.GoldAmount}");
+                return;
+            }
+
+            // Check if the spawn location is valid
+            if (!Grid.IsValidForAbility(AbilityMode.Spawn, spawnCoordinate))
+            {
+                Notebook.NoteWarning($"Cannot spawn {unitId} at {spawnCoordinate} - invalid location");
+                return;
+            }
+
+            // Check if a unit already exists at the spawn location
+            if (BattleUnits.GetUnitData(spawnCoordinate) != null)
+            {
+                Notebook.NoteWarning($"Cannot spawn {unitId} at {spawnCoordinate} - location occupied");
+                return;
+            }
+
+            // Now deduct the gold
+            BattleAssets.TrySpendGold(unitCost);
 
             Notebook.NoteData($"Purchasing {unitId} for {unitCost} gold at {castleType}");
             BattleUnits.SpawnUnitAtCoordinate(unitId, spawnCoordinate);

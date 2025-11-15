@@ -54,6 +54,7 @@ namespace Game
             _factories.Add(typeof(InputDetectionVisual), new GenerateVisualFactory());
             _factories.Add(typeof(CastleVisual), new GenerateVisualFactory());
             _factories.Add(typeof(CastleGUIVisual), new ResourceFactory(Addresses.CastleGUIVisual));
+            _factories.Add(typeof(BattleAssetsVisual), new ResourceFactory(Addresses.BattleAssetsVisual));
         }
 
         protected override void AddAgents()

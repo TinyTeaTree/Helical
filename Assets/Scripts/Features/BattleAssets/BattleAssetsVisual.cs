@@ -6,10 +6,29 @@ namespace Game
 {
     public class BattleAssetsVisual : BaseVisual<BattleAssetsFeature>
     {
-        //TODO: API To turn this on and off
         [SerializeField] private GameObject _currencyBarRoot;
-
-        //TOD: this needs to be the gold amount
         [SerializeField] private TMP_Text _goldAmount;
+
+        private void Awake()
+        {
+            // Start hidden
+            _currencyBarRoot.SetActive(false);
+        }
+
+        public void Show()
+        {
+            _currencyBarRoot.SetActive(true);
+            UpdateGoldDisplay();
+        }
+
+        public void Hide()
+        {
+            _currencyBarRoot.SetActive(false);
+        }
+
+        public void UpdateGoldDisplay()
+        {
+            _goldAmount.text = Feature.GoldAmount.ToString();
+        }
     }
 }
