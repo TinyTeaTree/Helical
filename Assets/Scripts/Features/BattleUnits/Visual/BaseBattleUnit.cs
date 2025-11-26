@@ -10,6 +10,7 @@ namespace Game
         [SerializeField] protected Animator _animator;
         [SerializeField] protected BattleUnitMover _mover;
         [SerializeField] protected BattleUnitRotator _rotator;
+        [SerializeField] protected Transform _healthBarAnchor;
 
         public virtual void Initialize(string unitId)
         {
