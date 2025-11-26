@@ -14,7 +14,7 @@ namespace Game
         {
             var worldPosition = Feature.Grid.GetWorldPosition(unitData.Coordinate);
             var rotation = unitData.Direction.ToRotation();
-            
+
             var prefab = Feature.AssetPack.GetUnitPrefab(unitData.BattleUnitId);
             var unitInstance = Summoner.CreateAsset(prefab, transform);
             unitInstance.transform.localPosition = worldPosition;
@@ -23,6 +23,7 @@ namespace Game
             var battleUnit = unitInstance.GetComponent<BaseBattleUnit>();
             battleUnit.Initialize(unitData.BattleUnitId);
 
+            Feature.Hud.CreateWidget(Feature.AssetPack.HealthBarPrefab, battleUnit.HealthBarAnchor);
             // Track unit by coordinate (one unit per coordinate)
             _unitsByCoordinate[unitData.Coordinate] = battleUnit;
 
@@ -35,6 +36,7 @@ namespace Game
             var coordinateToRemove = _unitsByCoordinate.FirstOrDefault(kvp => kvp.Value == battleUnit).Key;
             if (_unitsByCoordinate.ContainsKey(coordinateToRemove))
             {
+                Feature.Hud.DestroyWidget(battleUnit.HealthBarAnchor);
                 _unitsByCoordinate.Remove(coordinateToRemove);
                 Destroy(battleUnit.gameObject);
             }

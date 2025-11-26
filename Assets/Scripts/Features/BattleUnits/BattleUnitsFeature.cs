@@ -13,6 +13,7 @@ namespace Game
         [Inject] public IGrid Grid { get; set; }
         [Inject] public IGridSelection GridSelection { get; set; }
         [Inject] public IPlayerAccount PlayerAccount { get; set; }
+        [Inject] public IHud Hud { get; set; }
 
         private BattleUnitsConfig _config;
         private BattleUnitsAssetPack _assetPack;

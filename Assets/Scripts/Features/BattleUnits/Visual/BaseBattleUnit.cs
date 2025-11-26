@@ -12,6 +12,8 @@ namespace Game
         [SerializeField] protected BattleUnitRotator _rotator;
         [SerializeField] protected Transform _healthBarAnchor;
 
+        public Transform HealthBarAnchor => _healthBarAnchor;
+
         public virtual void Initialize(string unitId)
         {
             OnInitialized(unitId);

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Game
 {
-    public class BattleUnitHealthBar : MonoBehaviour
+    public class BattleUnitHealthBar : Widget
     {
         [SerializeField] private Image _fill;
     }

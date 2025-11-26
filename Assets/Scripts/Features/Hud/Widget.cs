@@ -50,16 +50,9 @@ namespace Game
             // Check if the position is in front of the camera
             if (screenPosition.z > 0)
             {
-                // Convert screen position to canvas position
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    canvasRect,
-                    screenPosition,
-                    camera,
-                    out Vector2 canvasPosition);
-
-                // Update the widget's position
+                // For overlay canvas, screen position maps directly to canvas position
                 var rectTransform = transform as RectTransform;
-                rectTransform.anchoredPosition = canvasPosition;
+                rectTransform.anchoredPosition = screenPosition;
 
                 // Ensure the widget is visible
                 gameObject.SetActive(true);

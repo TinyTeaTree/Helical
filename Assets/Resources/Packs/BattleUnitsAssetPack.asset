@@ -22,3 +22,4 @@ MonoBehaviour:
   - UnitId: Axeman
     Prefab: {fileID: 2921704868182811208, guid: c2a69675c41b64014bb430794cae2bb6, type: 3}
     Photo: {fileID: 21300000, guid: ec66658a06b144b549c45ebaf3971d9c, type: 3}
+  _healthBarPrefab: {fileID: 7502316853730035356, guid: fd49dfe5d03c448e5a423e88d76362ff, type: 3}

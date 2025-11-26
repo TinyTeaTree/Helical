@@ -58,6 +58,12 @@ namespace Game
             // Instantiate the widget using Summoner
             var widgetInstance = Summoner.CreateAsset(widgetPrefab, _visual.OnTopCanvas.transform);
 
+            // Ensure the widget is anchored to bottom-left for proper screen space positioning
+            var rectTransform = widgetInstance.GetComponent<RectTransform>();
+            rectTransform.anchorMin = Vector2.zero; // bottom-left
+            rectTransform.anchorMax = Vector2.zero; // bottom-left
+            rectTransform.pivot = new Vector2(0.5f, 0.5f); // pivot at center
+
             // Set up the widget
             widgetInstance.TrackedTransform = trackedTransform;
 

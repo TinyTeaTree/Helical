@@ -18,6 +18,8 @@ namespace Game
     {
         [SerializeField]
         private List<BattleUnitPrefabEntry> _unitEntries = new List<BattleUnitPrefabEntry>();
+        [SerializeField]
+        private BattleUnitHealthBar _healthBarPrefab;
 
         private Dictionary<string, GameObject> _unitLookup;
 
@@ -77,6 +79,8 @@ namespace Game
             }
             return null;
         }
+
+        public BattleUnitHealthBar HealthBarPrefab => _healthBarPrefab;
     }
 }
 

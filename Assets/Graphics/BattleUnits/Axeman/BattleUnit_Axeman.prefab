@@ -2393,6 +2393,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2359315289523755353}
+  - {fileID: 5074811237157049475}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5513452826300285272
@@ -2411,6 +2412,7 @@ MonoBehaviour:
   _animator: {fileID: 2245292816952312609}
   _mover: {fileID: 8155589462604612625}
   _rotator: {fileID: 2730430511404531632}
+  _healthBarAnchor: {fileID: 5074811237157049475}
   _glowComponent: {fileID: 0}
 --- !u!114 &8155589462604612625
 MonoBehaviour:
@@ -2939,6 +2941,37 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0023957267, y: 0.2155547, z: 1.7502902}
     m_Extent: {x: 0.13854417, y: 0.19037233, z: 0.20638561}
   m_DirtyAABB: 0
+--- !u!1 &3659364757170337109
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5074811237157049475}
+  m_Layer: 0
+  m_Name: HealthBarAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5074811237157049475
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3659364757170337109}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.961, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6092530186197651324}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3815926333208845432
 GameObject:
   m_ObjectHideFlags: 0

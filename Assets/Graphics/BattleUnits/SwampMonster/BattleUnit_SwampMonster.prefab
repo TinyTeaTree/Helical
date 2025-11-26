@@ -1171,6 +1171,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7633732678746168211}
   m_LocalEulerAnglesHint: {x: 0, y: -90.00001, z: -90}
+--- !u!1 &6970874240741778043
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2250516736161477827}
+  m_Layer: 0
+  m_Name: HealthBar Anchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2250516736161477827
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6970874240741778043}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.089, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6078694751248700257}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7749498369032446125
 GameObject:
   m_ObjectHideFlags: 0
@@ -1349,6 +1380,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7633732678746168211}
+  - {fileID: 2250516736161477827}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &937208366710088124
@@ -1367,6 +1399,7 @@ MonoBehaviour:
   _animator: {fileID: 1776664213151724975}
   _mover: {fileID: 7269029703549394849}
   _rotator: {fileID: 5723066099554795150}
+  _healthBarAnchor: {fileID: 2250516736161477827}
   _glowComponent: {fileID: 5220608596956495727}
 --- !u!114 &5220608596956495727
 MonoBehaviour:
