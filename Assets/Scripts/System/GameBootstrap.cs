@@ -39,6 +39,7 @@ namespace Game
             _features.Add<ICastle>(new CastleFeature());
             _features.Add<ICastleGUI>(new CastleGUIFeature());
             _features.Add<IBattleAssets>(new BattleAssetsFeature());
+            _features.Add<ITurn>(new TurnFeature());
             //<New Feature>
         }
 
@@ -80,6 +81,7 @@ namespace Game
             _records.Add(typeof(InputDetectionRecord), new InputDetectionRecord());
             _records.Add(typeof(CastleRecord), new CastleRecord());
             _records.Add(typeof(BattleAssetsRecord), new BattleAssetsRecord());
+            _records.Add(typeof(TurnRecord), new TurnRecord());
             //<New Record>
         }
 

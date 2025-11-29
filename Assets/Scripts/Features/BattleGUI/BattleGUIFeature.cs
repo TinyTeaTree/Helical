@@ -10,6 +10,7 @@ namespace Game
         [Inject] public IGridSelection GridSelection { get; set; }
         [Inject] public ILocalConfigService ConfigService { get; set; }
         [Inject] public IPlayerAccount PlayerAccount { get; set; }
+        [Inject] public ITurn Turn { get; set; }
 
         private BattleUnitsConfig _config;
         private BattleUnitsAssetPack _assetPack;
@@ -31,6 +32,7 @@ namespace Game
 
             await CreateVisual();
             _visual.gameObject.SetActive(true);
+            Turn.ProvideTurnBar(_visual.GetComponentInChildren<TurnBarVisual>());
             HideUnitSelection();
         }
 
