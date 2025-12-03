@@ -68,7 +68,8 @@ namespace Game
                 Ability = ability,
                 ActionPoints = moveAction.ActionPointsRequired,
                 Interception = moveAction.ActionInterception,
-                Target = targetCoordinate
+                Target = targetCoordinate,
+                ActionPointStart = currentActionPointsUsed
             };
 
             unitData.TurnOrder.Actions.Add(newAction);

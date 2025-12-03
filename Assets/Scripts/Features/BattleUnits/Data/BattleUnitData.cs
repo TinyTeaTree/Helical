@@ -12,6 +12,8 @@ namespace Game
             public Vector2Int Target;
             public int ActionPoints;
             public int Interception;
+
+            public int ActionPointStart; //TODO; seed this, this stars at 0
         }
 
         [System.Serializable]

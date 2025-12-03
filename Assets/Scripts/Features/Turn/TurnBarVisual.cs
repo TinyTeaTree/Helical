@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using Core;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game
 {
@@ -15,6 +17,7 @@ namespace Game
 
         [SerializeField] private Transform _root;
         [SerializeField] private List<TurnWidget> _widgets;
+        [SerializeField] private Image _turnFill; //TODO: Use This
         
         private List<TurnWidget> _orderedWidgets =  new List<TurnWidget>();
 
@@ -42,18 +45,34 @@ namespace Game
         {
             Clean();
 
+            // Calculate total action points used
+            int totalActionPointsUsed = unitDataTurnOrder.Actions.Sum(action => action.ActionPoints);
+
             foreach (var action in unitDataTurnOrder.Actions)
             {
-                var widget = _widgets.Find(widget => widget.Ability == action.Ability);
-                widget = new TurnWidget()
+                var widgetPrefab = _widgets.Find(widget => widget.Ability == action.Ability);
+                var widget = new TurnWidget()
                 {
                     Ability = action.Ability,
-                    Widget = Instantiate(widget.Widget, widget.Widget.transform.parent)
+                    Widget = Instantiate(widgetPrefab.Widget, _root)
                 };
-                
+
+                // Position widget based on action point end (start + duration) (1000 units = 100 action points)
+                float actionPointRatio = (float)(action.ActionPointStart + action.ActionPoints) / 100f;
+                float xOffset = actionPointRatio * 1000f;
+                var rectTransform = widget.Widget.GetComponent<RectTransform>();
+                rectTransform.anchoredPosition = new Vector2(xOffset, rectTransform.anchoredPosition.y);
+
                 widget.Widget.SetActive(true);
-                
+
                 _orderedWidgets.Add(widget);
+            }
+
+            // Fill image with the amount of Action Points by ratio from 100 action points
+            if (_turnFill != null)
+            {
+                float fillRatio = Mathf.Min((float)totalActionPointsUsed / 100f, 1f);
+                _turnFill.fillAmount = fillRatio;
             }
         }
     }
