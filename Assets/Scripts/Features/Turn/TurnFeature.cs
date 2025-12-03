@@ -1,6 +1,7 @@
 using System.Linq;
 using Core;
 using Cysharp.Threading.Tasks;
+using Services;
 using UnityEngine;
 
 namespace Game
@@ -49,14 +50,27 @@ namespace Game
             var unitData = BattleUnits.GetUnitData(unitCoordinate);
             var unitConfig = BattleUnits.GetUnitConfig(unitData.BattleUnitId);
             var moveAction = unitConfig.Actions.First(a => a.Ability == ability);
+
+            // Calculate current total action points used
+            int currentActionPointsUsed = unitData.TurnOrder.Actions.Sum(action => action.ActionPoints);
+
+            // Check if adding this action would exceed the unit's action points limit
+            int newActionPoints = moveAction.ActionPointsRequired;
+            if (currentActionPointsUsed + newActionPoints > unitConfig.ActionPoints)
+            {
+                DJ.Play(DJ.Wrong_Sound);
+                Notebook.NoteWarning($"Cannot order action: would exceed action points limit. Current: {currentActionPointsUsed}, New: {newActionPoints}, Limit: {unitConfig.ActionPoints}");
+                return;
+            }
+
             var newAction = new BattleUnitData.Action()
             {
                 Ability = ability,
-                ActionPoints =moveAction.ActionPointsRequired,
+                ActionPoints = moveAction.ActionPointsRequired,
                 Interception = moveAction.ActionInterception,
                 Target = targetCoordinate
             };
-            
+
             unitData.TurnOrder.Actions.Add(newAction);
 
             _turnBarVisual.ShowMyTurn(unitData.TurnOrder);
