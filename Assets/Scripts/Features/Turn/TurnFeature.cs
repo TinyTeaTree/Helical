@@ -75,6 +75,7 @@ namespace Game
             unitData.TurnOrder.Actions.Add(newAction);
 
             _turnBarVisual.ShowMyTurn(unitData.TurnOrder);
+            DJ.Play(DJ.Click_Sound);
         }
 
         public void OnTurnClicked()

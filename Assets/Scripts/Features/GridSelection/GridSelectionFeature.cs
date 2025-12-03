@@ -1,3 +1,4 @@
+using System;
 using Agents;
 using Core;
 using Cysharp.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Game
         [Inject] public ICastleGUI CastleGUI { get; set; }
         [Inject] public IPlayerAccount PlayerAccount { get; set; }
         [Inject] public ITurn Turn { get; set; }
+        [Inject] public ICursor Cursor { get; set; }
         
         private HexOperator _currentlySelectedHex;
         private CastleOperator _currentlySelectedCastle;
@@ -54,10 +56,11 @@ namespace Game
             
             Record.ClearSelection();
             Record.ClearAbilityMode();
-            
+            Cursor.SetCursorMode(AbilityMode.None);
+
             // Clear battle unit selection
             BattleUnits.UpdateUnitSelection(null);
-            
+
             // Hide the battle GUI
             BattleGUI.HideUnitSelection();
         }
@@ -133,6 +136,7 @@ namespace Game
         public void SetAbilityMode(AbilityMode mode)
         {
             Record.SetAbilityMode(mode);
+            Cursor.SetCursorMode(mode);
             Notebook.NoteData($"Ability mode set to: {mode}");
         }
         
@@ -208,6 +212,7 @@ namespace Game
                 // Select the castle normally, but clear the ability mode to prevent bugs
                 SelectCastle(castleOperator, coordinate);
                 Record.ClearAbilityMode();
+                Cursor.SetCursorMode(AbilityMode.None);
 
                 // Lerp camera to castle coordinate
                 CameraMove.LerpToCoordinate(coordinate);
@@ -328,6 +333,7 @@ namespace Game
             DeselectCastle();
             Record.ClearSelection();
             Record.ClearAbilityMode();
+            Cursor.SetCursorMode(AbilityMode.None);
         }
 
         /// <summary>
@@ -386,6 +392,7 @@ namespace Game
 
             // Clear ability mode after attack
             Record.ClearAbilityMode();
+            Cursor.SetCursorMode(AbilityMode.None);
 
             Notebook.NoteData($"Attack executed from {attackerCoordinate} to {targetCoordinate}");
         }
@@ -419,6 +426,7 @@ namespace Game
 
             // Clear ability mode after move
             Record.ClearAbilityMode();
+            Cursor.SetCursorMode(AbilityMode.None);
         }
         
         private void HandleRotateMode(Vector2Int targetCoordinate)
@@ -433,10 +441,11 @@ namespace Game
             Vector2Int unitCoordinate = Record.SelectedCoordinate.Value;
             
             Turn.OrderTurn(unitCoordinate, targetCoordinate, AbilityMode.Rotate);
-            
+
             // Clear ability mode after rotation
             Record.ClearAbilityMode();
-            
+            Cursor.SetCursorMode(AbilityMode.None);
+
             Notebook.NoteData($"Rotate executed for unit at {unitCoordinate} towards {targetCoordinate}");
         }
         
@@ -450,13 +459,14 @@ namespace Game
             }
 
             Record.ClearSelection();
-            
+            Cursor.SetCursorMode(AbilityMode.None);
+
             BattleUnits.UpdateUnitSelection(null);
-            
+
             BattleGUI.HideUnitSelection();
-            
+
             DJ.Play(DJ.SelectOff_Sound);
-            
+
             Notebook.NoteData("Deselected hex");
         }
     }
