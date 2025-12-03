@@ -41,8 +41,8 @@ namespace Game
             var coordinate = GridSelection.GetSelectedCoordinate();
             var unitData = BattleUnits.GetUnitData(coordinate);
             var unitConfig = BattleUnits.GetUnitConfig(unitData.BattleUnitId);
-            
-            _turnBarVisual.ShowMyTurn(unitData.TurnOrder);
+
+            _turnBarVisual.ShowMyTurn(unitData.TurnOrder, unitConfig.ActionPoints);
         }
 
         public void OrderTurn(Vector2Int unitCoordinate, Vector2Int targetCoordinate, AbilityMode ability)
@@ -74,7 +74,7 @@ namespace Game
 
             unitData.TurnOrder.Actions.Add(newAction);
 
-            _turnBarVisual.ShowMyTurn(unitData.TurnOrder);
+            _turnBarVisual.ShowMyTurn(unitData.TurnOrder, unitConfig.ActionPoints);
             DJ.Play(DJ.Click_Sound);
         }
 
