@@ -129,7 +129,7 @@ namespace Game
             return _config.GetBattleUnit(unitId);
         }
         
-        public async UniTask ExecuteAttack(Vector2Int attackerCoordinate, Vector2Int targetCoordinate)
+        public async UniTask ExecuteAttack(Vector2Int attackerCoordinate, Vector2Int targetCoordinate, int actionPoints)
         {
             var attackerUnit = _visual.GetUnitAtCoordinate(attackerCoordinate);
 
@@ -146,7 +146,7 @@ namespace Game
                 // Execute rotation (in parallel with attack)
                 // The rotator will calculate the target direction and return it
                 attackerUnit
-                    .Rotate(attackerCoordinate, targetCoordinate, unitData.Direction)
+                    .Rotate(attackerCoordinate, targetCoordinate, unitData.Direction, 0.3f) // Default duration for manual rotation
                     .ContinueWith(newDirection =>
                     {
                         unitData.Direction = newDirection;
@@ -166,7 +166,7 @@ namespace Game
             Notebook.NoteData($"Unit at {attackerCoordinate} attacked target at {targetCoordinate}");
         }
         
-        public async UniTask ExecuteMove(Vector2Int unitCoordinate, Vector2Int targetCoordinate)
+        public async UniTask ExecuteMove(Vector2Int unitCoordinate, Vector2Int targetCoordinate, int actionPoints)
         {
             var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
 
@@ -243,7 +243,7 @@ namespace Game
             var targetWorldPosition = Grid.GetWorldPosition(step.Coordinate);
 
             // Execute rotation (in parallel with move)
-            unit.Rotate(unitData.Coordinate, step.Coordinate, unitData.Direction)
+            unit.Rotate(unitData.Coordinate, step.Coordinate, unitData.Direction, 0.3f) // Default duration for path movement
                 .ContinueWith(newDirection =>
                 {
                     unitData.Direction = newDirection;
@@ -271,16 +271,19 @@ namespace Game
             await ExecutePathStep(unit, unitData, path, stepIndex + 1);
         }
         
-        public async UniTask ExecuteRotate(Vector2Int unitCoordinate, Vector2Int targetCoordinate)
+        public async UniTask ExecuteRotate(Vector2Int unitCoordinate, Vector2Int targetCoordinate, int actionPoints)
         {
             var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
 
             // Get the unit data
             var unitData = GetUnitData(unitCoordinate);
 
-            // Execute the rotation - rotator will calculate and return the target direction
-            var newDirection = await unit.Rotate(unitCoordinate, targetCoordinate, unitData.Direction);
-            
+            // Calculate duration from action points using central constant
+            float duration = actionPoints * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
+
+            // Execute the rotation with calculated duration
+            var newDirection = await unit.Rotate(unitCoordinate, targetCoordinate, unitData.Direction, duration);
+
             // Update the unit data direction after rotation is complete
             unitData.Direction = newDirection;
         }

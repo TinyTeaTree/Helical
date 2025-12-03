@@ -7,7 +7,6 @@ namespace Game
     public class BattleUnitRotator : MonoBehaviour
     {
         [Header("Rotation Settings")]
-        [SerializeField] private float _rotationDuration = 0.3f;
         [SerializeField] private Ease _rotationEase = Ease.OutQuad;
         
         private Tween _currentRotationTween;
@@ -19,8 +18,8 @@ namespace Game
         /// <param name="fromCoordinate">The unit's current coordinate</param>
         /// <param name="toCoordinate">The target coordinate to face towards</param>
         /// <param name="currentDirection">The unit's current facing direction</param>
-        /// <param name="onComplete">Callback when rotation is complete, receives the new target direction</param>
-        public async UniTask<HexDirection> RotateTowardsCoordinate(Vector2Int fromCoordinate, Vector2Int toCoordinate, HexDirection currentDirection)
+        /// <param name="duration">Duration in seconds for the rotation</param>
+        public async UniTask<HexDirection> RotateTowardsCoordinate(Vector2Int fromCoordinate, Vector2Int toCoordinate, HexDirection currentDirection, float duration)
         {
             // Calculate the nearest direction from current to target coordinate
             HexDirection targetDirection = HexDirectionExtensions.GetNearestDirection(fromCoordinate, toCoordinate);
@@ -35,7 +34,7 @@ namespace Game
             int rotationDirection = currentDirection.GetRotationDirection(targetDirection);
             
             // Perform the rotation
-            await RotateToDirection(targetDirection, rotationDirection);
+            await RotateToDirection(targetDirection, rotationDirection, duration);
 
             return targetDirection;
         }
@@ -45,8 +44,8 @@ namespace Game
         /// </summary>
         /// <param name="targetDirection">The HexDirection to face</param>
         /// <param name="rotationDirection">+1 for clockwise, -1 for counter-clockwise</param>
-        /// <param name="onComplete">Callback when rotation is complete</param>
-        private async UniTask RotateToDirection(HexDirection targetDirection, int rotationDirection)
+        /// <param name="duration">Duration in seconds for the rotation</param>
+        private async UniTask RotateToDirection(HexDirection targetDirection, int rotationDirection, float duration)
         {
             // Kill any existing rotation tween
             _currentRotationTween?.Kill();
@@ -85,7 +84,7 @@ namespace Game
                 // Create rotation tween using the calculated angle
                 _currentRotationTween = transform.DORotate(
                     new Vector3(0f, currentY + angleDiff, 0f),
-                    _rotationDuration,
+                    duration,
                     RotateMode.FastBeyond360
                 )
                 .SetEase(_rotationEase)

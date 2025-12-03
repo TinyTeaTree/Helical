@@ -8,6 +8,9 @@ namespace Game
 {
     public class TurnFeature : BaseVisualFeature<TurnVisual>, ITurn
     {
+        // Action timing constants
+        public const float SECONDS_PER_100_ACTION_POINTS = 5f;
+
         [Inject] public TurnRecord Record { get; set; }
         [Inject] public BattleUnitsRecord UnitsRecord { get; set; }
         [Inject] public IGridSelection GridSelection { get; set; }
@@ -110,15 +113,15 @@ namespace Game
             {
                 if (action.Ability == AbilityMode.Move)
                 {
-                    await BattleUnits.ExecuteMove(unit.Coordinate, action.Target);
+                    await BattleUnits.ExecuteMove(unit.Coordinate, action.Target, action.ActionPoints);
                 }
                 else if (action.Ability == AbilityMode.Rotate)
                 {
-                    await BattleUnits.ExecuteRotate(unit.Coordinate, action.Target);
+                    await BattleUnits.ExecuteRotate(unit.Coordinate, action.Target, action.ActionPoints);
                 }
                 else if (action.Ability == AbilityMode.Attack)
                 {
-                    await BattleUnits.ExecuteAttack(unit.Coordinate, action.Target);
+                    await BattleUnits.ExecuteAttack(unit.Coordinate, action.Target, action.ActionPoints);
                 }
             }
             Record.UnitsExecuting--;

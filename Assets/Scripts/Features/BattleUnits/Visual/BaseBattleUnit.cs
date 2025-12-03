@@ -59,10 +59,10 @@ namespace Game
         /// <param name="fromCoordinate">The unit's current coordinate</param>
         /// <param name="toCoordinate">The target coordinate to face towards</param>
         /// <param name="currentDirection">The unit's current facing direction</param>
-        /// <param name="onComplete">Callback when rotation is complete, receives the new target direction</param>
-        public virtual UniTask<HexDirection> Rotate(Vector2Int fromCoordinate, Vector2Int toCoordinate, HexDirection currentDirection)
+        /// <param name="duration">Duration in seconds for the rotation</param>
+        public virtual UniTask<HexDirection> Rotate(Vector2Int fromCoordinate, Vector2Int toCoordinate, HexDirection currentDirection, float duration)
         {
-            return _rotator.RotateTowardsCoordinate(fromCoordinate, toCoordinate, currentDirection);
+            return _rotator.RotateTowardsCoordinate(fromCoordinate, toCoordinate, currentDirection, duration);
         }
 
         protected virtual void OnInitialized(string unitId)
