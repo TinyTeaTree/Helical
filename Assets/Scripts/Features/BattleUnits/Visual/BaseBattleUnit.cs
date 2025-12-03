@@ -22,7 +22,7 @@ namespace Game
             OnInitialized(unitId);
         }
         
-        public abstract UniTask Attack();
+        public abstract UniTask Attack(float duration);
         public abstract void SetIsMove(bool isMoving);
         public abstract void SetIsDead(bool isDead);
         public abstract void GetHit();

@@ -154,8 +154,11 @@ namespace Game
                     .Forget();
             }
 
-            // Execute attack (in parallel with rotation)
-            await attackerUnit.Attack();
+            // Calculate duration from action points using central constant
+            float duration = actionPoints * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
+
+            // Execute attack with calculated duration (in parallel with rotation)
+            await attackerUnit.Attack(duration);
 
             // Check for enemy in facing direction and deal damage
             if (unitData != null)

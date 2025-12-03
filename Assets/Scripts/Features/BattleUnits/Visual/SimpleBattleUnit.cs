@@ -22,12 +22,19 @@ namespace Game
             // Simple battle unit initialization
         }
 
-        public override async UniTask Attack()
+        public override async UniTask Attack(float duration)
         {
+            // Calculate animator speed to make animation take the desired duration
+            float speedMultiplier = AttackAnimationDuration / duration;
+            _animator.speed = speedMultiplier;
+
             _animator.SetTrigger(AttackTrigger);
-            
-            //TODO: actually delay action points
-            await UniTask.Delay(TimeSpan.FromSeconds(1f));
+
+            // Wait for the attack animation to complete
+            await UniTask.Delay(TimeSpan.FromSeconds(duration));
+
+            // Always reset animator speed to 1
+            _animator.speed = 1f;
         }
 
         public override void GetHit()
