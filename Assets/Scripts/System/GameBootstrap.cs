@@ -40,6 +40,7 @@ namespace Game
             _features.Add<ICastleGUI>(new CastleGUIFeature());
             _features.Add<IBattleAssets>(new BattleAssetsFeature());
             _features.Add<ITurn>(new TurnFeature());
+            _features.Add<ICursor>(new CursorFeature());
             //<New Feature>
         }
 
