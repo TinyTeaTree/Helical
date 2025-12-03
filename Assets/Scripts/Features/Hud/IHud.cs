@@ -15,7 +15,8 @@ namespace Game
         /// </summary>
         /// <param name="widgetPrefab">The Widget prefab to instantiate</param>
         /// <param name="trackedTransform">The world transform to track</param>
-        void CreateWidget(Widget widgetPrefab, Transform trackedTransform);
+        /// <returns>The created widget instance</returns>
+        Widget CreateWidget(Widget widgetPrefab, Transform trackedTransform);
 
         /// <summary>
         /// Destroys the widget associated with the specified tracked transform.

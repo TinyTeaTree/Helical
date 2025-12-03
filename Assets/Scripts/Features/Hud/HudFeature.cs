@@ -41,18 +41,19 @@ namespace Game
         /// </summary>
         /// <param name="widgetPrefab">The Widget prefab to instantiate</param>
         /// <param name="trackedTransform">The world transform to track</param>
-        public void CreateWidget(Widget widgetPrefab, Transform trackedTransform)
+        /// <returns>The created widget instance</returns>
+        public Widget CreateWidget(Widget widgetPrefab, Transform trackedTransform)
         {
             if (!IsReady)
             {
                 Notebook.NoteError("Can't create Widget while Hud is not ready");
-                return;
+                return null;
             }
 
             if (_widgetRegistrations.ContainsKey(trackedTransform))
             {
                 Notebook.NoteError($"Widget already exists for tracked transform: {trackedTransform.name}");
-                return;
+                return null;
             }
 
             // Instantiate the widget using Summoner
@@ -70,6 +71,8 @@ namespace Game
             // Create registration and store it
             var registration = new WidgetRegistration(widgetInstance, trackedTransform);
             _widgetRegistrations[trackedTransform] = registration;
+
+            return widgetInstance;
         }
 
         /// <summary>

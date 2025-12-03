@@ -23,7 +23,13 @@ namespace Game
             var battleUnit = unitInstance.GetComponent<BaseBattleUnit>();
             battleUnit.Initialize(unitData.BattleUnitId);
 
-            Feature.Hud.CreateWidget(Feature.AssetPack.HealthBarPrefab, battleUnit.HealthBarAnchor);
+            // Create health bar widget and store reference in the unit
+            var healthBarWidget = Feature.Hud.CreateWidget(Feature.AssetPack.HealthBarPrefab, battleUnit.HealthBarAnchor);
+            battleUnit.SetHealthBarWidget(healthBarWidget as BattleUnitHealthBar);
+
+            // Initialize health bar to full health
+            battleUnit.UpdateHealthBar(1.0f);
+
             // Track unit by coordinate (one unit per coordinate)
             _unitsByCoordinate[unitData.Coordinate] = battleUnit;
 

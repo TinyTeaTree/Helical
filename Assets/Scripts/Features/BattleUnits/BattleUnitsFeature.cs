@@ -132,13 +132,13 @@ namespace Game
         public async UniTask ExecuteAttack(Vector2Int attackerCoordinate, Vector2Int targetCoordinate)
         {
             var attackerUnit = _visual.GetUnitAtCoordinate(attackerCoordinate);
-            
+
             if (attackerUnit == null)
             {
                 Notebook.NoteError("Attack failed: No attacker unit found");
                 return;
             }
-            
+
             // Get the unit data to get current direction
             var unitData = GetUnitData(attackerCoordinate);
             if (unitData != null)
@@ -153,10 +153,16 @@ namespace Game
                     })
                     .Forget();
             }
-            
+
             // Execute attack (in parallel with rotation)
             await attackerUnit.Attack();
-            
+
+            // Check for enemy in facing direction and deal damage
+            if (unitData != null)
+            {
+                DealDamageToTarget(attackerCoordinate, unitData.Direction, unitData.PlayerId);
+            }
+
             Notebook.NoteData($"Unit at {attackerCoordinate} attacked target at {targetCoordinate}");
         }
         
@@ -331,6 +337,85 @@ namespace Game
             return true;
         }
         
+        private void DealDamageToTarget(Vector2Int attackerCoordinate, HexDirection facingDirection, string attackerPlayerId)
+        {
+            // Calculate the target coordinate in the facing direction
+            var targetCoordinate = GridUtils.NextHex(attackerCoordinate, facingDirection);
+
+            // Check if there's a unit at the target coordinate
+            var targetUnitData = GetUnitData(targetCoordinate);
+            if (targetUnitData == null)
+            {
+                Notebook.NoteData($"No unit found at {targetCoordinate} to attack");
+                return;
+            }
+
+            // Check if the target is an enemy (different player ID)
+            if (targetUnitData.PlayerId == attackerPlayerId)
+            {
+                Notebook.NoteData($"Cannot attack own unit at {targetCoordinate}");
+                return;
+            }
+
+            // Get attacker config to determine damage
+            var attackerConfig = GetUnitConfig(GetUnitData(attackerCoordinate)?.BattleUnitId);
+            if (attackerConfig == null)
+            {
+                Notebook.NoteError("Cannot find attacker config for damage calculation");
+                return;
+            }
+
+            // Calculate damage (for now, basic calculation)
+            int damage = attackerConfig.AttackPower;
+
+            // Apply damage to target
+            targetUnitData.Health -= damage;
+            targetUnitData.Health = Mathf.Max(0, targetUnitData.Health); // Ensure health doesn't go below 0
+
+            // Trigger hit animation on target unit
+            var targetUnit = _visual.GetUnitAtCoordinate(targetCoordinate);
+            targetUnit?.GetHit();
+
+            // Update health bar
+            UpdateUnitHealthBar(targetCoordinate, targetUnitData.Health, targetUnitData.IsDead);
+
+            Notebook.NoteData($"Unit at {attackerCoordinate} dealt {damage} damage to enemy at {targetCoordinate}. Enemy health: {targetUnitData.Health}");
+
+            // Check if target is dead
+            if (targetUnitData.Health <= 0 && !targetUnitData.IsDead)
+            {
+                targetUnitData.IsDead = true;
+                HandleUnitDeath(targetCoordinate);
+                Notebook.NoteData($"Unit at {targetCoordinate} has died");
+            }
+        }
+
+        private void UpdateUnitHealthBar(Vector2Int unitCoordinate, int currentHealth, bool isDead)
+        {
+            var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
+            if (unit != null)
+            {
+                // Get the unit config to know max health
+                var unitData = GetUnitData(unitCoordinate);
+                var unitConfig = GetUnitConfig(unitData?.BattleUnitId);
+                if (unitConfig != null)
+                {
+                    float healthPercentage = isDead ? 0f : (float)currentHealth / unitConfig.MaxHealth;
+                    unit.UpdateHealthBar(healthPercentage);
+                }
+            }
+        }
+
+        private void HandleUnitDeath(Vector2Int unitCoordinate)
+        {
+            var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
+            if (unit != null)
+            {
+                unit.SetIsDead(true);
+                // Note: Unit despawning will be handled by the turn system or battle end
+            }
+        }
+
         private void ClearUnitSelection()
         {
             var allUnits = _visual.GetSpawnedUnits();

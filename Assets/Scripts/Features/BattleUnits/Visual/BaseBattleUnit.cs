@@ -13,6 +13,8 @@ namespace Game
         [SerializeField] protected BattleUnitRotator _rotator;
         [SerializeField] protected Transform _healthBarAnchor;
 
+        protected BattleUnitHealthBar _healthBarWidget;
+
         public Transform HealthBarAnchor => _healthBarAnchor;
 
         public virtual void Initialize(string unitId)
@@ -26,7 +28,14 @@ namespace Game
         public abstract void GetHit();
         
         public abstract void SetGlow(bool isGlowing);
-        
+
+        public abstract void UpdateHealthBar(float healthPercentage);
+
+        public void SetHealthBarWidget(BattleUnitHealthBar widget)
+        {
+            _healthBarWidget = widget;
+        }
+
         /// <summary>
         /// Moves the unit to the target world position
         /// </summary>

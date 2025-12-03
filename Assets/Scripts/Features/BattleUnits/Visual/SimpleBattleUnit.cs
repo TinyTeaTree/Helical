@@ -46,5 +46,13 @@ namespace Game
         {
             _glowComponent?.SetGlow(isGlowing);
         }
+
+        public override void UpdateHealthBar(float healthPercentage)
+        {
+            if (_healthBarWidget != null)
+            {
+                _healthBarWidget.UpdateFill(healthPercentage);
+            }
+        }
     }
 }
