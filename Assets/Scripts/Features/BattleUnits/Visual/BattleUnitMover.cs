@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace Game
         /// <summary>
         /// Moves the unit from its current position to the target world position
         /// </summary>
-        public void MoveToPosition(Vector3 targetPosition, System.Action onComplete = null)
+        public async UniTask MoveToPosition(Vector3 targetPosition, System.Action onComplete = null)
         {
             // Kill any existing movement tween
             _currentMoveTween?.Kill();
@@ -27,6 +28,8 @@ namespace Game
                 {
                     onComplete?.Invoke();
                 });
+
+            await _currentMoveTween.AsyncWaitForCompletion();
         }
         
         /// <summary>

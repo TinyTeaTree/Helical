@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Core;
 using TMPro;
 using UnityEngine;
@@ -7,12 +9,19 @@ namespace Game
 {
     public class BattleGUIVisual : BaseVisual<BattleGUIFeature>
     {
+        [System.Serializable]
+        public class ButtonType
+        {
+            public GameObject Root;
+            public Button Button;
+            public AbilityMode Ability;
+        }
+        
+        [SerializeField] private TurnBarVisual _turnBarVisual;
+        [SerializeField] private List<ButtonType> _buttonTypes;
+        
         [SerializeField] private GameObject _gui;
         [SerializeField] private GameObject _controls;
-        
-        [SerializeField] private Button _attackButton;
-        [SerializeField] private Button _moveButton;
-        [SerializeField] private Button _rotateButton;
         
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_Text _level;
@@ -20,16 +29,9 @@ namespace Game
 
         private void Awake()
         {
-            _attackButton.onClick.AddListener(OnAttackButtonClicked);
-            _moveButton.onClick.AddListener(OnMoveButtonClicked);
-            _rotateButton.onClick.AddListener(OnRotateButtonClicked);
-        }
-
-        private void OnDestroy()
-        {
-            _attackButton.onClick.RemoveListener(OnAttackButtonClicked);
-            _moveButton.onClick.RemoveListener(OnMoveButtonClicked);
-            _rotateButton.onClick.RemoveListener(OnRotateButtonClicked);
+            _buttonTypes.FirstOrDefault(b => b.Ability == AbilityMode.Attack).Button.onClick.AddListener(OnAttackButtonClicked);
+            _buttonTypes.FirstOrDefault(b => b.Ability == AbilityMode.Move).Button.onClick.AddListener(OnMoveButtonClicked);
+            _buttonTypes.FirstOrDefault(b => b.Ability == AbilityMode.Rotate).Button.onClick.AddListener(OnRotateButtonClicked);
         }
 
         private void OnAttackButtonClicked()
@@ -61,12 +63,28 @@ namespace Game
         public void ShowUnitSelection(bool isMyUnit)
         {
             _gui.SetActive(true);
+            _turnBarVisual.SetVisibility(isMyUnit);
             _controls.SetActive(isMyUnit);
         }
 
         public void HideUnitSelection()
         {
             _gui.SetActive(false);
+        }
+
+        public void SetUnitActions(IEnumerable<AbilityMode> select)
+        {
+            foreach (var button in _buttonTypes)
+            {
+                if (!select.Contains(button.Ability))
+                {
+                    button.Root.SetActive(false);
+                }
+                else
+                {
+                    button.Root.SetActive(true);
+                }
+            }
         }
     }
 }

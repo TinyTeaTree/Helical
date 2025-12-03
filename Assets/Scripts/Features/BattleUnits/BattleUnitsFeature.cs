@@ -123,8 +123,13 @@ namespace Game
         {
             return Record.BattleUnits.Find(unit => unit.Coordinate == coordinate);
         }
+
+        public BattleUnitConfig GetUnitConfig(string unitId)
+        {
+            return _config.GetBattleUnit(unitId);
+        }
         
-        public void ExecuteAttack(Vector2Int attackerCoordinate, Vector2Int targetCoordinate)
+        public async UniTask ExecuteAttack(Vector2Int attackerCoordinate, Vector2Int targetCoordinate)
         {
             var attackerUnit = _visual.GetUnitAtCoordinate(attackerCoordinate);
             
@@ -140,20 +145,22 @@ namespace Game
             {
                 // Execute rotation (in parallel with attack)
                 // The rotator will calculate the target direction and return it
-                attackerUnit.Rotate(attackerCoordinate, targetCoordinate, unitData.Direction, (newDirection) =>
-                {
-                    // Update direction after rotation completes
-                    unitData.Direction = newDirection;
-                });
+                attackerUnit
+                    .Rotate(attackerCoordinate, targetCoordinate, unitData.Direction)
+                    .ContinueWith(newDirection =>
+                    {
+                        unitData.Direction = newDirection;
+                    })
+                    .Forget();
             }
             
             // Execute attack (in parallel with rotation)
-            attackerUnit.Attack();
+            await attackerUnit.Attack();
             
             Notebook.NoteData($"Unit at {attackerCoordinate} attacked target at {targetCoordinate}");
         }
         
-        public void ExecuteMove(Vector2Int unitCoordinate, Vector2Int targetCoordinate)
+        public async UniTask ExecuteMove(Vector2Int unitCoordinate, Vector2Int targetCoordinate)
         {
             var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
 
@@ -181,10 +188,10 @@ namespace Game
             }
 
             // Execute movement along the path
-            ExecutePathMovement(unit, unitData, path);
+            await ExecutePathMovement(unit, unitData, path);
         }
 
-        private void ExecutePathMovement(BaseBattleUnit unit, BattleUnitData unitData, TravelPath path)
+        private async UniTask ExecutePathMovement(BaseBattleUnit unit, BattleUnitData unitData, TravelPath path)
         {
             if (path.TotalSteps == 0)
             {
@@ -203,10 +210,10 @@ namespace Game
             }
 
             // Execute movement step by step
-            ExecutePathStep(unit, unitData, path, 0);
+            await ExecutePathStep(unit, unitData, path, 0);
         }
 
-        private void ExecutePathStep(BaseBattleUnit unit, BattleUnitData unitData, TravelPath path, int stepIndex)
+        private async UniTask ExecutePathStep(BaseBattleUnit unit, BattleUnitData unitData, TravelPath path, int stepIndex)
         {
             if (stepIndex >= path.TotalSteps)
             {
@@ -230,34 +237,35 @@ namespace Game
             var targetWorldPosition = Grid.GetWorldPosition(step.Coordinate);
 
             // Execute rotation (in parallel with move)
-            unit.Rotate(unitData.Coordinate, step.Coordinate, unitData.Direction, (newDirection) =>
-            {
-                // Update direction after rotation completes
-                unitData.Direction = newDirection;
-            });
+            unit.Rotate(unitData.Coordinate, step.Coordinate, unitData.Direction)
+                .ContinueWith(newDirection =>
+                {
+                    unitData.Direction = newDirection;
+                })
+                .Forget();
+                
 
             // Execute move to this step
-            unit.Move(targetWorldPosition, () =>
+            await unit.Move(targetWorldPosition);
+            
+            // Update current position
+            unitData.Coordinate = step.Coordinate;
+
+            // Update visual coordinate tracking
+            if (stepIndex == 0)
             {
-                // Update current position
-                unitData.Coordinate = step.Coordinate;
+                _visual.UpdateUnitCoordinate(path.StartCoordinate, step.Coordinate);
+            }
+            else
+            {
+                _visual.UpdateUnitCoordinate(path.Steps[stepIndex - 1].Coordinate, step.Coordinate);
+            }
 
-                // Update visual coordinate tracking
-                if (stepIndex == 0)
-                {
-                    _visual.UpdateUnitCoordinate(path.StartCoordinate, step.Coordinate);
-                }
-                else
-                {
-                    _visual.UpdateUnitCoordinate(path.Steps[stepIndex - 1].Coordinate, step.Coordinate);
-                }
-
-                // Continue to next step
-                ExecutePathStep(unit, unitData, path, stepIndex + 1);
-            });
+            // Continue to next step
+            await ExecutePathStep(unit, unitData, path, stepIndex + 1);
         }
         
-        public void ExecuteRotate(Vector2Int unitCoordinate, Vector2Int targetCoordinate)
+        public async UniTask ExecuteRotate(Vector2Int unitCoordinate, Vector2Int targetCoordinate)
         {
             var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
 
@@ -265,13 +273,10 @@ namespace Game
             var unitData = GetUnitData(unitCoordinate);
 
             // Execute the rotation - rotator will calculate and return the target direction
-            unit.Rotate(unitCoordinate, targetCoordinate, unitData.Direction, (newDirection) =>
-            {
-                // Update the unit data direction after rotation is complete
-                unitData.Direction = newDirection;
-
-                Notebook.NoteData($"Unit rotated to {newDirection}");
-            });
+            var newDirection = await unit.Rotate(unitCoordinate, targetCoordinate, unitData.Direction);
+            
+            // Update the unit data direction after rotation is complete
+            unitData.Direction = newDirection;
         }
 
         public bool SpawnUnitAtCoordinate(string unitId, Vector2Int coordinate)

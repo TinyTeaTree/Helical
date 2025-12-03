@@ -9,7 +9,7 @@ namespace Game
         [Inject] public BattleAssetsRecord Record { get; set; }
 
         public int GoldAmount => Record.Gold;
-
+        
         public async UniTask BattleLaunch()
         {
             // Initialize with starting gold

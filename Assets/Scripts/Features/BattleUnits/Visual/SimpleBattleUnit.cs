@@ -1,3 +1,5 @@
+using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Game
@@ -17,9 +19,12 @@ namespace Game
             // Simple battle unit initialization
         }
 
-        public override void Attack()
+        public override async UniTask Attack()
         {
             _animator.SetTrigger(AttackTrigger);
+            
+            //TODO: actually delay action points
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
         }
 
         public override void GetHit()

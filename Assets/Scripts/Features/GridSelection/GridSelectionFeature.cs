@@ -17,6 +17,7 @@ namespace Game
         [Inject] public IGrid Grid { get; set; }
         [Inject] public ICastleGUI CastleGUI { get; set; }
         [Inject] public IPlayerAccount PlayerAccount { get; set; }
+        [Inject] public ITurn Turn { get; set; }
         
         private HexOperator _currentlySelectedHex;
         private CastleOperator _currentlySelectedCastle;
@@ -118,6 +119,7 @@ namespace Game
             }
 
             // If no hit at all, deselect everything
+            Notebook.NoteError("Nothing hit, this is not planned");
             DeselectHex();
             DeselectCastle();
         }
@@ -136,19 +138,8 @@ namespace Game
         
         public void UpdateSelectedCoordinate(Vector2Int newCoordinate)
         {
-            // Get the HexOperator at the new coordinate
             var hexOperator = Grid.GetHexOperatorAtCoordinate(newCoordinate);
-            
-            if (hexOperator != null)
-            {
-                // Properly update the selection with all visual effects
-                SelectHex(hexOperator, newCoordinate);
-            }
-            else
-            {
-                // Fallback: just update the coordinate if hex operator not found
-                Record.SelectedCoordinate = newCoordinate;
-            }
+            SelectHex(hexOperator, newCoordinate);
         }
         
         public bool IsCoordinateSelected(Vector2Int coordinate)
@@ -391,8 +382,7 @@ namespace Game
                 return;
             }
 
-            // Execute the attack
-            BattleUnits.ExecuteAttack(attackerCoordinate, targetCoordinate);
+            Turn.OrderTurn(attackerCoordinate, targetCoordinate, AbilityMode.Attack);
 
             // Clear ability mode after attack
             Record.ClearAbilityMode();
@@ -425,13 +415,10 @@ namespace Game
                 return;
             }
 
-            // Execute the move
-            BattleUnits.ExecuteMove(unitCoordinate, targetCoordinate);
+            Turn.OrderTurn(unitCoordinate, targetCoordinate, AbilityMode.Move);
 
             // Clear ability mode after move
             Record.ClearAbilityMode();
-
-            Notebook.NoteData($"Move executed from {unitCoordinate} to {targetCoordinate}");
         }
         
         private void HandleRotateMode(Vector2Int targetCoordinate)
@@ -445,8 +432,7 @@ namespace Game
             
             Vector2Int unitCoordinate = Record.SelectedCoordinate.Value;
             
-            // Execute the rotation
-            BattleUnits.ExecuteRotate(unitCoordinate, targetCoordinate);
+            Turn.OrderTurn(unitCoordinate, targetCoordinate, AbilityMode.Rotate);
             
             // Clear ability mode after rotation
             Record.ClearAbilityMode();

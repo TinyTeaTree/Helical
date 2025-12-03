@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Game
@@ -19,7 +20,7 @@ namespace Game
             OnInitialized(unitId);
         }
         
-        public abstract void Attack();
+        public abstract UniTask Attack();
         public abstract void SetIsMove(bool isMoving);
         public abstract void SetIsDead(bool isDead);
         public abstract void GetHit();
@@ -29,18 +30,17 @@ namespace Game
         /// <summary>
         /// Moves the unit to the target world position
         /// </summary>
-        public virtual void Move(Vector3 targetPosition, System.Action onComplete = null)
+        public virtual async UniTask Move(Vector3 targetPosition, System.Action onComplete = null)
         {
             // Set the Move animation to true
             SetIsMove(true);
             
             // Move to the target position
-            _mover.MoveToPosition(targetPosition, () =>
-            {
-                // Set the Move animation to false when movement is complete
-                SetIsMove(false);
-                onComplete?.Invoke();
-            });
+            await _mover.MoveToPosition(targetPosition);
+            
+            // Set the Move animation to false when movement is complete
+            SetIsMove(false);
+            onComplete?.Invoke();
         }
         
         /// <summary>
@@ -51,9 +51,9 @@ namespace Game
         /// <param name="toCoordinate">The target coordinate to face towards</param>
         /// <param name="currentDirection">The unit's current facing direction</param>
         /// <param name="onComplete">Callback when rotation is complete, receives the new target direction</param>
-        public virtual void Rotate(Vector2Int fromCoordinate, Vector2Int toCoordinate, HexDirection currentDirection, System.Action<HexDirection> onComplete = null)
+        public virtual UniTask<HexDirection> Rotate(Vector2Int fromCoordinate, Vector2Int toCoordinate, HexDirection currentDirection)
         {
-            _rotator.RotateTowardsCoordinate(fromCoordinate, toCoordinate, currentDirection, onComplete);
+            return _rotator.RotateTowardsCoordinate(fromCoordinate, toCoordinate, currentDirection);
         }
 
         protected virtual void OnInitialized(string unitId)

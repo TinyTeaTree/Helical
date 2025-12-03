@@ -16,18 +16,39 @@ MonoBehaviour:
     _battleUnits:
     - _id: Skeleton
       _displayName: Skeleton
+      _actionPoints: 100
+      _actions: []
       _maxHealth: 40
       _attackPower: 3
       _defense: 1
       _moveRange: 2
     - _id: SwampMonster
       _displayName: Swamp Monster
+      _actionPoints: 80
+      _actions: []
       _maxHealth: 120
       _attackPower: 7
       _defense: 2
       _moveRange: 1
     - _id: Axeman
       _displayName: Axeman
+      _actionPoints: 120
+      _actions:
+      - Ability: 2
+        ActionPointsRequired: 40
+        ActionInterception: 10
+        MaxPerTurn: 3
+        TurnCooldown: 0
+      - Ability: 1
+        ActionPointsRequired: 60
+        ActionInterception: 30
+        MaxPerTurn: 3
+        TurnCooldown: 0
+      - Ability: 3
+        ActionPointsRequired: 10
+        ActionInterception: 10
+        MaxPerTurn: 0
+        TurnCooldown: 0
       _maxHealth: 55
       _attackPower: 4
       _defense: 1

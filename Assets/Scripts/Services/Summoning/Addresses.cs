@@ -19,6 +19,7 @@ namespace Services
         public const string HudVisual = "Visuals/Hud Visual";
         public const string LoadingScreenHud = "Visuals/Loading Screen Hud";
         public const string LobbyVisual = "Visuals/Lobby Visual";
+        public const string TurnVisual = "Visuals/Turn Visual";
         //<Resource Path End>
     }
 }

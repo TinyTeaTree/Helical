@@ -50,12 +50,20 @@ namespace Game
             _factories.Add(typeof(LobbyVisual), new ResourceFactory(Addresses.LobbyVisual));
             _factories.Add(typeof(GridVisual), new ResourceFactory(Addresses.GridVisual));
             _factories.Add(typeof(BattleUnitsVisual), new GenerateVisualFactory());
-            _factories.Add(typeof(BattleGUIVisual), new ResourceFactory(Addresses.BattleGUIVisual));
+
+            var battleGUIFactory = new CompositeChildFactory<TurnBarVisual>(
+                new ResourceFactory(Addresses.BattleGUIVisual)
+            );
+            _factories.Add(typeof(BattleGUIVisual), battleGUIFactory);
+            _factories.Add(typeof(TurnBarVisual), battleGUIFactory);
+            
             _factories.Add(typeof(CameraMoveVisual), new ResourceFactory(Addresses.CameraMoveVisual));
             _factories.Add(typeof(InputDetectionVisual), new GenerateVisualFactory());
             _factories.Add(typeof(CastleVisual), new GenerateVisualFactory());
             _factories.Add(typeof(CastleGUIVisual), new ResourceFactory(Addresses.CastleGUIVisual));
             _factories.Add(typeof(BattleAssetsVisual), new ResourceFactory(Addresses.BattleAssetsVisual));
+            
+            _factories.Add(typeof(TurnVisual), new ResourceFactory(Addresses.TurnVisual));
         }
 
         protected override void AddAgents()

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ namespace Game
         /// <param name="toCoordinate">The target coordinate to face towards</param>
         /// <param name="currentDirection">The unit's current facing direction</param>
         /// <param name="onComplete">Callback when rotation is complete, receives the new target direction</param>
-        public void RotateTowardsCoordinate(Vector2Int fromCoordinate, Vector2Int toCoordinate, HexDirection currentDirection, System.Action<HexDirection> onComplete = null)
+        public async UniTask<HexDirection> RotateTowardsCoordinate(Vector2Int fromCoordinate, Vector2Int toCoordinate, HexDirection currentDirection)
         {
             // Calculate the nearest direction from current to target coordinate
             HexDirection targetDirection = HexDirectionExtensions.GetNearestDirection(fromCoordinate, toCoordinate);
@@ -27,18 +28,16 @@ namespace Game
             // Check if already facing that direction
             if (currentDirection == targetDirection)
             {
-                onComplete?.Invoke(targetDirection);
-                return;
+                return currentDirection;
             }
             
             // Calculate rotation direction
             int rotationDirection = currentDirection.GetRotationDirection(targetDirection);
             
             // Perform the rotation
-            RotateToDirection(targetDirection, rotationDirection, () =>
-            {
-                onComplete?.Invoke(targetDirection);
-            });
+            await RotateToDirection(targetDirection, rotationDirection);
+
+            return targetDirection;
         }
         
         /// <summary>
@@ -47,7 +46,7 @@ namespace Game
         /// <param name="targetDirection">The HexDirection to face</param>
         /// <param name="rotationDirection">+1 for clockwise, -1 for counter-clockwise</param>
         /// <param name="onComplete">Callback when rotation is complete</param>
-        private void RotateToDirection(HexDirection targetDirection, int rotationDirection, System.Action onComplete = null)
+        private async UniTask RotateToDirection(HexDirection targetDirection, int rotationDirection)
         {
             // Kill any existing rotation tween
             _currentRotationTween?.Kill();
@@ -94,13 +93,9 @@ namespace Game
                 {
                     // Ensure we end up at exactly the target rotation
                     transform.rotation = targetRotation;
-                    onComplete?.Invoke();
                 });
-            }
-            else
-            {
-                // No rotation needed, already facing target
-                onComplete?.Invoke();
+
+                await _currentRotationTween.AsyncWaitForCompletion();
             }
         }
         

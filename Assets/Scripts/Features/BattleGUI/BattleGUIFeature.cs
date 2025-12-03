@@ -1,3 +1,4 @@
+using System.Linq;
 using Agents;
 using Core;
 using Cysharp.Threading.Tasks;
@@ -32,7 +33,6 @@ namespace Game
 
             await CreateVisual();
             _visual.gameObject.SetActive(true);
-            Turn.ProvideTurnBar(_visual.GetComponentInChildren<TurnBarVisual>());
             HideUnitSelection();
         }
 
@@ -48,6 +48,12 @@ namespace Game
             // Update the visual with name, level, and photo
             _visual.UpdateUnitInfo(displayName, unitData.Level, photo);
             _visual.ShowUnitSelection(unitData.PlayerId == PlayerAccount.PlayerId);
+            _visual.SetUnitActions(unitConfig.Actions.Select(a => a.Ability));
+            
+            if (unitData.PlayerId == PlayerAccount.PlayerId)
+            {
+                Turn.SelectedMyUnit();
+            }
         }
 
         public void HideUnitSelection()
