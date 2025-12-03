@@ -39,17 +39,16 @@ namespace Game
         /// <summary>
         /// Moves the unit to the target world position
         /// </summary>
-        public virtual async UniTask Move(Vector3 targetPosition, System.Action onComplete = null)
+        public virtual async UniTask Move(Vector3 targetPosition, float duration)
         {
             // Set the Move animation to true
             SetIsMove(true);
-            
-            // Move to the target position
-            await _mover.MoveToPosition(targetPosition);
-            
+
+            // Move to the target position with specified duration
+            await _mover.MoveToPosition(targetPosition, duration);
+
             // Set the Move animation to false when movement is complete
             SetIsMove(false);
-            onComplete?.Invoke();
         }
         
         /// <summary>

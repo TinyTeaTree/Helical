@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a433052693c964a1486da3757693c04b, type: 3}
   m_Name: CursorSO
   m_EditorClassIdentifier: Game::Game.CursorSO
+  _config:
+    _cursorTextures:
+    - _abilityMode: 1
+      _texture: {fileID: 2800000, guid: 3846712c53e7d451192a6346cd8dcbd2, type: 3}
+      _hotspot: {x: 16, y: 16}

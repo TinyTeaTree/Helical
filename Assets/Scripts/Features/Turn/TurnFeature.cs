@@ -15,6 +15,7 @@ namespace Game
         [Inject] public BattleUnitsRecord UnitsRecord { get; set; }
         [Inject] public IGridSelection GridSelection { get; set; }
         [Inject] public IBattleUnits BattleUnits { get; set; }
+        [Inject] public IGrid Grid { get; set; }
         
 
         private BaseFactory _turnBarFactory;
@@ -52,13 +53,79 @@ namespace Game
         {
             var unitData = BattleUnits.GetUnitData(unitCoordinate);
             var unitConfig = BattleUnits.GetUnitConfig(unitData.BattleUnitId);
-            var moveAction = unitConfig.Actions.First(a => a.Ability == ability);
+
+            if (ability == AbilityMode.Move)
+            {
+                OrderMoveActions(unitData, unitConfig, unitCoordinate, targetCoordinate);
+            }
+            else
+            {
+                OrderSingleAction(unitData, unitConfig, unitCoordinate, targetCoordinate, ability);
+            }
+
+            _turnBarVisual.ShowMyTurn(unitData.TurnOrder, unitConfig.ActionPoints);
+            DJ.Play(DJ.Click_Sound);
+        }
+
+        private void OrderMoveActions(BattleUnitData unitData, BattleUnitConfig unitConfig, Vector2Int unitCoordinate, Vector2Int targetCoordinate)
+        {
+            // Calculate path to target
+            var path = HexPathfinder.CalculatePath(Grid, unitCoordinate, targetCoordinate);
+
+            if (!path.IsValid)
+            {
+                Notebook.NoteWarning($"No valid path found from {unitCoordinate} to {targetCoordinate}");
+                DJ.Play(DJ.Wrong_Sound);
+                return;
+            }
+
+            // Get the move action configuration
+            var moveActionConfig = unitConfig.Actions.First(a => a.Ability == AbilityMode.Move);
+
+            // Calculate current total action points used
+            int currentActionPointsUsed = unitData.TurnOrder.Actions.Sum(action => action.ActionPoints);
+
+            // Each grid movement step costs the configured action points
+            int actionPointsPerMoveStep = moveActionConfig.ActionPointsRequired;
+
+            // Add move actions for each step in the path
+            for (int i = 0; i < path.TotalSteps; i++)
+            {
+                var step = path.Steps[i];
+
+                // Check if adding this step would exceed the unit's action points limit
+                if (currentActionPointsUsed + actionPointsPerMoveStep > unitConfig.ActionPoints)
+                {
+                    Notebook.NoteWarning($"Cannot add move step: would exceed action points limit. Added {i} steps out of {path.TotalSteps}");
+                    DJ.Play(DJ.Wrong_Sound);
+                    break;
+                }
+
+                var moveAction = new BattleUnitData.Action()
+                {
+                    Ability = AbilityMode.Move,
+                    ActionPoints = actionPointsPerMoveStep,
+                    Interception = moveActionConfig.ActionInterception,
+                    Target = step.Coordinate,
+                    ActionPointStart = currentActionPointsUsed
+                };
+
+                unitData.TurnOrder.Actions.Add(moveAction);
+                currentActionPointsUsed += actionPointsPerMoveStep;
+            }
+
+            Notebook.NoteData($"Ordered {unitData.TurnOrder.Actions.Count(action => action.Ability == AbilityMode.Move)} move steps");
+        }
+
+        private void OrderSingleAction(BattleUnitData unitData, BattleUnitConfig unitConfig, Vector2Int unitCoordinate, Vector2Int targetCoordinate, AbilityMode ability)
+        {
+            var actionConfig = unitConfig.Actions.First(a => a.Ability == ability);
 
             // Calculate current total action points used
             int currentActionPointsUsed = unitData.TurnOrder.Actions.Sum(action => action.ActionPoints);
 
             // Check if adding this action would exceed the unit's action points limit
-            int newActionPoints = moveAction.ActionPointsRequired;
+            int newActionPoints = actionConfig.ActionPointsRequired;
             if (currentActionPointsUsed + newActionPoints > unitConfig.ActionPoints)
             {
                 DJ.Play(DJ.Wrong_Sound);
@@ -69,16 +136,13 @@ namespace Game
             var newAction = new BattleUnitData.Action()
             {
                 Ability = ability,
-                ActionPoints = moveAction.ActionPointsRequired,
-                Interception = moveAction.ActionInterception,
+                ActionPoints = actionConfig.ActionPointsRequired,
+                Interception = actionConfig.ActionInterception,
                 Target = targetCoordinate,
                 ActionPointStart = currentActionPointsUsed
             };
 
             unitData.TurnOrder.Actions.Add(newAction);
-
-            _turnBarVisual.ShowMyTurn(unitData.TurnOrder, unitConfig.ActionPoints);
-            DJ.Play(DJ.Click_Sound);
         }
 
         public void OnTurnClicked()

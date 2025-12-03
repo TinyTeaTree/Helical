@@ -7,7 +7,6 @@ namespace Game
     public class BattleUnitMover : MonoBehaviour
     {
         [Header("Movement Settings")]
-        [SerializeField] private float _moveDuration = 0.5f;
         [SerializeField] private Ease _moveEase = Ease.InOutQuad;
         [SerializeField] private float _jumpHeight = 0.5f;
         
@@ -16,18 +15,14 @@ namespace Game
         /// <summary>
         /// Moves the unit from its current position to the target world position
         /// </summary>
-        public async UniTask MoveToPosition(Vector3 targetPosition, System.Action onComplete = null)
+        public async UniTask MoveToPosition(Vector3 targetPosition, float duration)
         {
             // Kill any existing movement tween
             _currentMoveTween?.Kill();
             
             // Create jump movement using DOTween sequence
-            _currentMoveTween = transform.DOJump(targetPosition, _jumpHeight, 1, _moveDuration)
-                .SetEase(_moveEase)
-                .OnComplete(() =>
-                {
-                    onComplete?.Invoke();
-                });
+            _currentMoveTween = transform.DOJump(targetPosition, _jumpHeight, 1, duration)
+                .SetEase(_moveEase);
 
             await _currentMoveTween.AsyncWaitForCompletion();
         }

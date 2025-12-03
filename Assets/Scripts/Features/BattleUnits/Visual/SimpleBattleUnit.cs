@@ -7,11 +7,14 @@ namespace Game
     public class SimpleBattleUnit : BaseBattleUnit
     {
         [SerializeField] private BattleUnitGlow _glowComponent;
+        [SerializeField] private AnimationClip _attackAnimationClip;
         
         private static readonly int AttackTrigger = Animator.StringToHash("Attack");
         private static readonly int GetHitTrigger = Animator.StringToHash("GetHit");
         private static readonly int IsMoveBool = Animator.StringToHash("IsWalk");
         private static readonly int IsDeadBool = Animator.StringToHash("IsDead");
+
+        private float AttackAnimationDuration => _attackAnimationClip.length; //TODO: Use this to set the Animator speed to adjust for Action Points
 
         protected override void OnInitialized(string unitId)
         {

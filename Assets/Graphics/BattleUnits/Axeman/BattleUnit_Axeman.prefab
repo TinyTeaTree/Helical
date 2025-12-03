@@ -2414,6 +2414,7 @@ MonoBehaviour:
   _rotator: {fileID: 2730430511404531632}
   _healthBarAnchor: {fileID: 5074811237157049475}
   _glowComponent: {fileID: 0}
+  _attackAnimationClip: {fileID: 1109091590377655818, guid: 7eb76ba67c7c3144a86cdaca75aaa02d, type: 3}
 --- !u!114 &8155589462604612625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2426,7 +2427,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3b21d185ebea4786a605c81c1a70ada, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game::Game.BattleUnitMover
-  _moveDuration: 0.5
   _moveEase: 7
   _jumpHeight: 0
 --- !u!114 &2730430511404531632
@@ -2441,7 +2441,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52228f3ce5d34418b88e4845ae62e7db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game::Game.BattleUnitRotator
-  _rotationDuration: 0.3
   _rotationEase: 6
 --- !u!1 &3077062106829043857
 GameObject:
