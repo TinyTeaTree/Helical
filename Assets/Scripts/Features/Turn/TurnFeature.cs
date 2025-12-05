@@ -185,7 +185,7 @@ namespace Game
                 }
                 else if (action.Ability == AbilityMode.Attack)
                 {
-                    await BattleUnits.ExecuteAttack(unit.Coordinate, action.Target, action.ActionPoints);
+                    await BattleUnits.ExecuteAttack(unit.Coordinate, action.Target, action.ActionPoints, action.Interception);
                 }
             }
             Record.UnitsExecuting--;

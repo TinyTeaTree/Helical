@@ -22,7 +22,7 @@ namespace Game
             // Simple battle unit initialization
         }
 
-        public override async UniTask Attack(float duration)
+        public override async UniTask Attack(float duration, float interceptionTime, System.Action onInterception)
         {
             // Calculate animator speed to make animation take the desired duration
             float speedMultiplier = AttackAnimationDuration / duration;
@@ -30,8 +30,19 @@ namespace Game
 
             _animator.SetTrigger(AttackTrigger);
 
-            // Wait for the attack animation to complete
-            await UniTask.Delay(TimeSpan.FromSeconds(duration));
+            // Wait for interception time and trigger damage calculation
+            if (interceptionTime > 0)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(interceptionTime));
+                onInterception?.Invoke();
+            }
+
+            // Wait for the remaining attack animation to complete
+            float remainingTime = duration - interceptionTime;
+            if (remainingTime > 0)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(remainingTime));
+            }
 
             // Always reset animator speed to 1
             _animator.speed = 1f;

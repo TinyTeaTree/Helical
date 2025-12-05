@@ -129,7 +129,7 @@ namespace Game
             return _config.GetBattleUnit(unitId);
         }
         
-        public async UniTask ExecuteAttack(Vector2Int attackerCoordinate, Vector2Int targetCoordinate, int actionPoints)
+        public async UniTask ExecuteAttack(Vector2Int attackerCoordinate, Vector2Int targetCoordinate, int actionPoints, int interceptionPoint)
         {
             var attackerUnit = _visual.GetUnitAtCoordinate(attackerCoordinate);
 
@@ -157,14 +157,18 @@ namespace Game
             // Calculate duration from action points using central constant
             float duration = actionPoints * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
 
-            // Execute attack with calculated duration (in parallel with rotation)
-            await attackerUnit.Attack(duration);
+            // Calculate interception time (when damage actually occurs)
+            float interceptionTime = interceptionPoint * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
 
-            // Check for enemy in facing direction and deal damage
-            if (unitData != null)
+            // Execute attack with calculated duration and interception timing
+            await attackerUnit.Attack(duration, interceptionTime, () =>
             {
-                DealDamageToTarget(attackerCoordinate, unitData.Direction, unitData.PlayerId);
-            }
+                // This callback is executed at the interception point
+                if (unitData != null)
+                {
+                    DealDamageToTarget(attackerCoordinate, unitData.Direction, unitData.PlayerId);
+                }
+            });
 
             Notebook.NoteData($"Unit at {attackerCoordinate} attacked target at {targetCoordinate}");
         }
