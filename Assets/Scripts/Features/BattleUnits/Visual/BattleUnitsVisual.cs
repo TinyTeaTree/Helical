@@ -8,7 +8,8 @@ namespace Game
 {
     public class BattleUnitsVisual : BaseVisual<BattleUnitsFeature>
     {
-        private Dictionary<Vector2Int, BaseBattleUnit> _unitsByCoordinate = new Dictionary<Vector2Int, BaseBattleUnit>();
+        private Dictionary<Vector2Int, BaseBattleUnit> _unitsByCoordinate = new Dictionary<Vector2Int, BaseBattleUnit>();//TODO: Refactor remove this, we dont need to keep track of additional coordinate, instead give guid to Unit in its data and set id on a visual
+        
 
         public BaseBattleUnit SpawnUnit(BattleUnitData unitData)
         {
@@ -71,7 +72,7 @@ namespace Game
         /// <summary>
         /// Updates the coordinate tracking when a unit moves from one coordinate to another
         /// </summary>
-        public void UpdateUnitCoordinate(Vector2Int oldCoordinate, Vector2Int newCoordinate)
+        public void UpdateUnitCoordinate(Vector2Int oldCoordinate, Vector2Int newCoordinate) //TODO: Refactor remove this, we dont need to keep track of additional coordinate, instead give guid to Unit in its data and set id on a visual
         {
             if (_unitsByCoordinate.TryGetValue(oldCoordinate, out var unit))
             {

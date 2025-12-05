@@ -370,10 +370,11 @@ namespace Game
             // Clear ownership from all hexes that currently have units
             foreach (var unitData in BattleUnitsRecord.BattleUnits)
             {
+                //TODO: Instead of deactivating specific hexes, just deactivate all of them.
                 var hexOperator = Grid.GetHexOperatorAtCoordinate(unitData.Coordinate);
                 if (hexOperator != null)
                 {
-                    hexOperator.SetHasPlayerUnit(false);
+                    hexOperator.SetHasPlayerUnit(false);    
                     hexOperator.SetHasBotUnit(false);
                 }
             }

@@ -1,3 +1,4 @@
+using System;
 using Agents;
 using Core;
 using Cysharp.Threading.Tasks;
@@ -173,7 +174,7 @@ namespace Game
             Notebook.NoteData($"Unit at {attackerCoordinate} attacked target at {targetCoordinate}");
         }
         
-        public async UniTask ExecuteMove(Vector2Int unitCoordinate, Vector2Int targetCoordinate, int actionPoints)
+        public async UniTask ExecuteMove(Vector2Int unitCoordinate, Vector2Int targetCoordinate, int actionPoints, int interceptionPoint)
         {
             var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
 
@@ -194,17 +195,17 @@ namespace Game
             // Calculate duration from action points using central constant
             float duration = actionPoints * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
 
-            // Execute single step movement to target coordinate with calculated duration
-            await ExecuteSingleStepMovement(unit, unitData, targetCoordinate, duration);
+            // Calculate interception time (when unit logically arrives at new position)
+            float interceptionTime = interceptionPoint * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
+
+            // Execute single step movement with interception timing
+            await ExecuteSingleStepMovement(unit, unitData, targetCoordinate, duration, interceptionTime);
         }
 
-        private async UniTask ExecuteSingleStepMovement(BaseBattleUnit unit, BattleUnitData unitData, Vector2Int targetCoordinate, float duration)
+        private async UniTask ExecuteSingleStepMovement(BaseBattleUnit unit, BattleUnitData unitData, Vector2Int targetCoordinate, float duration, float interceptionTime)
         {
             // Store the old coordinate for visual tracking
             var oldCoordinate = unitData.Coordinate;
-
-            // Calculate rotation direction to target
-            var targetDirection = HexDirectionExtensions.GetNearestDirection(unitData.Coordinate, targetCoordinate);
 
             // Execute rotation (in parallel with move)
             unit.Rotate(unitData.Coordinate, targetCoordinate, unitData.Direction, 0.3f) // Default rotation duration
@@ -217,27 +218,38 @@ namespace Game
             // Get target world position
             var targetWorldPosition = Grid.GetWorldPosition(targetCoordinate);
 
-            // Clear ownership from current position
-            var currentHexOperator = Grid.GetHexOperatorAtCoordinate(unitData.Coordinate);
-            if (currentHexOperator != null)
+            // Start movement animation
+            var moveTask = unit.Move(targetWorldPosition, duration);
+
+            // Wait for interception time and update logical position
+            if (interceptionTime > 0)
             {
-                currentHexOperator.SetHasPlayerUnit(false);
-                currentHexOperator.SetHasBotUnit(false);
+                await UniTask.Delay(TimeSpan.FromSeconds(interceptionTime));
+
+                // Update unit logical position at interception point
+                unitData.Coordinate = targetCoordinate;
+
+                // Update visual coordinate tracking
+                _visual.UpdateUnitCoordinate(oldCoordinate, targetCoordinate);//TODO: Refactor remove this, we dont need to keep track of additional coordinate, instead give guid to Unit in its data and set id on a visual
+
+                // Update hex ownership indicators
+                GridSelection.UpdateHexOwnershipIndicators();
+
+                Notebook.NoteData($"Unit logically arrived at {targetCoordinate} at interception time {interceptionTime}s");
             }
 
-            // Execute movement to target with calculated duration
-            await unit.Move(targetWorldPosition, duration);
+            // Wait for the remaining movement animation to complete
+            await moveTask;
 
-            // Update unit position
-            unitData.Coordinate = targetCoordinate;
+            // If interception hasn't happened yet, update position now
+            if (unitData.Coordinate != targetCoordinate)
+            {
+                unitData.Coordinate = targetCoordinate;
+                _visual.UpdateUnitCoordinate(oldCoordinate, targetCoordinate);//TODO: Refactor remove this, we dont need to keep track of additional coordinate, instead give guid to Unit in its data and set id on a visual
+                GridSelection.UpdateHexOwnershipIndicators();
+            }
 
-            // Update visual coordinate tracking with old and new coordinates
-            _visual.UpdateUnitCoordinate(oldCoordinate, targetCoordinate);
-
-            // Update hex ownership indicators
-            GridSelection.UpdateHexOwnershipIndicators();
-
-            Notebook.NoteData($"Unit moved to {targetCoordinate} in {duration} seconds");
+            Notebook.NoteData($"Unit movement animation completed for {targetCoordinate} in {duration} seconds");
         }
         
         public async UniTask ExecuteRotate(Vector2Int unitCoordinate, Vector2Int targetCoordinate, int actionPoints)

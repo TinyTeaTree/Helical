@@ -168,7 +168,20 @@ namespace Game
                 }
             }
             
-            
+            WaitForAllUnitsToExecuteRoutine().Forget();
+        }
+
+        private async UniTask WaitForAllUnitsToExecuteRoutine()
+        {
+            while (true)
+            {
+                if (Record.UnitsExecuting == 0)
+                {
+                    EndTurn();
+                    return;
+                }
+                await UniTask.Yield();
+            }
         }
 
         private async UniTask ExecuteTurn(BattleUnitData unit, BattleUnitData.Turn turn)
@@ -178,7 +191,7 @@ namespace Game
             {
                 if (action.Ability == AbilityMode.Move)
                 {
-                    await BattleUnits.ExecuteMove(unit.Coordinate, action.Target, action.ActionPoints);
+                    await BattleUnits.ExecuteMove(unit.Coordinate, action.Target, action.ActionPoints, action.Interception);
                 }
                 else if (action.Ability == AbilityMode.Rotate)
                 {
@@ -190,11 +203,6 @@ namespace Game
                 }
             }
             Record.UnitsExecuting--;
-
-            if (Record.UnitsExecuting == 0)
-            {
-                EndTurn();
-            }
         }
 
         private void EndTurn()
