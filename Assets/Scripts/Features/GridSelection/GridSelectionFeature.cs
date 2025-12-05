@@ -367,19 +367,11 @@ namespace Game
         /// </summary>
         public void UpdateHexOwnershipIndicators()
         {
-            // Clear ownership from all hexes that currently have units
-            foreach (var unitData in BattleUnitsRecord.BattleUnits)
-            {
-                //TODO: Instead of deactivating specific hexes, just deactivate all of them.
-                var hexOperator = Grid.GetHexOperatorAtCoordinate(unitData.Coordinate);
-                if (hexOperator != null)
-                {
-                    hexOperator.SetHasPlayerUnit(false);    
-                    hexOperator.SetHasBotUnit(false);
-                }
-            }
+            // First, clear ownership from ALL hexes to ensure no stale data remains
+            // This handles cases where units moved away from hexes
+            Grid.ClearAllHexOwnership();
 
-            // Apply ownership based on current unit positions
+            // Then, apply ownership based on current unit positions
             foreach (var unitData in BattleUnitsRecord.BattleUnits)
             {
                 var hexOperator = Grid.GetHexOperatorAtCoordinate(unitData.Coordinate);

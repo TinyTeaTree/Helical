@@ -229,8 +229,6 @@ namespace Game
                 // Update unit logical position at interception point
                 unitData.Coordinate = targetCoordinate;
 
-                // Update visual coordinate tracking
-                _visual.UpdateUnitCoordinate(oldCoordinate, targetCoordinate);//TODO: Refactor remove this, we dont need to keep track of additional coordinate, instead give guid to Unit in its data and set id on a visual
 
                 // Update hex ownership indicators
                 GridSelection.UpdateHexOwnershipIndicators();
@@ -245,7 +243,6 @@ namespace Game
             if (unitData.Coordinate != targetCoordinate)
             {
                 unitData.Coordinate = targetCoordinate;
-                _visual.UpdateUnitCoordinate(oldCoordinate, targetCoordinate);//TODO: Refactor remove this, we dont need to keep track of additional coordinate, instead give guid to Unit in its data and set id on a visual
                 GridSelection.UpdateHexOwnershipIndicators();
             }
 

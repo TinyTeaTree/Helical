@@ -8,7 +8,7 @@ namespace Game
 {
     public class BattleUnitsVisual : BaseVisual<BattleUnitsFeature>
     {
-        private Dictionary<Vector2Int, BaseBattleUnit> _unitsByCoordinate = new Dictionary<Vector2Int, BaseBattleUnit>();//TODO: Refactor remove this, we dont need to keep track of additional coordinate, instead give guid to Unit in its data and set id on a visual
+        private List<BaseBattleUnit> _spawnedUnits = new List<BaseBattleUnit>();
         
 
         public BaseBattleUnit SpawnUnit(BattleUnitData unitData)
@@ -24,6 +24,9 @@ namespace Game
             var battleUnit = unitInstance.GetComponent<BaseBattleUnit>();
             battleUnit.Initialize(unitData.BattleUnitId);
 
+            // Cache the instance GUID on the visual for future reference
+            battleUnit.InstanceGuid = unitData.InstanceGuid;
+
             // Create health bar widget and store reference in the unit
             var healthBarWidget = Feature.Hud.CreateWidget(Feature.AssetPack.HealthBarPrefab, battleUnit.HealthBarAnchor);
             battleUnit.SetHealthBarWidget(healthBarWidget as BattleUnitHealthBar);
@@ -31,54 +34,46 @@ namespace Game
             // Initialize health bar to full health
             battleUnit.UpdateHealthBar(1.0f);
 
-            // Track unit by coordinate (one unit per coordinate)
-            _unitsByCoordinate[unitData.Coordinate] = battleUnit;
+            // Add to spawned units list
+            _spawnedUnits.Add(battleUnit);
 
             return battleUnit;
         }
 
         public void DespawnUnit(BaseBattleUnit battleUnit)
         {
-            // Find and remove from coordinate tracking
-            var coordinateToRemove = _unitsByCoordinate.FirstOrDefault(kvp => kvp.Value == battleUnit).Key;
-            if (_unitsByCoordinate.ContainsKey(coordinateToRemove))
+            if (_spawnedUnits.Contains(battleUnit))
             {
                 Feature.Hud.DestroyWidget(battleUnit.HealthBarAnchor);
-                _unitsByCoordinate.Remove(coordinateToRemove);
+                _spawnedUnits.Remove(battleUnit);
                 Destroy(battleUnit.gameObject);
             }
         }
 
         public void DespawnAllUnits()
         {
-            foreach (var unit in _unitsByCoordinate.Values)
+            foreach (var unit in _spawnedUnits)
             {
                 Destroy(unit.gameObject);
             }
-            _unitsByCoordinate.Clear();
+            _spawnedUnits.Clear();
         }
 
         public IReadOnlyList<BaseBattleUnit> GetSpawnedUnits()
         {
-            return _unitsByCoordinate.Values.ToList();
+            return _spawnedUnits;
         }
         
         public BaseBattleUnit GetUnitAtCoordinate(Vector2Int coordinate)
         {
-            _unitsByCoordinate.TryGetValue(coordinate, out var unit);
-            return unit;
+            // Find the unit data at this coordinate
+            var unitData = Feature.GetUnitData(coordinate);
+            if (unitData == null)
+                return null;
+
+            // Find the visual unit with matching GUID
+            return _spawnedUnits.Find(unit => unit.InstanceGuid == unitData.InstanceGuid);
         }
         
-        /// <summary>
-        /// Updates the coordinate tracking when a unit moves from one coordinate to another
-        /// </summary>
-        public void UpdateUnitCoordinate(Vector2Int oldCoordinate, Vector2Int newCoordinate) //TODO: Refactor remove this, we dont need to keep track of additional coordinate, instead give guid to Unit in its data and set id on a visual
-        {
-            if (_unitsByCoordinate.TryGetValue(oldCoordinate, out var unit))
-            {
-                _unitsByCoordinate.Remove(oldCoordinate);
-                _unitsByCoordinate[newCoordinate] = unit;
-            }
-        }
     }
 }

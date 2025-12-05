@@ -112,6 +112,16 @@ namespace Game
             return _visual.GetHexOperatorAtCoordinate(coordinate);
         }
 
+        public void ClearAllHexOwnership()
+        {
+            var hexCache = _visual.GetHexCache();
+            foreach (var kvp in hexCache)
+            {
+                kvp.Value.instance.SetHasPlayerUnit(false);
+                kvp.Value.instance.SetHasBotUnit(false);
+            }
+        }
+
         public void GetCameraAnchor(out Vector3 position, out Quaternion rotation)
         {
             var gridSO = _gridResourcePack.GetGrid(Record.GridId);

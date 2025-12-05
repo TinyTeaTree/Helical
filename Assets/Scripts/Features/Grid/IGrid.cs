@@ -11,6 +11,7 @@ namespace Game
         Vector3 GetWorldPosition(Vector2Int coordinate);
         bool IsValidForAbility(AbilityMode ability, Vector2Int coordinate);
         HexOperator GetHexOperatorAtCoordinate(Vector2Int coordinate);
+        void ClearAllHexOwnership();
         void GetCameraAnchor(out Vector3 position, out Quaternion rotation);
     }
 }

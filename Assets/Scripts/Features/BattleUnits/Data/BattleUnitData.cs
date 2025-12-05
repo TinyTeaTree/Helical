@@ -24,7 +24,8 @@ namespace Game
         
         public string PlayerId { get; set; }
         public string BattleUnitId { get; set; }
-        
+        public string InstanceGuid { get; set; } = System.Guid.NewGuid().ToString();
+
         public Vector2Int Coordinate { get; set; }
         public HexDirection Direction { get; set; }
         

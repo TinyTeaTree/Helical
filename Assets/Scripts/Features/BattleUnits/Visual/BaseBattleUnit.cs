@@ -14,8 +14,10 @@ namespace Game
         [SerializeField] protected Transform _healthBarAnchor;
 
         protected BattleUnitHealthBar _healthBarWidget;
+        protected string _instanceGuid;
 
         public Transform HealthBarAnchor => _healthBarAnchor;
+        public string InstanceGuid { get => _instanceGuid; set => _instanceGuid = value; }
 
         public virtual void Initialize(string unitId)
         {
