@@ -18,6 +18,7 @@ namespace Game
         [Inject] public IGrid Grid { get; set; }
         [Inject] public ICastleGUI CastleGUI { get; set; }
         [Inject] public IPlayerAccount PlayerAccount { get; set; }
+        [Inject] public IConsole Console { get; set; }
         [Inject] public ITurn Turn { get; set; }
         [Inject] public ICursor Cursor { get; set; }
         
@@ -28,7 +29,32 @@ namespace Game
         public async UniTask BattleLaunch()
         {
             _camera = Camera.main;
+
+            // Register debug commands
+            Console.RegisterCommand("enemyturncontrol", OnEnemyTurnControlCommand);
+
             await UniTask.CompletedTask;
+        }
+
+        private void OnEnemyTurnControlCommand(string[] args)
+        {
+            var selectedCoordinate = GetSelectedCoordinate();
+
+            var unitData = BattleUnits.GetUnitData(selectedCoordinate);
+            if (unitData == null)
+            {
+                Notebook.NoteWarning("No unit data found at selected coordinate");
+                return;
+            }
+
+            // Toggle debug turn ordering for this enemy unit
+            unitData.DebugAllowTurnOrdering = !unitData.DebugAllowTurnOrdering;
+
+            string status = unitData.DebugAllowTurnOrdering ? "ENABLED" : "DISABLED";
+            Notebook.NoteData($"Enemy turn control {status} for unit at {selectedCoordinate}");
+
+            // Reselect to refresh the UI
+            //HandleCoordinateSelection(selectedCoordinate); //TODO: This does not compile
         }
 
         public void Start()

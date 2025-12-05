@@ -21,7 +21,7 @@ namespace Game
         
         private List<TurnWidget> _orderedWidgets =  new List<TurnWidget>();
 
-        private void Clean()
+        public void Clean()
         {
             foreach (var widget in _widgets)
             {

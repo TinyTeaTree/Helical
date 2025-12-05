@@ -7,7 +7,7 @@ namespace Game
     {
         [SerializeField] private string _id;
         public string Id => _id;
-        
+
         [SerializeField] protected Animator _animator;
         [SerializeField] protected BattleUnitMover _mover;
         [SerializeField] protected BattleUnitRotator _rotator;

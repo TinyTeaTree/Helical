@@ -40,6 +40,7 @@ namespace Game
             _features.Add<ICastleGUI>(new CastleGUIFeature());
             _features.Add<IBattleAssets>(new BattleAssetsFeature());
             _features.Add<ITurn>(new TurnFeature());
+            _features.Add<IConsole>(new ConsoleFeature());
             _features.Add<ICursor>(new CursorFeature());
             //<New Feature>
         }
@@ -65,6 +66,7 @@ namespace Game
             _factories.Add(typeof(BattleAssetsVisual), new ResourceFactory(Addresses.BattleAssetsVisual));
             
             _factories.Add(typeof(TurnVisual), new ResourceFactory(Addresses.TurnVisual));
+            _factories.Add(typeof(ConsoleVisual), new ResourceFactory(Addresses.ConsoleVisual));
         }
 
         protected override void AddAgents()

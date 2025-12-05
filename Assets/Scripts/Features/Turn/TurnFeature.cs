@@ -38,6 +38,7 @@ namespace Game
             _turnBarVisual.SetFeature(this);
             
             _visual.SetTurnData();
+            _turnBarVisual.Clean();
         }
 
         public void SelectedMyUnit()

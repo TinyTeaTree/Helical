@@ -40,8 +40,8 @@ MonoBehaviour:
         MaxPerTurn: 3
         TurnCooldown: 0
       - Ability: 1
-        ActionPointsRequired: 60
-        ActionInterception: 30
+        ActionPointsRequired: 50
+        ActionInterception: 15
         MaxPerTurn: 3
         TurnCooldown: 0
       - Ability: 3

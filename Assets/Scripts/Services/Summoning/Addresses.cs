@@ -15,6 +15,7 @@ namespace Services
         public const string BattleGUIVisual = "Visuals/BattleGUI Visual";
         public const string CameraMoveVisual = "Visuals/Camera Move Visual";
         public const string CastleGUIVisual = "Visuals/CastleGUI Visual";
+        public const string ConsoleVisual = "Visuals/Console Visual";
         public const string GridVisual = "Visuals/Grid Visual";
         public const string HudVisual = "Visuals/Hud Visual";
         public const string LoadingScreenHud = "Visuals/Loading Screen Hud";

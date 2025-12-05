@@ -33,5 +33,6 @@ namespace Game
         public int Health { get; set; }
         public int Level { get; set; }
         public bool IsDead { get; set; }
+        public bool DebugAllowTurnOrdering { get; set; }
     }
 }

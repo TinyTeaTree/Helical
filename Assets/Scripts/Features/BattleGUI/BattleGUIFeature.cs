@@ -12,6 +12,7 @@ namespace Game
         [Inject] public ILocalConfigService ConfigService { get; set; }
         [Inject] public IPlayerAccount PlayerAccount { get; set; }
         [Inject] public ITurn Turn { get; set; }
+        [Inject] public IBattleUnits BattleUnits { get; set; }
 
         private BattleUnitsConfig _config;
         private BattleUnitsAssetPack _assetPack;
@@ -41,19 +42,34 @@ namespace Game
             // Get unit name from config
             var unitConfig = _config.GetBattleUnit(unitData.BattleUnitId);
             string displayName = unitConfig != null ? unitConfig.DisplayName : unitData.BattleUnitId;
-            
+
             // Get unit photo from asset pack
             var photo = _assetPack.GetUnitPhoto(unitData.BattleUnitId);
-            
+
             // Update the visual with name, level, and photo
             _visual.UpdateUnitInfo(displayName, unitData.Level, photo);
-            _visual.ShowUnitSelection(unitData.PlayerId == PlayerAccount.PlayerId);
+
+            bool canSelectUnit = CanSelectUnit(unitData);
+
+            _visual.ShowUnitSelection(canSelectUnit);
             _visual.SetUnitActions(unitConfig.Actions.Select(a => a.Ability));
-            
-            if (unitData.PlayerId == PlayerAccount.PlayerId)
+
+            if (canSelectUnit)
             {
                 Turn.SelectedMyUnit();
             }
+        }
+
+        private bool CanSelectUnit(BattleUnitData unitData)
+        {
+            // Allow selection if it's the player's unit
+            if (unitData.PlayerId == PlayerAccount.PlayerId)
+            {
+                return true;
+            }
+
+            // Allow selection if debug mode is enabled on the unit
+            return unitData.DebugAllowTurnOrdering;
         }
 
         public void HideUnitSelection()
