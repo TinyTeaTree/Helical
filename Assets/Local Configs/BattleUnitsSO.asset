@@ -54,6 +54,11 @@ MonoBehaviour:
         ActionInterception: 10
         MaxPerTurn: 0
         TurnCooldown: 0
+      - Ability: 4
+        ActionPointsRequired: 10
+        ActionInterception: 0
+        MaxPerTurn: 0
+        TurnCooldown: 0
       _maxHealth: 55
       _attackPower: 4
       _defense: 1

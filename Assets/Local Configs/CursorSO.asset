@@ -20,3 +20,6 @@ MonoBehaviour:
     - _abilityMode: 2
       _texture: {fileID: 2800000, guid: 6a16ad927c0be4f16928a4fcc4c46427, type: 3}
       _hotspot: {x: 16, y: 16}
+    - _abilityMode: 3
+      _texture: {fileID: 2800000, guid: 77dea7890b3e5467fb226f863cb11d75, type: 3}
+      _hotspot: {x: 16, y: 16}
