@@ -17,7 +17,12 @@ MonoBehaviour:
     - _id: Skeleton
       _displayName: Skeleton
       _actionPoints: 100
-      _actions: []
+      _actions:
+      - Ability: 2
+        ActionPointsRequired: 80
+        ActionInterception: 30
+        MaxPerTurn: 0
+        TurnCooldown: 0
       _maxHealth: 40
       _attackPower: 3
       _defense: 1
