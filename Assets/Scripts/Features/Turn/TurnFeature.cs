@@ -68,6 +68,18 @@ namespace Game
             DJ.Play(DJ.Click_Sound);
         }
 
+        public void ResetSelectedUnitActions()
+        {
+            var coordinate = GridSelection.GetSelectedCoordinate();
+            var unitData = BattleUnits.GetUnitData(coordinate);
+            if (unitData != null)
+            {
+                unitData.TurnOrder.Actions.Clear();
+                _turnBarVisual.ShowMyTurn(unitData.TurnOrder, BattleUnits.GetUnitConfig(unitData.BattleUnitId).ActionPoints);
+                Notebook.NoteData("Cleared all actions for selected unit");
+            }
+        }
+
         private void OrderMoveActions(BattleUnitData unitData, BattleUnitConfig unitConfig, Vector2Int unitCoordinate, Vector2Int targetCoordinate)
         {
             // Calculate path to target

@@ -729,8 +729,8 @@ MonoBehaviour:
   - Widget: {fileID: 4267315268156121508}
     Ability: 5
   _turnFill: {fileID: 3430764696043538734}
-  _resetButton: {fileID: 0}
-  _apText: {fileID: 0}
+  _resetButton: {fileID: 23227990755964709}
+  _apText: {fileID: 7276435165044262946}
 --- !u!1 &4369747025127187074
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,10 +9,7 @@ namespace Game
 
         public void UpdateFill(float fillAmount)
         {
-            if (_fill != null)
-            {
-                _fill.fillAmount = Mathf.Clamp01(fillAmount);
-            }
+            _fill.fillAmount = Mathf.Clamp01(fillAmount);
         }
     }
 }

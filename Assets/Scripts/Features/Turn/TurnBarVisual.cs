@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core;
+using Services;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +24,17 @@ namespace Game
         [SerializeField] private TMP_Text _apText;
         
         private List<TurnWidget> _orderedWidgets =  new List<TurnWidget>();
+
+        private void Awake()
+        {
+            _resetButton.onClick.AddListener(OnResetButtonClicked);
+        }
+
+        private void OnResetButtonClicked()
+        {
+            DJ.Play(DJ.ClickOff_Sound);
+            Feature.ResetSelectedUnitActions();
+        }
 
         public void Clean()
         {
@@ -78,11 +90,11 @@ namespace Game
             }
 
             // Fill image with the amount of Action Points by ratio from unit's total action points
-            if (_turnFill != null)
-            {
-                float fillRatio = Mathf.Min((float)totalActionPointsUsed / unitTotalActionPoints, 1f);
-                _turnFill.fillAmount = fillRatio;
-            }
+            float fillRatio = Mathf.Min((float)totalActionPointsUsed / unitTotalActionPoints, 1f);
+            _turnFill.fillAmount = fillRatio;
+
+            // Update AP text display
+            _apText.text = $"{totalActionPointsUsed} / {unitTotalActionPoints} AP";
         }
     }
 }

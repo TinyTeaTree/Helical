@@ -10,5 +10,6 @@ namespace Game
 
         void SelectedMyUnit();
         void OrderTurn(Vector2Int unitCoordinate, Vector2Int targetCoordinate, AbilityMode ability);
+        void ResetSelectedUnitActions();
     }
 }

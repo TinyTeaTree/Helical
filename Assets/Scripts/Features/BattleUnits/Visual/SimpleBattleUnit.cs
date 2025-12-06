@@ -70,10 +70,7 @@ namespace Game
 
         public override void UpdateHealthBar(float healthPercentage)
         {
-            if (_healthBarWidget != null)
-            {
-                _healthBarWidget.UpdateFill(healthPercentage);
-            }
+            _healthBarWidget.UpdateFill(healthPercentage);
         }
     }
 }
