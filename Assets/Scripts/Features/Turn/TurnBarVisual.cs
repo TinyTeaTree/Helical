@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,9 @@ namespace Game
 
         [SerializeField] private Transform _root;
         [SerializeField] private List<TurnWidget> _widgets;
-        [SerializeField] private Image _turnFill; //TODO: Use This
+        [SerializeField] private Image _turnFill;
+        [SerializeField] private Button _resetButton;
+        [SerializeField] private TMP_Text _apText;
         
         private List<TurnWidget> _orderedWidgets =  new List<TurnWidget>();
 
@@ -67,7 +70,7 @@ namespace Game
                 float actionPointRatio = (float)(action.ActionPointStart + action.ActionPoints) / unitTotalActionPoints;
                 float xOffset = actionPointRatio * newWidth;
                 var rectTransform = widget.Widget.GetComponent<RectTransform>();
-                rectTransform.anchoredPosition = new Vector2(xOffset, rectTransform.anchoredPosition.y);
+                rectTransform.anchoredPosition = new Vector2(xOffset, 46.46f);
 
                 widget.Widget.SetActive(true);
 

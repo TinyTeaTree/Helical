@@ -26,7 +26,7 @@ namespace Game
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_Text _level;
         [SerializeField] private UnityEngine.UI.Image _photo;
-
+        
         private void Awake()
         {
             _buttonTypes.FirstOrDefault(b => b.Ability == AbilityMode.Attack).Button.onClick.AddListener(OnAttackButtonClicked);
