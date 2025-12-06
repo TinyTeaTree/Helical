@@ -19,6 +19,9 @@ namespace Game
         
         [SerializeField] private TurnBarVisual _turnBarVisual;
         [SerializeField] private List<ButtonType> _buttonTypes;
+
+        [SerializeField] private GameObject _myUnitBack;
+        [SerializeField] private GameObject _otherUnitBack;
         
         [SerializeField] private GameObject _gui;
         [SerializeField] private GameObject _controls;
@@ -68,6 +71,8 @@ namespace Game
 
         public void ShowUnitSelection(bool isMyUnit)
         {
+            _myUnitBack.SetActive(isMyUnit);
+            _otherUnitBack.SetActive(!isMyUnit);
             _gui.SetActive(true);
             _turnBarVisual.SetVisibility(isMyUnit);
             _controls.SetActive(isMyUnit);

@@ -20,7 +20,22 @@ MonoBehaviour:
       _actions:
       - Ability: 2
         ActionPointsRequired: 80
-        ActionInterception: 30
+        ActionInterception: 40
+        MaxPerTurn: 0
+        TurnCooldown: 0
+      - Ability: 1
+        ActionPointsRequired: 80
+        ActionInterception: 40
+        MaxPerTurn: 0
+        TurnCooldown: 0
+      - Ability: 3
+        ActionPointsRequired: 40
+        ActionInterception: 20
+        MaxPerTurn: 0
+        TurnCooldown: 0
+      - Ability: 4
+        ActionPointsRequired: 20
+        ActionInterception: 0
         MaxPerTurn: 0
         TurnCooldown: 0
       _maxHealth: 40
