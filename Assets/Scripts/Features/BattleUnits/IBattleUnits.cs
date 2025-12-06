@@ -13,6 +13,7 @@ namespace Game
         UniTask ExecuteAttack(Vector2Int attackerCoordinate, Vector2Int targetCoordinate, int actionPoints, int interceptionPoint);
         UniTask ExecuteMove(Vector2Int unitCoordinate, Vector2Int targetCoordinate, int actionPoints, int interceptionPoint);
         UniTask ExecuteRotate(Vector2Int unitCoordinate, Vector2Int targetCoordinate, int actionPoints);
+        UniTask ExecuteWait(Vector2Int unitCoordinate, int actionPoints, int interceptionPoint);
         bool SpawnUnitAtCoordinate(string unitId, Vector2Int spawnCoordinate);
     }
 }

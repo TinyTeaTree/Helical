@@ -266,6 +266,17 @@ namespace Game
             unitData.Direction = newDirection;
         }
 
+        public async UniTask ExecuteWait(Vector2Int unitCoordinate, int actionPoints, int interceptionPoint)
+        {
+            // Calculate duration from action points using central constant
+            float duration = actionPoints * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
+
+            // Simply wait for the calculated duration - no visual changes or logical updates needed
+            await UniTask.Delay(TimeSpan.FromSeconds(duration));
+
+            Notebook.NoteData($"Unit at {unitCoordinate} waited for {duration} seconds");
+        }
+
         public bool SpawnUnitAtCoordinate(string unitId, Vector2Int coordinate)
         {
             // Validate that the coordinate is valid for spawning

@@ -97,5 +97,13 @@ namespace Game
             GridSelection.SetAbilityMode(AbilityMode.Rotate);
             Notebook.NoteData("Rotate mode activated");
         }
+
+        public void OnWaitButtonClicked()
+        {
+            var selectedCoordinate = GridSelection.GetSelectedCoordinate();
+            Turn.OrderTurn(selectedCoordinate, default, AbilityMode.Wait); // Target is ignored for Wait
+            DJ.Play(DJ.Tick_Sound);
+            Notebook.NoteData("Wait action ordered");
+        }
     }
 }

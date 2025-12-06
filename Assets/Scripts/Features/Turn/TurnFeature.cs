@@ -59,6 +59,10 @@ namespace Game
             {
                 OrderMoveActions(unitData, unitConfig, unitCoordinate, targetCoordinate);
             }
+            else if (ability == AbilityMode.Wait)
+            {
+                OrderWaitAction(unitData, unitConfig, unitCoordinate);
+            }
             else
             {
                 OrderSingleAction(unitData, unitConfig, unitCoordinate, targetCoordinate, ability);
@@ -128,6 +132,34 @@ namespace Game
             }
 
             Notebook.NoteData($"Ordered {unitData.TurnOrder.Actions.Count(action => action.Ability == AbilityMode.Move)} move steps");
+        }
+
+        private void OrderWaitAction(BattleUnitData unitData, BattleUnitConfig unitConfig, Vector2Int unitCoordinate)
+        {
+            var actionConfig = unitConfig.Actions.First(a => a.Ability == AbilityMode.Wait);
+
+            // Calculate current total action points used
+            int currentActionPointsUsed = unitData.TurnOrder.Actions.Sum(action => action.ActionPoints);
+
+            // Check if adding this action would exceed the unit's action points limit
+            int newActionPoints = actionConfig.ActionPointsRequired;
+            if (currentActionPointsUsed + newActionPoints > unitConfig.ActionPoints)
+            {
+                DJ.Play(DJ.Wrong_Sound);
+                Notebook.NoteWarning($"Cannot order wait action: would exceed action points limit. Current: {currentActionPointsUsed}, New: {newActionPoints}, Limit: {unitConfig.ActionPoints}");
+                return;
+            }
+
+            var newAction = new BattleUnitData.Action()
+            {
+                Ability = AbilityMode.Wait,
+                ActionPoints = actionConfig.ActionPointsRequired,
+                Interception = actionConfig.ActionInterception,
+                Target = unitCoordinate, // Use unit's current coordinate as target (not used)
+                ActionPointStart = currentActionPointsUsed
+            };
+
+            unitData.TurnOrder.Actions.Add(newAction);
         }
 
         private void OrderSingleAction(BattleUnitData unitData, BattleUnitConfig unitConfig, Vector2Int unitCoordinate, Vector2Int targetCoordinate, AbilityMode ability)
@@ -212,6 +244,10 @@ namespace Game
                 else if (action.Ability == AbilityMode.Attack)
                 {
                     await BattleUnits.ExecuteAttack(unit.Coordinate, action.Target, action.ActionPoints, action.Interception);
+                }
+                else if (action.Ability == AbilityMode.Wait)
+                {
+                    await BattleUnits.ExecuteWait(unit.Coordinate, action.ActionPoints, action.Interception);
                 }
             }
             Record.UnitsExecuting--;

@@ -32,6 +32,7 @@ namespace Game
             _buttonTypes.FirstOrDefault(b => b.Ability == AbilityMode.Attack).Button.onClick.AddListener(OnAttackButtonClicked);
             _buttonTypes.FirstOrDefault(b => b.Ability == AbilityMode.Move).Button.onClick.AddListener(OnMoveButtonClicked);
             _buttonTypes.FirstOrDefault(b => b.Ability == AbilityMode.Rotate).Button.onClick.AddListener(OnRotateButtonClicked);
+            _buttonTypes.FirstOrDefault(b => b.Ability == AbilityMode.Wait).Button.onClick.AddListener(OnWaitButtonClicked);
         }
 
         private void OnAttackButtonClicked()
@@ -47,6 +48,11 @@ namespace Game
         private void OnRotateButtonClicked()
         {
             Feature.OnRotateButtonClicked();
+        }
+
+        private void OnWaitButtonClicked()
+        {
+            Feature.OnWaitButtonClicked();
         }
 
         public void UpdateUnitInfo(string unitName, int level, Sprite photo)
