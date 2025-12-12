@@ -1469,6 +1469,7 @@ GameObject:
   - component: {fileID: 7546237155796634028}
   - component: {fileID: 1642804295770935528}
   - component: {fileID: 2611751085726299521}
+  - component: {fileID: 9131060932748270222}
   m_Layer: 0
   m_Name: Nature Magician
   m_TagString: Untagged
@@ -1509,6 +1510,7 @@ MonoBehaviour:
   _animator: {fileID: 5338113177031639168}
   _mover: {fileID: 1642804295770935528}
   _rotator: {fileID: 2611751085726299521}
+  _shooter: {fileID: 9131060932748270222}
   _healthBarAnchor: {fileID: 2320991684095420712}
   _glowComponent: {fileID: 0}
   _attackAnimationClip: {fileID: 7400000, guid: 68e3a50f30bb0c54e8ca5cfae6eea48d, type: 3}
@@ -1564,6 +1566,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Game::Game.BattleUnitRotator
   _rotationEase: 6
+--- !u!114 &9131060932748270222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5895813426258426838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b83c1eb2ba0845f690a571edd5a724c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game::Game.BattleUnitShooter
+  _projectilePrefab: {fileID: 1117169310052547048, guid: 4e4e84452bc7c45a2ad4416658ec8a90, type: 3}
+  _shootOrigin: {fileID: 814712268530477337}
+  _projectileSpeed: 10
+  _projectileLifetime: 3
+  _projectileEase: 26
 --- !u!1 &5959198088260231652
 GameObject:
   m_ObjectHideFlags: 0

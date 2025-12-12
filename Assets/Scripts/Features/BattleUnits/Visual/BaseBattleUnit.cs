@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Game
@@ -11,6 +12,7 @@ namespace Game
         [SerializeField] protected Animator _animator;
         [SerializeField] protected BattleUnitMover _mover;
         [SerializeField] protected BattleUnitRotator _rotator;
+        [SerializeField, CanBeNull] protected BattleUnitShooter _shooter;
         [SerializeField] protected Transform _healthBarAnchor;
 
         protected BattleUnitHealthBar _healthBarWidget;
@@ -64,6 +66,21 @@ namespace Game
         public virtual UniTask<HexDirection> Rotate(Vector2Int fromCoordinate, Vector2Int toCoordinate, HexDirection currentDirection, float duration)
         {
             return _rotator.RotateTowardsCoordinate(fromCoordinate, toCoordinate, currentDirection, duration);
+        }
+
+        /// <summary>
+        /// Shoots a projectile towards a target coordinate.
+        /// Only works if a shooter component is attached.
+        /// </summary>
+        /// <param name="fromCoordinate">The unit's current coordinate</param>
+        /// <param name="toCoordinate">The target coordinate to shoot towards</param>
+        /// <param name="duration">Duration in seconds for the shooting animation</param>
+        public virtual async UniTask Shoot(Vector2Int fromCoordinate, Vector2Int toCoordinate, float duration)
+        {
+            if (_shooter != null)
+            {
+                await _shooter.ShootTowardsCoordinate(fromCoordinate, toCoordinate, duration);
+            }
         }
 
         protected virtual void OnInitialized(string unitId)

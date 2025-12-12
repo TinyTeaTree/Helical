@@ -330,6 +330,9 @@ namespace Game
             // Calculate interception time (when damage actually occurs)
             float interceptionTime = interceptionPoint * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
 
+            // Execute particle shooting (in parallel with attack animation)
+            attackerUnit.Shoot(attackerCoordinate, actualTargetCoordinate.Value, duration).Forget();
+
             // Execute attack with calculated duration and interception timing
             await attackerUnit.Attack(duration, interceptionTime, () =>
             {

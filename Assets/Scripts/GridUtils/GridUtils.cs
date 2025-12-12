@@ -25,6 +25,20 @@ public static class GridUtils
 
         return pos;
     }
+    
+    public static Vector3 ToWorldX0Z(this Vector2Int coord)
+    {
+        Vector3 pos = new Vector3
+        {
+            x = coord.x * HalfGridStep,
+            y = 0,
+            z = coord.y * HexLevelStep
+        };
+
+        pos.z += (coord.x % 2) * HexUpStep;
+
+        return pos;
+    }
 
     /// <summary>
     /// Gets the adjacent coordinate in the specified direction from the given coordinate.
