@@ -105,5 +105,12 @@ namespace Game
             DJ.Play(DJ.Tick_Sound);
             Notebook.NoteData("Wait action ordered");
         }
+
+        public void OnShootButtonClicked()
+        {
+            GridSelection.SetAbilityMode(AbilityMode.RangeAttack);
+            DJ.Play(DJ.Tick_Sound);
+            Notebook.NoteData("Range attack mode activated");
+        }
     }
 }

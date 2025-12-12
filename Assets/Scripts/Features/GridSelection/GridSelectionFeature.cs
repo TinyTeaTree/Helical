@@ -193,6 +193,13 @@ namespace Game
                 return;
             }
 
+            // Check if we're in Range Attack mode
+            if (Record.CurrentAbilityMode == AbilityMode.RangeAttack)
+            {
+                HandleRangeAttackMode(coordinate);
+                return;
+            }
+
             // Check if we're in Move mode
             if (Record.CurrentAbilityMode == AbilityMode.Move)
             {
@@ -229,6 +236,13 @@ namespace Game
             if (Record.CurrentAbilityMode == AbilityMode.Attack)
             {
                 HandleAttackMode(coordinate);
+                return;
+            }
+
+            // Check if we're in Range Attack mode
+            if (Record.CurrentAbilityMode == AbilityMode.RangeAttack)
+            {
+                HandleRangeAttackMode(coordinate);
                 return;
             }
 
@@ -414,6 +428,34 @@ namespace Game
             Cursor.SetCursorMode(AbilityMode.None);
 
             Notebook.NoteData($"Attack executed from {attackerCoordinate} to {targetCoordinate}");
+        }
+
+        private void HandleRangeAttackMode(Vector2Int targetCoordinate)
+        {
+            // Check if there's a selected unit (the attacker)
+            if (!Record.HasSelection)
+            {
+                Notebook.NoteWarning("No unit selected to perform range attack");
+                return;
+            }
+
+            Vector2Int attackerCoordinate = Record.SelectedCoordinate.Value;
+
+            // Validate that the target coordinate is valid for range attacking
+            // For range attacks, we allow targeting any coordinate - the execution will find valid targets within range
+            if (!Grid.IsValidForAbility(AbilityMode.RangeAttack, targetCoordinate))
+            {
+                Notebook.NoteWarning($"Cannot range attack coordinate {targetCoordinate} - invalid target");
+                return;
+            }
+
+            Turn.OrderTurn(attackerCoordinate, targetCoordinate, AbilityMode.RangeAttack);
+
+            // Clear ability mode after range attack
+            Record.ClearAbilityMode();
+            Cursor.SetCursorMode(AbilityMode.None);
+
+            Notebook.NoteData($"Range attack ordered from {attackerCoordinate} towards {targetCoordinate}");
         }
         
         private void HandleMoveMode(Vector2Int targetCoordinate)

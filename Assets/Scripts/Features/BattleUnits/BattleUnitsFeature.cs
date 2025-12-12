@@ -277,6 +277,69 @@ namespace Game
             Notebook.NoteData($"Unit at {unitCoordinate} waited for {duration} seconds");
         }
 
+        public async UniTask ExecuteRangeAttack(Vector2Int attackerCoordinate, Vector2Int orderedTargetCoordinate, int actionPoints, int interceptionPoint)
+        {
+            var attackerUnit = _visual.GetUnitAtCoordinate(attackerCoordinate);
+
+            if (attackerUnit == null)
+            {
+                Notebook.NoteError("Range attack failed: No attacker unit found");
+                return;
+            }
+
+            // Get the unit data and config
+            var unitData = GetUnitData(attackerCoordinate);
+            var unitConfig = GetUnitConfig(unitData?.BattleUnitId);
+            if (unitConfig == null || unitData == null)
+            {
+                Notebook.NoteError("Range attack failed: Cannot find unit config or data");
+                return;
+            }
+
+            // Find the range attack action config
+            var rangeAttackAction = unitConfig.Actions.Find(a => a.Ability == AbilityMode.RangeAttack);
+            if (rangeAttackAction == null)
+            {
+                Notebook.NoteError("Range attack failed: No RangeAttack action found in config");
+                return;
+            }
+
+            int attackRange = rangeAttackAction.Range;
+
+            // Find the closest valid target within range of the ordered target coordinate
+            var actualTargetCoordinate = FindClosestValidTarget(attackerCoordinate, orderedTargetCoordinate, attackRange);
+
+            if (actualTargetCoordinate == null)
+            {
+                Notebook.NoteData($"No valid target found within range {attackRange} of {orderedTargetCoordinate}");
+                return;
+            }
+
+            // Execute rotation towards the actual target (in parallel with attack)
+            attackerUnit
+                .Rotate(attackerCoordinate, actualTargetCoordinate.Value, unitData.Direction, 0.3f)
+                .ContinueWith(newDirection =>
+                {
+                    unitData.Direction = newDirection;
+                })
+                .Forget();
+
+            // Calculate duration from action points using central constant
+            float duration = actionPoints * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
+
+            // Calculate interception time (when damage actually occurs)
+            float interceptionTime = interceptionPoint * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
+
+            // Execute attack with calculated duration and interception timing
+            await attackerUnit.Attack(duration, interceptionTime, () =>
+            {
+                // This callback is executed at the interception point
+                DealDamageToTargetAtCoordinate(attackerCoordinate, actualTargetCoordinate.Value, unitData.PlayerId);
+            });
+
+            Notebook.NoteData($"Unit at {attackerCoordinate} range attacked target at {actualTargetCoordinate.Value} (ordered: {orderedTargetCoordinate})");
+        }
+
         public bool SpawnUnitAtCoordinate(string unitId, Vector2Int coordinate)
         {
             // Validate that the coordinate is valid for spawning
@@ -405,6 +468,96 @@ namespace Game
             {
                 unit.SetIsDead(true);
                 // Note: Unit despawning will be handled by the turn system or battle end
+            }
+        }
+
+        private Vector2Int? FindClosestValidTarget(Vector2Int attackerCoordinate, Vector2Int orderedTargetCoordinate, int range)
+        {
+            // Check if the ordered target coordinate is within range of the attacker
+            int distanceToOrderedTarget = GridUtils.HexDistance(attackerCoordinate, orderedTargetCoordinate);
+
+            if (distanceToOrderedTarget <= range)
+            {
+                return orderedTargetCoordinate;
+            }
+            else
+            {
+                // Ordered target is out of range, find the closest hex within range of attacker to the ordered target
+                Vector2Int closestValidHex = FindClosestHexInRange(attackerCoordinate, orderedTargetCoordinate, range);
+                
+                return closestValidHex;
+            }
+        }
+
+        private Vector2Int FindClosestHexInRange(Vector2Int attackerCoordinate, Vector2Int targetCoordinate, int range)
+        {
+            // Get all coordinates within range of the attacker
+            var coordinatesInRange = GridUtils.GetCoordinatesInRange(attackerCoordinate, range);
+
+            Vector2Int closestHex = attackerCoordinate;
+            int closestDistance = int.MaxValue;
+
+            foreach (var coord in coordinatesInRange)
+            {
+                // Calculate distance from target coordinate to this valid hex
+                int distance = GridUtils.HexDistance(targetCoordinate, coord);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestHex = coord;
+                }
+            }
+
+            return closestHex;
+        }
+
+        private void DealDamageToTargetAtCoordinate(Vector2Int attackerCoordinate, Vector2Int targetCoordinate, string attackerPlayerId)
+        {
+            // Check if there's a unit at the target coordinate
+            var targetUnitData = GetUnitData(targetCoordinate);
+            if (targetUnitData == null)
+            {
+                Notebook.NoteData($"No unit found at {targetCoordinate} to attack");
+                return;
+            }
+
+            // Check if the target is an enemy (different player ID)
+            if (targetUnitData.PlayerId == attackerPlayerId)
+            {
+                Notebook.NoteData($"Cannot attack own unit at {targetCoordinate}");
+                return;
+            }
+
+            // Get attacker config to determine damage
+            var attackerConfig = GetUnitConfig(GetUnitData(attackerCoordinate)?.BattleUnitId);
+            if (attackerConfig == null)
+            {
+                Notebook.NoteError("Cannot find attacker config for damage calculation");
+                return;
+            }
+
+            // Calculate damage (for now, basic calculation)
+            int damage = attackerConfig.AttackPower;
+
+            // Apply damage to target
+            targetUnitData.Health -= damage;
+            targetUnitData.Health = Mathf.Max(0, targetUnitData.Health); // Ensure health doesn't go below 0
+
+            // Trigger hit animation on target unit
+            var targetUnit = _visual.GetUnitAtCoordinate(targetCoordinate);
+            targetUnit?.GetHit();
+
+            // Update health bar
+            UpdateUnitHealthBar(targetCoordinate, targetUnitData.Health, targetUnitData.IsDead);
+
+            Notebook.NoteData($"Unit at {attackerCoordinate} dealt {damage} damage to enemy at {targetCoordinate}. Enemy health: {targetUnitData.Health}");
+
+            // Check if target is dead
+            if (targetUnitData.Health <= 0 && !targetUnitData.IsDead)
+            {
+                targetUnitData.IsDead = true;
+                HandleUnitDeath(targetCoordinate);
+                Notebook.NoteData($"Unit at {targetCoordinate} has died");
             }
         }
 

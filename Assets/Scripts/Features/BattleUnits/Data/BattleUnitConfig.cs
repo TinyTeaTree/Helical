@@ -13,19 +13,25 @@ namespace Game
             public AbilityMode Ability;
             public int ActionPointsRequired = 20;
             /// <summary>
-            /// When in the duration of the ActionPoints is the Ability actually triggered. 
+            /// When in the duration of the ActionPoints is the Ability actually triggered.
             /// </summary>
             public int ActionInterception = 10;
             /// <summary>
             /// How many times per turn can this action be performed
             /// </summary>
             public int MaxPerTurn = 1;
-            
+
 
             /// <summary>
             /// How many turns to wait for this Action to be reusable.
             /// </summary>
             public int TurnCooldown = 1;
+
+            /// <summary>
+            /// The hex distance range for ranged attacks. 1 = adjacent, 2 = adjacent of adjacent, etc.
+            /// Only used for RangeAttack ability.
+            /// </summary>
+            public int Range = 1;
         }
         
         [SerializeField] private string _id;

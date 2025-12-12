@@ -8,7 +8,8 @@ namespace Game
         Rotate,
         Wait,
         Shield,
-        Spawn
+        Spawn,
+        RangeAttack,
     }
 }
 

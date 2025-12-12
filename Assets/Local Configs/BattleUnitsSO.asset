@@ -23,21 +23,25 @@ MonoBehaviour:
         ActionInterception: 40
         MaxPerTurn: 0
         TurnCooldown: 0
+        Range: 1
       - Ability: 1
         ActionPointsRequired: 80
         ActionInterception: 40
         MaxPerTurn: 0
         TurnCooldown: 0
+        Range: 1
       - Ability: 3
         ActionPointsRequired: 40
         ActionInterception: 20
         MaxPerTurn: 0
         TurnCooldown: 0
+        Range: 1
       - Ability: 4
         ActionPointsRequired: 20
         ActionInterception: 0
         MaxPerTurn: 0
         TurnCooldown: 0
+        Range: 1
       _maxHealth: 40
       _attackPower: 3
       _defense: 1
@@ -59,21 +63,25 @@ MonoBehaviour:
         ActionInterception: 10
         MaxPerTurn: 3
         TurnCooldown: 0
+        Range: 1
       - Ability: 1
         ActionPointsRequired: 50
         ActionInterception: 15
         MaxPerTurn: 3
         TurnCooldown: 0
+        Range: 1
       - Ability: 3
         ActionPointsRequired: 10
         ActionInterception: 10
         MaxPerTurn: 0
         TurnCooldown: 0
+        Range: 1
       - Ability: 4
         ActionPointsRequired: 10
         ActionInterception: 0
         MaxPerTurn: 0
         TurnCooldown: 0
+        Range: 1
       _maxHealth: 55
       _attackPower: 4
       _defense: 1
@@ -87,21 +95,25 @@ MonoBehaviour:
         ActionInterception: 25
         MaxPerTurn: 1
         TurnCooldown: 0
-      - Ability: 1
+        Range: 1
+      - Ability: 7
         ActionPointsRequired: 50
         ActionInterception: 25
         MaxPerTurn: 1
         TurnCooldown: 0
+        Range: 3
       - Ability: 3
         ActionPointsRequired: 10
         ActionInterception: 5
         MaxPerTurn: 0
         TurnCooldown: 0
+        Range: 1
       - Ability: 4
         ActionPointsRequired: 10
         ActionInterception: 0
         MaxPerTurn: 0
         TurnCooldown: 0
+        Range: 1
       _maxHealth: 50
       _attackPower: 8
       _defense: 0
