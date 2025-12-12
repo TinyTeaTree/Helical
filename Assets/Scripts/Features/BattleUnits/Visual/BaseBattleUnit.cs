@@ -69,12 +69,12 @@ namespace Game
         }
 
         /// <summary>
-        /// Shoots a projectile towards a target coordinate.
+        /// Shoots a projectile towards a target coordinate with the specified duration.
         /// Only works if a shooter component is attached.
         /// </summary>
         /// <param name="fromCoordinate">The unit's current coordinate</param>
         /// <param name="toCoordinate">The target coordinate to shoot towards</param>
-        /// <param name="duration">Duration in seconds for the shooting animation</param>
+        /// <param name="duration">How long in seconds the projectile flight should take</param>
         public virtual async UniTask Shoot(Vector2Int fromCoordinate, Vector2Int toCoordinate, float duration)
         {
             if (_shooter != null)
@@ -82,6 +82,7 @@ namespace Game
                 await _shooter.ShootTowardsCoordinate(fromCoordinate, toCoordinate, duration);
             }
         }
+
 
         protected virtual void OnInitialized(string unitId)
         {

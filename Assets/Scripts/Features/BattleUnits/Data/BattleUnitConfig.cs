@@ -32,6 +32,12 @@ namespace Game
             /// Only used for RangeAttack ability.
             /// </summary>
             public int Range = 1;
+
+            /// <summary>
+            /// Speed of projectiles in units per second for ranged attacks.
+            /// Only used for RangeAttack ability. Determines how long it takes for projectiles to reach targets.
+            /// </summary>
+            public float ProjectileSpeed = 10f;
         }
         
         [SerializeField] private string _id;

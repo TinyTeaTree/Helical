@@ -1580,9 +1580,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game::Game.BattleUnitShooter
   _projectilePrefab: {fileID: 1117169310052547048, guid: 4e4e84452bc7c45a2ad4416658ec8a90, type: 3}
   _shootOrigin: {fileID: 814712268530477337}
-  _projectileSpeed: 10
-  _projectileLifetime: 3
-  _projectileEase: 26
+  _projectileEase: 1
 --- !u!1 &5959198088260231652
 GameObject:
   m_ObjectHideFlags: 0

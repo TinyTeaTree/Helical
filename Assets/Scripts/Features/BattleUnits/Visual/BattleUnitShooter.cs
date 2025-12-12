@@ -9,15 +9,17 @@ namespace Game
         [Header("Shooting Settings")]
         [SerializeField] private GameObject _projectilePrefab;
         [SerializeField] private Transform _shootOrigin;
-        [SerializeField] private float _projectileSpeed = 10f;
-        [SerializeField] private float _projectileLifetime = 3f;
+        [Tooltip("The easing function for projectile movement animation")]
         [SerializeField] private Ease _projectileEase = Ease.Linear;
 
         /// <summary>
-        /// Shoots a projectile towards the target position
+        /// Shoots a projectile towards the target position using configured speed.
+        /// Travel time is calculated based on distance and projectile speed.
+        /// <summary>
+        /// Shoots a projectile towards the target position with the specified duration.
         /// </summary>
-        /// <param name="targetPosition">The world position to shoot towards</param>
-        /// <param name="duration">How long the shooting animation should take</param>
+        /// <param name="targetPosition">The 3D world position to shoot the projectile towards</param>
+        /// <param name="duration">How long in seconds the projectile flight should take</param>
         public async UniTask ShootTowardsPosition(Vector3 targetPosition, float duration)
         {
             if (_projectilePrefab == null || _shootOrigin == null)
@@ -39,7 +41,6 @@ namespace Game
             }
 
             // Move projectile towards target
-            Vector3 startPosition = projectile.transform.position;
             Tween projectileTween = projectile.transform.DOMove(targetPosition, duration)
                 .SetEase(_projectileEase);
 
@@ -60,6 +61,12 @@ namespace Game
         /// <param name="fromCoordinate">The shooter's coordinate</param>
         /// <param name="targetCoordinate">The target coordinate</param>
         /// <param name="duration">How long the shooting animation should take</param>
+        /// <summary>
+        /// Shoots a projectile towards a target hex coordinate with the specified duration.
+        /// </summary>
+        /// <param name="fromCoordinate">The shooter's coordinate (unused, kept for API consistency)</param>
+        /// <param name="targetCoordinate">The target coordinate</param>
+        /// <param name="duration">How long in seconds the projectile flight should take</param>
         public async UniTask ShootTowardsCoordinate(Vector2Int fromCoordinate, Vector2Int targetCoordinate, float duration)
         {
             // Convert target coordinate to world position

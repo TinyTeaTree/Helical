@@ -315,6 +315,12 @@ namespace Game
                 return;
             }
 
+            // Calculate projectile travel time based on distance and speed from config
+            Vector3 attackerWorldPos = GridUtils.ToWorldX0Z(attackerCoordinate);
+            Vector3 targetWorldPos = GridUtils.ToWorldX0Z(actualTargetCoordinate.Value);
+            float distance = Vector3.Distance(attackerWorldPos, targetWorldPos);
+            float projectileTravelTime = distance / rangeAttackAction.ProjectileSpeed;
+
             // Execute rotation towards the actual target (in parallel with attack)
             attackerUnit
                 .Rotate(attackerCoordinate, actualTargetCoordinate.Value, unitData.Direction, 0.3f)
@@ -327,17 +333,20 @@ namespace Game
             // Calculate duration from action points using central constant
             float duration = actionPoints * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
 
-            // Calculate interception time (when damage actually occurs)
+            // Calculate interception time (for attack animation timing)
             float interceptionTime = interceptionPoint * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
-
-            // Execute particle shooting (in parallel with attack animation)
-            attackerUnit.Shoot(attackerCoordinate, actualTargetCoordinate.Value, duration).Forget();
-
-            // Execute attack with calculated duration and interception timing
+            
+            // Execute attack animation with interception timing (visual only)
             await attackerUnit.Attack(duration, interceptionTime, () =>
             {
-                // This callback is executed at the interception point
-                DealDamageToTargetAtCoordinate(attackerCoordinate, actualTargetCoordinate.Value, unitData.PlayerId);
+                // Execute particle shooting with calculated travel time
+                attackerUnit.Shoot(attackerCoordinate, actualTargetCoordinate.Value, projectileTravelTime).Forget();
+
+                // Schedule damage to occur when projectile arrives (after travel time)
+                UniTask.Delay(System.TimeSpan.FromSeconds(projectileTravelTime)).ContinueWith(() =>
+                {
+                    DealDamageToTargetAtCoordinate(attackerCoordinate, actualTargetCoordinate.Value, unitData.PlayerId);
+                }).Forget();
             });
 
             Notebook.NoteData($"Unit at {attackerCoordinate} range attacked target at {actualTargetCoordinate.Value} (ordered: {orderedTargetCoordinate})");
