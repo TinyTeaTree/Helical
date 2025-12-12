@@ -88,17 +88,17 @@ MonoBehaviour:
       _moveRange: 3
     - _id: NatureMage
       _displayName: Nature Mage
-      _actionPoints: 100
+      _actionPoints: 60
       _actions:
       - Ability: 2
-        ActionPointsRequired: 50
-        ActionInterception: 25
+        ActionPointsRequired: 30
+        ActionInterception: 15
         MaxPerTurn: 1
         TurnCooldown: 0
         Range: 1
       - Ability: 7
-        ActionPointsRequired: 50
-        ActionInterception: 25
+        ActionPointsRequired: 30
+        ActionInterception: 15
         MaxPerTurn: 1
         TurnCooldown: 0
         Range: 3
