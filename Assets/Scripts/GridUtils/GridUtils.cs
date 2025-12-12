@@ -13,6 +13,13 @@ public static class GridUtils
     public static readonly float HexScaleModifier = HexMaxRadius * 2f;
     
 
+    /// <summary>
+    /// Converts hex grid coordinates to 2D mathematical coordinates for calculations.
+    /// Returns (x, y) representing position on a 2D plane accounting for hex grid staggering.
+    /// Used for UI calculations, direction math, and grid-based algorithms.
+    /// </summary>
+    /// <param name="coord">The hex grid coordinate to convert</param>
+    /// <returns>Vector2 representing 2D mathematical position</returns>
     public static Vector2 ToWorldXZ(this Vector2Int coord)
     {
         Vector2 pos = new Vector2
@@ -26,6 +33,13 @@ public static class GridUtils
         return pos;
     }
     
+    /// <summary>
+    /// Converts hex grid coordinates to 3D Unity world coordinates.
+    /// Returns (x, 0, z) representing actual world position for Unity transforms.
+    /// Used for positioning game objects, projectiles, and 3D world calculations.
+    /// </summary>
+    /// <param name="coord">The hex grid coordinate to convert</param>
+    /// <returns>Vector3 representing 3D world position with Y=0</returns>
     public static Vector3 ToWorldX0Z(this Vector2Int coord)
     {
         Vector3 pos = new Vector3
@@ -42,7 +56,11 @@ public static class GridUtils
 
     /// <summary>
     /// Gets the adjacent coordinate in the specified direction from the given coordinate.
+    /// Accounts for hex grid staggering (even/odd rows have different neighbor patterns).
     /// </summary>
+    /// <param name="fromCoord">The starting coordinate</param>
+    /// <param name="direction">The hex direction to move</param>
+    /// <returns>The coordinate one step away in the specified direction</returns>
     public static Vector2Int NextHex(Vector2Int fromCoord, HexDirection direction)
     {
         bool isEvenRow = fromCoord.x % 2 == 0;
@@ -68,9 +86,13 @@ public static class GridUtils
     }
 
     /// <summary>
-    /// Calculates the hex distance between two coordinates.
+    /// Calculates the hex distance between two coordinates using cube coordinates.
     /// Returns the number of hex steps needed to travel from one hex to another.
+    /// This is the minimum number of hex moves required to go from point A to point B.
     /// </summary>
+    /// <param name="a">First hex coordinate</param>
+    /// <param name="b">Second hex coordinate</param>
+    /// <returns>Integer distance in hex steps</returns>
     public static int HexDistance(Vector2Int a, Vector2Int b)
     {
         // Convert to cube coordinates for distance calculation
@@ -98,7 +120,12 @@ public static class GridUtils
 
     /// <summary>
     /// Gets all coordinates within a given hex distance from a center coordinate.
+    /// Returns all hex coordinates that are within 'range' steps of the center coordinate.
+    /// Includes the center coordinate itself when range >= 0.
     /// </summary>
+    /// <param name="center">The center coordinate to search from</param>
+    /// <param name="range">Maximum hex distance to include (0 = only center, 1 = adjacent, etc.)</param>
+    /// <returns>List of all coordinates within the specified range</returns>
     public static List<Vector2Int> GetCoordinatesInRange(Vector2Int center, int range)
     {
         var result = new List<Vector2Int>();
