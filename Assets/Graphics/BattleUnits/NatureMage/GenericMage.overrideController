@@ -6,14 +6,14 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SwampMonster
+  m_Name: GenericMage
   m_Controller: {fileID: 9100000, guid: cf835309de2684ef9a4901291d7f1656, type: 2}
   m_Clips:
   - m_OriginalClip: {fileID: 7400000, guid: f15c07c4bb03eeb48a7d2f8bfc519969, type: 3}
-    m_OverrideClip: {fileID: 7400000, guid: 778c647fc5750ea4699bd1bb5d0a92e4, type: 3}
+    m_OverrideClip: {fileID: -409062583475281135, guid: d2b59314a9398b04eaab661554f89a87, type: 3}
   - m_OriginalClip: {fileID: 7400000, guid: 68e3a50f30bb0c54e8ca5cfae6eea48d, type: 3}
-    m_OverrideClip: {fileID: 7400000, guid: 5edee861392362a4c976b765eba3a6d2, type: 3}
+    m_OverrideClip: {fileID: -8184033179028042710, guid: c24a6543779d8444390fea4cfc2469d9, type: 3}
   - m_OriginalClip: {fileID: 7400000, guid: 272e84c6ff8fea340b19da71308f0475, type: 3}
-    m_OverrideClip: {fileID: 7400000, guid: 233d4e0f3fe21cc44bdee5556298d03b, type: 3}
+    m_OverrideClip: {fileID: -4452440636216180258, guid: 2259e22041db7774a8736029a9284fdd, type: 3}
   - m_OriginalClip: {fileID: 7400000, guid: c9c27b083be6645e298d16e7dac5bebe, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: b84567b538c94c64196f60e963300ff7, type: 3}
+    m_OverrideClip: {fileID: 4985041854964964338, guid: 61e50d4e3cae1024f9483385c17d78d1, type: 3}

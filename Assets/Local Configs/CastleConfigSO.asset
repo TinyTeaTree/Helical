@@ -19,3 +19,5 @@ MonoBehaviour:
       _availableUnits:
       - _unitId: Axeman
         _goldCost: 20
+      - _unitId: NatureMage
+        _goldCost: 35
