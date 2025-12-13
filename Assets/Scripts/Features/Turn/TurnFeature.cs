@@ -107,21 +107,33 @@ namespace Game
             // Get the move action configuration
             var moveActionConfig = unitConfig.Actions.First(a => a.Ability == AbilityMode.Move);
 
+            // Check MaxPerTurn limit for move actions
+            int alreadyOrderedMoves = unitData.TurnOrder.Actions.Count(action => action.Ability == AbilityMode.Move);
+            int maxAdditionalMoves = (moveActionConfig.MaxPerTurn == 0) ? int.MaxValue : (moveActionConfig.MaxPerTurn - alreadyOrderedMoves);
+
+            if (maxAdditionalMoves <= 0)
+            {
+                Notebook.NoteWarning($"Cannot order move: would exceed MaxPerTurn limit ({moveActionConfig.MaxPerTurn})");
+                DJ.Play(DJ.Wrong_Sound);
+                return;
+            }
+
             // Calculate current total action points used
             int currentActionPointsUsed = unitData.TurnOrder.Actions.Sum(action => action.ActionPoints);
 
             // Each grid movement step costs the configured action points
             int actionPointsPerMoveStep = moveActionConfig.ActionPointsRequired;
 
-            // Add move actions for each step in the path
-            for (int i = 0; i < path.TotalSteps; i++)
+            // Add move actions for each step in the path, respecting limits
+            int stepsAdded = 0;
+            for (int i = 0; i < path.TotalSteps && stepsAdded < maxAdditionalMoves; i++)
             {
                 var step = path.Steps[i];
 
                 // Check if adding this step would exceed the unit's action points limit
                 if (currentActionPointsUsed + actionPointsPerMoveStep > unitConfig.ActionPoints)
                 {
-                    Notebook.NoteWarning($"Cannot add move step: would exceed action points limit. Added {i} steps out of {path.TotalSteps}");
+                    Notebook.NoteWarning($"Cannot add move step: would exceed action points limit. Added {stepsAdded} steps out of {path.TotalSteps}");
                     DJ.Play(DJ.Wrong_Sound);
                     break;
                 }
@@ -137,9 +149,15 @@ namespace Game
 
                 unitData.TurnOrder.Actions.Add(moveAction);
                 currentActionPointsUsed += actionPointsPerMoveStep;
+                stepsAdded++;
             }
 
-            Notebook.NoteData($"Ordered {unitData.TurnOrder.Actions.Count(action => action.Ability == AbilityMode.Move)} move steps");
+            if (stepsAdded < path.TotalSteps)
+            {
+                Notebook.NoteWarning($"Move limited by MaxPerTurn: ordered {stepsAdded} steps instead of {path.TotalSteps}");
+            }
+
+            Notebook.NoteData($"Ordered {stepsAdded} move steps");
         }
 
         private void OrderWaitAction(BattleUnitData unitData, BattleUnitConfig unitConfig, Vector2Int unitCoordinate)

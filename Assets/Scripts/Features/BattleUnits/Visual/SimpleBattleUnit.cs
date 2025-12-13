@@ -8,11 +8,11 @@ namespace Game
 {
     public class SimpleBattleUnit : BaseBattleUnit
     {
-        [SerializeField] private BattleUnitGlow _glowComponent;
+        [SerializeField, CanBeNull] private BattleUnitGlow _glowComponent;
         [SerializeField] private AnimationClip _attackAnimationClip;
 
         [SerializeField, CanBeNull] private BaseSoundDesign _hitSound;
-        
+
         private static readonly int AttackTrigger = Animator.StringToHash("Attack");
         private static readonly int GetHitTrigger = Animator.StringToHash("GetHit");
         private static readonly int IsMoveBool = Animator.StringToHash("IsWalk");
@@ -55,9 +55,19 @@ namespace Game
         public override void GetHit()
         {
             _animator.SetTrigger(GetHitTrigger);
-            
-            if(_hitSound != null)
+
+            if (_hitSound != null)
                 DJ.Play(_hitSound);
+        }
+
+        public override void SetGlow(bool isGlowing)
+        {
+            _glowComponent?.SetGlow(isGlowing);
+        }
+
+        public override void UpdateHealthBar(float healthPercentage)
+        {
+            _healthBarWidget.UpdateFill(healthPercentage);
         }
 
         public override void SetIsMove(bool isMoving)
@@ -69,16 +79,7 @@ namespace Game
         {
             _animator.SetTrigger(DieTrigger);
         }
-        }
-        
-        public override void SetGlow(bool isGlowing)
-        {
-            _glowComponent?.SetGlow(isGlowing);
-        }
-
-        public override void UpdateHealthBar(float healthPercentage)
-        {
-            _healthBarWidget.UpdateFill(healthPercentage);
-        }
     }
 }
+
+
