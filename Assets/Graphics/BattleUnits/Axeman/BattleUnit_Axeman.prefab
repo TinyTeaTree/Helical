@@ -2412,9 +2412,11 @@ MonoBehaviour:
   _animator: {fileID: 2245292816952312609}
   _mover: {fileID: 8155589462604612625}
   _rotator: {fileID: 2730430511404531632}
+  _shooter: {fileID: 0}
   _healthBarAnchor: {fileID: 5074811237157049475}
   _glowComponent: {fileID: 0}
   _attackAnimationClip: {fileID: 1109091590377655818, guid: 7eb76ba67c7c3144a86cdaca75aaa02d, type: 3}
+  _hitSound: {fileID: 0}
 --- !u!114 &8155589462604612625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2441,24 +2443,6 @@ MonoBehaviour:
       weightedMode: 0
       inWeight: 0
       outWeight: 0
-    - serializedVersion: 3
-      time: 0.2
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.5
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
