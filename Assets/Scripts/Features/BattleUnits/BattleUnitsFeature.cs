@@ -107,15 +107,22 @@ namespace Game
         public void UpdateUnitSelection(Vector2Int? coordinate)
         {
             ClearUnitSelection();
-            
+
             if (coordinate == null)
             {
                 return;
             }
-            
+
+            // Check if there's a living unit at the coordinate
+            var unitData = GetUnitData(coordinate.Value);
+            if (unitData == null || unitData.IsDead)
+            {
+                return; // No unit or dead unit at coordinate
+            }
+
             // Find unit at the coordinate (keep visual internal)
             var unitAtCoordinate = _visual.GetUnitAtCoordinate(coordinate.Value);
-            
+
             // Select unit at new coordinate if one exists
             if (unitAtCoordinate != null)
             {
@@ -481,12 +488,31 @@ namespace Game
 
         private void HandleUnitDeath(Vector2Int unitCoordinate)
         {
+            // Get the unit data
+            var unitData = GetUnitData(unitCoordinate);
+            if (unitData == null || !unitData.IsDead)
+            {
+                return; // Unit not found or not dead
+            }
+
+            // Get the visual unit
             var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
             if (unit != null)
             {
+                // Trigger death animation
                 unit.SetIsDead(true);
-                // Note: Unit despawning will be handled by the turn system or battle end
+
+                // Remove health bar widget from HUD
+                Hud.DestroyWidget(unit.HealthBarAnchor);
             }
+
+            // Remove unit from the battle record
+            Record.BattleUnits.Remove(unitData);
+
+            // Update hex ownership indicators to remove dead unit's ownership
+            GridSelection.UpdateHexOwnershipIndicators();
+
+            Notebook.NoteData($"Unit {unitData.BattleUnitId} at {unitCoordinate} has been removed from battle");
         }
 
         private Vector2Int? FindClosestValidTarget(Vector2Int attackerCoordinate, Vector2Int orderedTargetCoordinate, int range)

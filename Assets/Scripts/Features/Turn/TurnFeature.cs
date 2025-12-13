@@ -241,6 +241,13 @@ namespace Game
             Record.UnitsExecuting++;
             foreach (var action in turn.Actions)
             {
+                // Check if unit has died before executing this action
+                if (unit.IsDead)
+                {
+                    Notebook.NoteData($"Unit {unit.BattleUnitId} at {unit.Coordinate} died, stopping turn execution");
+                    break;
+                }
+
                 if (action.Ability == AbilityMode.Move)
                 {
                     await BattleUnits.ExecuteMove(unit.Coordinate, action.Target, action.ActionPoints, action.Interception);

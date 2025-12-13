@@ -67,7 +67,8 @@ namespace Game
 
         public override void SetIsDead(bool isDead)
         {
-            _animator.SetBool(DieTrigger, isDead);
+            _animator.SetTrigger(DieTrigger);
+        }
         }
         
         public override void SetGlow(bool isGlowing)

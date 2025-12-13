@@ -127,6 +127,6 @@ MonoBehaviour:
         Range: 1
         ProjectileSpeed: 10
       _maxHealth: 50
-      _attackPower: 8
+      _attackPower: 60
       _defense: 0
       _moveRange: 3
