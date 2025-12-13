@@ -78,6 +78,9 @@ namespace Game
                     PlayerId = unitData.PlayerId
                 };
 
+                // Initialize ability cooldowns
+                InitializeAbilityCooldowns(battleUnitData, unitConfig);
+
                 Record.BattleUnits.Add(battleUnitData);
                 Notebook.NoteData($"Loaded predetermined unit: {unitData.UnitId} (Lv.{unitData.Level}) for {unitData.PlayerId} at {unitData.Coordinate}");
             }
@@ -391,6 +394,9 @@ namespace Game
                 PlayerId = playerId
             };
 
+            // Initialize ability cooldowns
+            InitializeAbilityCooldowns(unitData, unitConfig);
+
             // Add to record
             Record.BattleUnits.Add(unitData);
 
@@ -570,6 +576,23 @@ namespace Game
                 targetUnitData.IsDead = true;
                 HandleUnitDeath(targetCoordinate);
                 Notebook.NoteData($"Unit at {targetCoordinate} has died");
+            }
+        }
+
+        private void InitializeAbilityCooldowns(BattleUnitData unitData, BattleUnitConfig unitConfig)
+        {
+            unitData.AbilityCooldowns.Clear();
+
+            foreach (var action in unitConfig.Actions)
+            {
+                var cooldownData = new BattleUnitData.AbilityCooldownData
+                {
+                    Ability = action.Ability,
+                    UsedThisTurn = 0,
+                    TurnsToCooldown = 0
+                };
+
+                unitData.AbilityCooldowns.Add(cooldownData);
             }
         }
 

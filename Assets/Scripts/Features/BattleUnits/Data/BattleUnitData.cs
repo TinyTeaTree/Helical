@@ -17,6 +17,14 @@ namespace Game
         }
 
         [System.Serializable]
+        public class AbilityCooldownData
+        {
+            public AbilityMode Ability;
+            public int UsedThisTurn;
+            public int TurnsToCooldown;
+        }
+
+        [System.Serializable]
         public class Turn
         {
             public List<Action> Actions = new List<Action>();
@@ -30,7 +38,9 @@ namespace Game
         public HexDirection Direction { get; set; }
         
         public Turn TurnOrder { get; set; } = new Turn();
-        
+
+        public List<AbilityCooldownData> AbilityCooldowns { get; set; } = new List<AbilityCooldownData>();
+
         public int Health { get; set; }
         public int Level { get; set; }
         public bool IsDead { get; set; }

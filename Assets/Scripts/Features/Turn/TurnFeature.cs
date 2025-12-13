@@ -55,6 +55,14 @@ namespace Game
             var unitData = BattleUnits.GetUnitData(unitCoordinate);
             var unitConfig = BattleUnits.GetUnitConfig(unitData.BattleUnitId);
 
+            // Check if ability can be used based on cooldowns and usage limits
+            if (!CanUseAbility(unitData, unitConfig, ability))
+            {
+                DJ.Play(DJ.Wrong_Sound);
+                Notebook.NoteWarning($"Cannot use ability {ability} - cooldown or usage limit reached");
+                return;
+            }
+
             if (ability == AbilityMode.Move)
             {
                 OrderMoveActions(unitData, unitConfig, unitCoordinate, targetCoordinate);
@@ -253,8 +261,53 @@ namespace Game
                 {
                     await BattleUnits.ExecuteWait(unit.Coordinate, action.ActionPoints, action.Interception);
                 }
+
+                // Update ability cooldowns after execution
+                UpdateAbilityCooldown(unit, action.Ability);
             }
             Record.UnitsExecuting--;
+        }
+
+        private bool CanUseAbility(BattleUnitData unitData, BattleUnitConfig unitConfig, AbilityMode ability)
+        {
+            var actionConfig = unitConfig.Actions.Find(a => a.Ability == ability);
+            var cooldownData = unitData.AbilityCooldowns.Find(c => c.Ability == ability);
+
+            // Check cooldown restrictions
+            if (actionConfig.TurnCooldown == 0)
+            {
+                // No cooldown, check usage limit for this turn
+                // Include abilities already ordered this turn (but not yet executed)
+                int alreadyOrderedThisTurn = unitData.TurnOrder.Actions.Count(a => a.Ability == ability);
+                return actionConfig.MaxPerTurn == 0 || (cooldownData.UsedThisTurn + alreadyOrderedThisTurn) < actionConfig.MaxPerTurn;
+            }
+            else
+            {
+                // Has cooldown, can only use if not on cooldown
+                return cooldownData.TurnsToCooldown == 0;
+            }
+        }
+
+        private void UpdateAbilityCooldown(BattleUnitData unitData, AbilityMode ability)
+        {
+            // Find the cooldown data for this ability
+            var cooldownData = unitData.AbilityCooldowns.Find(c => c.Ability == ability);
+
+            // Find the action config to determine cooldown behavior
+            var unitConfig = BattleUnits.GetUnitConfig(unitData.BattleUnitId);
+            var actionConfig = unitConfig?.Actions.Find(a => a.Ability == ability);
+
+            // Update cooldown tracking
+            if (actionConfig.TurnCooldown == 0)
+            {
+                // No cooldown, just increment usage counter
+                cooldownData.UsedThisTurn++;
+            }
+            else
+            {
+                // Has cooldown, set the cooldown duration
+                cooldownData.TurnsToCooldown = actionConfig.TurnCooldown;
+            }
         }
 
         private void EndTurn()
@@ -262,8 +315,21 @@ namespace Game
             foreach (var unit in UnitsRecord.BattleUnits)
             {
                 unit.TurnOrder.Actions.Clear();
+
+                // Reset ability cooldowns for the new turn
+                foreach (var cooldownData in unit.AbilityCooldowns)
+                {
+                    // Reset usage counter for the new turn
+                    cooldownData.UsedThisTurn = 0;
+
+                    // Decrement cooldown turns remaining
+                    if (cooldownData.TurnsToCooldown > 0)
+                    {
+                        cooldownData.TurnsToCooldown--;
+                    }
+                }
             }
-            
+
             Record.InTurn = false;
             _visual.SetTurnData();
         }
