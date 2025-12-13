@@ -16,7 +16,7 @@ namespace Game
         private static readonly int AttackTrigger = Animator.StringToHash("Attack");
         private static readonly int GetHitTrigger = Animator.StringToHash("GetHit");
         private static readonly int IsMoveBool = Animator.StringToHash("IsWalk");
-        private static readonly int IsDeadBool = Animator.StringToHash("IsDead");
+        private static readonly int DieTrigger = Animator.StringToHash("Die");
 
         private float AttackAnimationDuration => _attackAnimationClip.length; //TODO: Use this to set the Animator speed to adjust for Action Points
 
@@ -67,7 +67,7 @@ namespace Game
 
         public override void SetIsDead(bool isDead)
         {
-            _animator.SetBool(IsDeadBool, isDead);
+            _animator.SetBool(DieTrigger, isDead);
         }
         
         public override void SetGlow(bool isGlowing)
