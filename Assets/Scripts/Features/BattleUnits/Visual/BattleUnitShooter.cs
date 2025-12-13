@@ -1,5 +1,7 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using JetBrains.Annotations;
+using Services;
 using UnityEngine;
 
 namespace Game
@@ -12,6 +14,9 @@ namespace Game
         [Tooltip("The easing function for projectile movement animation")]
         [SerializeField] private Ease _projectileEase = Ease.Linear;
 
+        [SerializeField, CanBeNull] private BaseSoundDesign _shootSound;
+        [SerializeField, CanBeNull] private BaseSoundDesign _shootEndSound;
+        [SerializeField] private float _addedYShootHeight;
         /// <summary>
         /// Shoots a projectile towards the target position using configured speed.
         /// Travel time is calculated based on distance and projectile speed.
@@ -28,8 +33,14 @@ namespace Game
                 return;
             }
 
+            targetPosition.y += _addedYShootHeight;
+
             // Instantiate the projectile
             GameObject projectile = Instantiate(_projectilePrefab, _shootOrigin.position, Quaternion.identity);
+
+            if (_shootSound)
+                DJ.Play(_shootSound);
+            
 
             // Calculate direction to target
             Vector3 direction = (targetPosition - _shootOrigin.position).normalized;
@@ -46,6 +57,9 @@ namespace Game
 
             // Wait for the projectile to reach its target or timeout
             await projectileTween.AsyncWaitForCompletion();
+            
+            if (_shootEndSound)
+                DJ.Play(_shootEndSound);
 
             // Destroy the projectile after a short delay
             await UniTask.Delay(System.TimeSpan.FromSeconds(0.1f));

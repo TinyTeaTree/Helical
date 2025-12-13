@@ -1471,7 +1471,7 @@ GameObject:
   - component: {fileID: 2611751085726299521}
   - component: {fileID: 9131060932748270222}
   m_Layer: 0
-  m_Name: Nature Magician
+  m_Name: NatureMage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1514,6 +1514,7 @@ MonoBehaviour:
   _healthBarAnchor: {fileID: 2320991684095420712}
   _glowComponent: {fileID: 0}
   _attackAnimationClip: {fileID: 7400000, guid: 68e3a50f30bb0c54e8ca5cfae6eea48d, type: 3}
+  _hitSound: {fileID: 0}
 --- !u!114 &1642804295770935528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1581,6 +1582,9 @@ MonoBehaviour:
   _projectilePrefab: {fileID: 1117169310052547048, guid: 4e4e84452bc7c45a2ad4416658ec8a90, type: 3}
   _shootOrigin: {fileID: 814712268530477337}
   _projectileEase: 1
+  _shootSound: {fileID: 11400000, guid: 18175b95ad4a14f7197591d0e54d5c19, type: 2}
+  _shootEndSound: {fileID: 11400000, guid: 4e7a5df67040b42788325205efc21fde, type: 2}
+  _addedYShootHeight: 0.5
 --- !u!1 &5959198088260231652
 GameObject:
   m_ObjectHideFlags: 0

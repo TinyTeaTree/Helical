@@ -84,9 +84,11 @@ MonoBehaviour:
   _animator: {fileID: 3036793005611469043}
   _mover: {fileID: 1508736465772054905}
   _rotator: {fileID: 7016923741450237120}
+  _shooter: {fileID: 0}
   _healthBarAnchor: {fileID: 25982491294804826}
   _glowComponent: {fileID: 289387202809386469}
   _attackAnimationClip: {fileID: 7400000, guid: 68e3a50f30bb0c54e8ca5cfae6eea48d, type: 3}
+  _hitSound: {fileID: 11400000, guid: 0eec17186d39a43d39d6369feb2d8981, type: 2}
 --- !u!114 &289387202809386469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,6 +117,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: Game::Game.BattleUnitMover
   _moveEase: 7
   _jumpHeight: 0.1
+  _moveCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _useAnimationCurve: 0
 --- !u!114 &7016923741450237120
 MonoBehaviour:
   m_ObjectHideFlags: 0

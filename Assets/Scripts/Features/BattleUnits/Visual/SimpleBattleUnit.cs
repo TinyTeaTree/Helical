@@ -1,5 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
+using Services;
 using UnityEngine;
 
 namespace Game
@@ -8,6 +10,8 @@ namespace Game
     {
         [SerializeField] private BattleUnitGlow _glowComponent;
         [SerializeField] private AnimationClip _attackAnimationClip;
+
+        [SerializeField, CanBeNull] private BaseSoundDesign _hitSound;
         
         private static readonly int AttackTrigger = Animator.StringToHash("Attack");
         private static readonly int GetHitTrigger = Animator.StringToHash("GetHit");
@@ -51,6 +55,9 @@ namespace Game
         public override void GetHit()
         {
             _animator.SetTrigger(GetHitTrigger);
+            
+            if(_hitSound != null)
+                DJ.Play(_hitSound);
         }
 
         public override void SetIsMove(bool isMoving)
