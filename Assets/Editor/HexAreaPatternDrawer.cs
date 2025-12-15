@@ -110,7 +110,6 @@ namespace Game
                     }
                 }
             }
-
             EditorGUI.EndProperty();
         }
 
@@ -119,18 +118,26 @@ namespace Game
             var gridSizeProp = property.FindPropertyRelative("_gridSize");
             int gridSize = gridSizeProp.intValue;
 
-            // Calculate height based on world coordinate conversion
+            // Calculate world bounds for the grid (matching OnGUI calculation)
             int center = gridSize / 2;
             Vector2Int minCoord = new Vector2Int(-center, -center);
             Vector2Int maxCoord = new Vector2Int(center, center);
 
+            // Convert to world XZ coordinates
             Vector2 minWorld = minCoord.ToWorldXZ();
             Vector2 maxWorld = maxCoord.ToWorldXZ();
 
-            float worldHeight = maxWorld.y - minWorld.y;
-            float guiHeight = worldHeight * pixelsPerUnit;
+            // Add some padding (matching OnGUI calculation)
+            minWorld -= Vector2.one * 0.5f;
+            maxWorld += Vector2.one * 0.5f;
 
-            return EditorGUIUtility.singleLineHeight + guiHeight + 14; // Extra padding
+            // Calculate grid dimensions in GUI space
+            float worldWidth = maxWorld.x - minWorld.x;
+            float worldHeight = maxWorld.y - minWorld.y;
+            float gridHeight = worldHeight * pixelsPerUnit;
+
+            // Total height: single line height + spacing (10) + grid height
+            return EditorGUIUtility.singleLineHeight + 10 + gridHeight;
         }
     }
 }
