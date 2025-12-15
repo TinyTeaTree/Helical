@@ -91862,8 +91862,40 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7905235147061570977, guid: 6c3ff2087404c4b01b8359f23fd773c0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1030636224706581051}
   m_SourcePrefab: {fileID: 100100000, guid: 6c3ff2087404c4b01b8359f23fd773c0, type: 3}
+--- !u!1 &1030636224706581050 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7905235147061570977, guid: 6c3ff2087404c4b01b8359f23fd773c0, type: 3}
+  m_PrefabInstance: {fileID: 1030636224706581049}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1030636224706581051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030636224706581050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c5437c0f802434580ce4eb8b04c631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game::Game.SimpleBattleUnit
+  _id: 
+  _animator: {fileID: 0}
+  _mover: {fileID: 0}
+  _rotator: {fileID: 0}
+  _shooter: {fileID: 0}
+  _healthBarAnchor: {fileID: 0}
+  _glowComponent: {fileID: 0}
+  _attackAnimationClip: {fileID: 0}
+  _hitSound: {fileID: 0}
+  _pattern:
+    _gridSize: 10
+    _patternData: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010100000000000000000101010000000000000001010000000000000000000000000000000000000000000000000000000000000000
 --- !u!1001 &3326459302939490770
 PrefabInstance:
   m_ObjectHideFlags: 0
