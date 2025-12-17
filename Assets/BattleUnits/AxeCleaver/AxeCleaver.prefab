@@ -32,6 +32,37 @@ Transform:
   - {fileID: 4913755822433758664}
   m_Father: {fileID: 589455496279360585}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &236551924950469902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8346074998150019823}
+  m_Layer: 0
+  m_Name: HP Anchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8346074998150019823
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236551924950469902}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.926, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7266408092572936656}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &308695813805540559
 GameObject:
   m_ObjectHideFlags: 0
@@ -2327,6 +2358,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7266408092572936656}
+  - component: {fileID: 1169361280296846221}
+  - component: {fileID: 993005958516007445}
+  - component: {fileID: 4212862017625773959}
   m_Layer: 0
   m_Name: AxeCleaver
   m_TagString: Untagged
@@ -2342,14 +2376,88 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7905235147061570977}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 9.964, y: 0.083, z: 1.14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8031127974109127552}
+  - {fileID: 8346074998150019823}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1169361280296846221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7905235147061570977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c5437c0f802434580ce4eb8b04c631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game::Game.SimpleBattleUnit
+  _id: 
+  _animator: {fileID: 8291142508136069314}
+  _mover: {fileID: 993005958516007445}
+  _rotator: {fileID: 4212862017625773959}
+  _shooter: {fileID: 0}
+  _healthBarAnchor: {fileID: 8346074998150019823}
+  _glowComponent: {fileID: 0}
+  _attackAnimationClip: {fileID: 895831804001188954, guid: ca371505123df8344ab6cf38e4eea4ac, type: 3}
+  _hitSound: {fileID: 0}
+--- !u!114 &993005958516007445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7905235147061570977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3b21d185ebea4786a605c81c1a70ada, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game::Game.BattleUnitMover
+  _moveEase: 7
+  _jumpHeight: 0
+  _moveCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _useAnimationCurve: 0
+--- !u!114 &4212862017625773959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7905235147061570977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52228f3ce5d34418b88e4845ae62e7db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game::Game.BattleUnitRotator
+  _rotationEase: 6
 --- !u!1 &8107784552229992053
 GameObject:
   m_ObjectHideFlags: 0
@@ -2681,10 +2789,10 @@ Animator:
   m_GameObject: {fileID: 8894118472510934985}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: b2f105090024e5c42bfc63af230849c0, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: 72b4476dda8e9415f84b36d4c9e08629, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0

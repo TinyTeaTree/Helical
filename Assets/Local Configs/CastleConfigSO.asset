@@ -21,3 +21,5 @@ MonoBehaviour:
         _goldCost: 20
       - _unitId: NatureMage
         _goldCost: 35
+      - _unitId: AxeCleaver
+        _goldCost: 50

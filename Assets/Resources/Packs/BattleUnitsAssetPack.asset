@@ -25,4 +25,7 @@ MonoBehaviour:
   - UnitId: NatureMage
     Prefab: {fileID: 5895813426258426838, guid: 416d82e79c04e481cb3de5ad70d44116, type: 3}
     Photo: {fileID: 21300000, guid: aa88bec31af944e41b0deadcf636bf9f, type: 3}
+  - UnitId: AxeCleaver
+    Prefab: {fileID: 7905235147061570977, guid: 6c3ff2087404c4b01b8359f23fd773c0, type: 3}
+    Photo: {fileID: 21300000, guid: 252d615044b0f47e4b2a74938d4f7ea1, type: 3}
   _healthBarPrefab: {fileID: 7502316853730035356, guid: fd49dfe5d03c448e5a423e88d76362ff, type: 3}
