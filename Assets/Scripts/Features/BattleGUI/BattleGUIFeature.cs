@@ -84,6 +84,13 @@ namespace Game
             Notebook.NoteData("Attack mode activated");
         }
         
+        public void OnCleaveButtonClicked()
+        {
+            GridSelection.SetAbilityMode(AbilityMode.CleaveAttack);
+            DJ.Play(DJ.Tick_Sound);
+            Notebook.NoteData("Cleave mode activated");
+        }
+        
         public void OnMoveButtonClicked()
         {
             DJ.Play(DJ.Tick_Sound);

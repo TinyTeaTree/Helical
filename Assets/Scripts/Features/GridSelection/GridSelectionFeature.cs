@@ -200,6 +200,13 @@ namespace Game
                 return;
             }
 
+            // Check if we're in Cleave Attack mode
+            if (Record.CurrentAbilityMode == AbilityMode.CleaveAttack)
+            {
+                HandleCleaveAttackMode(coordinate);
+                return;
+            }
+
             // Check if we're in Move mode
             if (Record.CurrentAbilityMode == AbilityMode.Move)
             {
@@ -243,6 +250,13 @@ namespace Game
             if (Record.CurrentAbilityMode == AbilityMode.RangeAttack)
             {
                 HandleRangeAttackMode(coordinate);
+                return;
+            }
+
+            // Check if we're in Cleave Attack mode
+            if (Record.CurrentAbilityMode == AbilityMode.CleaveAttack)
+            {
+                HandleCleaveAttackMode(coordinate);
                 return;
             }
 
@@ -457,7 +471,34 @@ namespace Game
 
             Notebook.NoteData($"Range attack ordered from {attackerCoordinate} towards {targetCoordinate}");
         }
-        
+
+        private void HandleCleaveAttackMode(Vector2Int targetCoordinate)
+        {
+            // Check if there's a selected unit (the attacker)
+            if (!Record.HasSelection)
+            {
+                Notebook.NoteWarning("No unit selected to perform cleave attack");
+                return;
+            }
+
+            Vector2Int attackerCoordinate = Record.SelectedCoordinate.Value;
+
+            // Validate that the target coordinate is valid for cleave attacking
+            if (!Grid.IsValidForAbility(AbilityMode.CleaveAttack, targetCoordinate))
+            {
+                Notebook.NoteWarning($"Cannot cleave attack coordinate {targetCoordinate} - invalid target");
+                return;
+            }
+
+            Turn.OrderTurn(attackerCoordinate, targetCoordinate, AbilityMode.CleaveAttack);
+
+            // Clear ability mode after cleave attack
+            Record.ClearAbilityMode();
+            Cursor.SetCursorMode(AbilityMode.None);
+
+            Notebook.NoteData($"Cleave attack ordered from {attackerCoordinate} targeting {targetCoordinate}");
+        }
+
         private void HandleMoveMode(Vector2Int targetCoordinate)
         {
             // Check if there's a selected unit (the unit to move)

@@ -282,6 +282,10 @@ namespace Game
                 {
                     await BattleUnits.ExecuteRangeAttack(unit.Coordinate, action.Target, action.ActionPoints, action.Interception);
                 }
+                else if (action.Ability == AbilityMode.CleaveAttack)
+                {
+                    await BattleUnits.ExecuteCleaveAttack(unit.Coordinate, action.Target, action.ActionPoints, action.Interception);
+                }
                 else if (action.Ability == AbilityMode.Wait)
                 {
                     await BattleUnits.ExecuteWait(unit.Coordinate, action.ActionPoints, action.Interception);

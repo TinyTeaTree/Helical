@@ -8,6 +8,16 @@ namespace Game
     public class BattleUnitConfig
     {
         [System.Serializable]
+        public class HexTarget
+        {
+            /// <summary>
+            /// List of directions to traverse from the primary target to reach this hex.
+            /// Each direction is relative to the unit's facing direction.
+            /// </summary>
+            public List<HexDirection> Directions = new List<HexDirection>();
+        }
+
+        [System.Serializable]
         public class Action
         {
             public AbilityMode Ability;
@@ -38,6 +48,13 @@ namespace Game
             /// Only used for RangeAttack ability. Determines how long it takes for projectiles to reach targets.
             /// </summary>
             public float ProjectileSpeed = 10f;
+
+            /// <summary>
+            /// Additional hex targets for cleave attacks.
+            /// Each target is defined by a sequence of directions from the primary target.
+            /// Only used for CleaveAttack ability.
+            /// </summary>
+            public List<HexTarget> CleaveTargets = new List<HexTarget>();
         }
         
         [SerializeField] private string _id;

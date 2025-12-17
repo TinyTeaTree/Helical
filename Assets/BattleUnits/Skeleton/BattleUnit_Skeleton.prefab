@@ -89,6 +89,7 @@ MonoBehaviour:
   _glowComponent: {fileID: 289387202809386469}
   _attackAnimationClip: {fileID: 7400000, guid: 68e3a50f30bb0c54e8ca5cfae6eea48d, type: 3}
   _hitSound: {fileID: 11400000, guid: 0eec17186d39a43d39d6369feb2d8981, type: 2}
+  _deathSound: {fileID: 11400000, guid: 0eec17186d39a43d39d6369feb2d8981, type: 2}
 --- !u!114 &289387202809386469
 MonoBehaviour:
   m_ObjectHideFlags: 0

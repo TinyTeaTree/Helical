@@ -90,7 +90,8 @@ namespace Game
                     break;
 
                 case AbilityMode.Attack:
-                    // For attack, we might want different rules later
+                case AbilityMode.CleaveAttack:
+                    // For attack and cleave attack, we might want different rules later
                     // For now, allow attacking any valid hex
                     break;
 

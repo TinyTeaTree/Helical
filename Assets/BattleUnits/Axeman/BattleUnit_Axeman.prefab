@@ -2416,7 +2416,8 @@ MonoBehaviour:
   _healthBarAnchor: {fileID: 5074811237157049475}
   _glowComponent: {fileID: 0}
   _attackAnimationClip: {fileID: 1109091590377655818, guid: 7eb76ba67c7c3144a86cdaca75aaa02d, type: 3}
-  _hitSound: {fileID: 0}
+  _hitSound: {fileID: 11400000, guid: d205c5c53a97f4cde81129d915aaa99d, type: 2}
+  _deathSound: {fileID: 11400000, guid: a394d22132edf4db8a6c39f0e9f12208, type: 2}
 --- !u!114 &8155589462604612625
 MonoBehaviour:
   m_ObjectHideFlags: 0

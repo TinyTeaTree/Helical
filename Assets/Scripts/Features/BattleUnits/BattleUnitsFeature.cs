@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Agents;
 using Core;
 using Cysharp.Threading.Tasks;
@@ -183,7 +184,99 @@ namespace Game
 
             Notebook.NoteData($"Unit at {attackerCoordinate} attacked target at {targetCoordinate}");
         }
-        
+
+        public async UniTask ExecuteCleaveAttack(Vector2Int attackerCoordinate, Vector2Int targetCoordinate, int actionPoints, int interceptionPoint)
+        {
+            var attackerUnit = _visual.GetUnitAtCoordinate(attackerCoordinate);
+
+            if (attackerUnit == null)
+            {
+                Notebook.NoteError("Cleave attack failed: No attacker unit found");
+                return;
+            }
+
+            // Get the unit data and config
+            var unitData = GetUnitData(attackerCoordinate);
+            var unitConfig = GetUnitConfig(unitData?.BattleUnitId);
+            if (unitConfig == null || unitData == null)
+            {
+                Notebook.NoteError("Cleave attack failed: Cannot find unit config or data");
+                return;
+            }
+
+            // Find the cleave attack action config
+            var cleaveAction = unitConfig.Actions.Find(a => a.Ability == AbilityMode.CleaveAttack);
+            if (cleaveAction == null)
+            {
+                Notebook.NoteError("Cleave attack failed: No cleave attack action found in config");
+                return;
+            }
+
+            // Execute rotation towards the target (in parallel with attack)
+            attackerUnit
+                .Rotate(attackerCoordinate, targetCoordinate, unitData.Direction, 0.3f)
+                .ContinueWith(newDirection =>
+                {
+                    unitData.Direction = newDirection;
+                })
+                .Forget();
+
+            // Calculate duration from action points using central constant
+            float duration = actionPoints * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
+
+            // Calculate interception time (when damage actually occurs)
+            float interceptionTime = interceptionPoint * (TurnFeature.SECONDS_PER_100_ACTION_POINTS / 100f);
+
+            // Execute attack with calculated duration and interception timing
+            await attackerUnit.Attack(duration, interceptionTime, () =>
+            {
+                // This callback is executed at the interception point
+                DealDamageToCleaveTargets(attackerCoordinate, targetCoordinate, unitData.Direction, unitData.PlayerId, cleaveAction);
+            });
+
+            Notebook.NoteData($"Unit at {attackerCoordinate} cleave attacked target at {targetCoordinate}");
+        }
+
+        private void DealDamageToCleaveTargets(Vector2Int attackerCoordinate, Vector2Int primaryTargetCoordinate, HexDirection unitDirection, string attackerPlayerId, BattleUnitConfig.Action cleaveAction)
+        {
+            var targetCoordinates = new List<Vector2Int>();
+
+            // Always include the primary target
+            targetCoordinates.Add(primaryTargetCoordinate);
+
+            // Calculate additional cleave targets based on configuration
+            foreach (var cleaveTarget in cleaveAction.CleaveTargets)
+            {
+                Vector2Int currentCoord = primaryTargetCoordinate;
+
+                // Follow the sequence of directions from the primary target
+                foreach (var direction in cleaveTarget.Directions)
+                {
+                    // Transpose the direction based on unit's facing direction
+                    var transposedDirection = GridUtils.TransposeDirection(direction, unitDirection);
+                    currentCoord = GridUtils.NextHex(currentCoord, transposedDirection);
+                }
+
+                // Add the final coordinate if it's not already in the list
+                if (!targetCoordinates.Contains(currentCoord))
+                {
+                    targetCoordinates.Add(currentCoord);
+                }
+            }
+
+            // Deal damage to all calculated targets
+            foreach (var targetCoord in targetCoordinates)
+            {
+                DealDamageToTargetAtCoordinate(attackerCoordinate, targetCoord, attackerPlayerId);
+            }
+
+            if (targetCoordinates.Count > 1)
+            {
+                Notebook.NoteData($"Cleave attack hit {targetCoordinates.Count} targets");
+            }
+        }
+
+
         public async UniTask ExecuteMove(Vector2Int unitCoordinate, Vector2Int targetCoordinate, int actionPoints, int interceptionPoint)
         {
             var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
@@ -454,7 +547,10 @@ namespace Game
 
             // Trigger hit animation on target unit
             var targetUnit = _visual.GetUnitAtCoordinate(targetCoordinate);
-            targetUnit?.GetHit();
+            if (targetUnitData.Health > 0)
+            {
+                targetUnit?.GetHit();
+            }
 
             // Update health bar
             UpdateUnitHealthBar(targetCoordinate, targetUnitData.Health, targetUnitData.IsDead);

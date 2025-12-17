@@ -10,6 +10,7 @@ namespace Game
         Shield,
         Spawn,
         RangeAttack,
+        CleaveAttack,
     }
 }
 

@@ -25,13 +25,15 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       - Ability: 1
         ActionPointsRequired: 80
-        ActionInterception: 40
+        ActionInterception: 25
         MaxPerTurn: 0
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       - Ability: 3
         ActionPointsRequired: 40
         ActionInterception: 20
@@ -39,6 +41,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       - Ability: 4
         ActionPointsRequired: 20
         ActionInterception: 0
@@ -46,6 +49,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       _maxHealth: 40
       _attackPower: 3
       _defense: 1
@@ -69,6 +73,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       - Ability: 1
         ActionPointsRequired: 50
         ActionInterception: 15
@@ -76,6 +81,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       - Ability: 3
         ActionPointsRequired: 10
         ActionInterception: 10
@@ -83,6 +89,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       - Ability: 4
         ActionPointsRequired: 10
         ActionInterception: 0
@@ -90,6 +97,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       _maxHealth: 55
       _attackPower: 12
       _defense: 1
@@ -105,6 +113,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       - Ability: 7
         ActionPointsRequired: 30
         ActionInterception: 15
@@ -112,6 +121,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 3
         ProjectileSpeed: 3
+        CleaveTargets: []
       - Ability: 3
         ActionPointsRequired: 10
         ActionInterception: 5
@@ -119,6 +129,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       - Ability: 4
         ActionPointsRequired: 10
         ActionInterception: 0
@@ -126,6 +137,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       _maxHealth: 50
       _attackPower: 8
       _defense: 0
@@ -141,6 +153,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       - Ability: 1
         ActionPointsRequired: 30
         ActionInterception: 15
@@ -148,6 +161,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 0
         ProjectileSpeed: 3
+        CleaveTargets: []
       - Ability: 3
         ActionPointsRequired: 10
         ActionInterception: 5
@@ -155,6 +169,7 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
       - Ability: 4
         ActionPointsRequired: 10
         ActionInterception: 0
@@ -162,7 +177,59 @@ MonoBehaviour:
         TurnCooldown: 0
         Range: 1
         ProjectileSpeed: 10
+        CleaveTargets: []
+      - Ability: 8
+        ActionPointsRequired: 50
+        ActionInterception: 22
+        MaxPerTurn: 1
+        TurnCooldown: 0
+        Range: 1
+        ProjectileSpeed: 10
+        CleaveTargets:
+        - Directions: 78000000
+        - Directions: f0000000
       _maxHealth: 100
       _attackPower: 10
       _defense: 1
       _moveRange: 3
+    - _id: AxeCleaver
+      _displayName: Axe Cleaver
+      _actionPoints: 100
+      _actions:
+      - Ability: 8
+        ActionPointsRequired: 60
+        ActionInterception: 30
+        MaxPerTurn: 1
+        TurnCooldown: 0
+        Range: 1
+        ProjectileSpeed: 10
+        CleaveTargets:
+        - Directions: 02000000
+      - Ability: 2
+        ActionPointsRequired: 40
+        ActionInterception: 20
+        MaxPerTurn: 0
+        TurnCooldown: 0
+        Range: 1
+        ProjectileSpeed: 10
+        CleaveTargets: []
+      - Ability: 3
+        ActionPointsRequired: 10
+        ActionInterception: 5
+        MaxPerTurn: 0
+        TurnCooldown: 0
+        Range: 1
+        ProjectileSpeed: 10
+        CleaveTargets: []
+      - Ability: 4
+        ActionPointsRequired: 10
+        ActionInterception: 0
+        MaxPerTurn: 0
+        TurnCooldown: 0
+        Range: 1
+        ProjectileSpeed: 10
+        CleaveTargets: []
+      _maxHealth: 80
+      _attackPower: 8
+      _defense: 2
+      _moveRange: 2

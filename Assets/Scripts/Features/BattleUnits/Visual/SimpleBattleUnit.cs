@@ -12,6 +12,8 @@ namespace Game
         [SerializeField] private AnimationClip _attackAnimationClip;
 
         [SerializeField, CanBeNull] private BaseSoundDesign _hitSound;
+        [SerializeField, CanBeNull] private BaseSoundDesign _deathSound;
+        [SerializeField, CanBeNull] private BaseSoundDesign _attackSound;
 
         private static readonly int AttackTrigger = Animator.StringToHash("Attack");
         private static readonly int GetHitTrigger = Animator.StringToHash("GetHit");
@@ -23,7 +25,7 @@ namespace Game
         protected override void OnInitialized(string unitId)
         {
             base.OnInitialized(unitId);
-            // Simple battle unit initialization
+            // Simple battle unit initialization 
         }
 
         public override async UniTask Attack(float duration, float interceptionTime, System.Action onInterception)
@@ -33,6 +35,9 @@ namespace Game
             _animator.speed = speedMultiplier;
 
             _animator.SetTrigger(AttackTrigger);
+            
+            if (_attackSound != null)
+                DJ.Play(_attackSound);
 
             // Wait for interception time and trigger damage calculation
             if (interceptionTime > 0)
@@ -78,6 +83,8 @@ namespace Game
         public override void SetIsDead(bool isDead)
         {
             _animator.SetTrigger(DieTrigger);
+            if (_deathSound != null)
+                DJ.Play(_deathSound);
         }
     }
 }

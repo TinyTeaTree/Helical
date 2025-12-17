@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,16 @@ public static class GridUtils
     public static readonly float HexUpStep = AdjacentGridStep * 0.5f;
     public static readonly float HexLevelStep = HexMinRadius * 2;
     public static readonly float HexScaleModifier = HexMaxRadius * 2f;
+
+    // Static array of hex directions in clockwise order for efficient direction transposition
+    private static readonly HexDirection[] DirectionsClockwise = {
+        HexDirection.North,
+        HexDirection.NorthEast,
+        HexDirection.SouthEast,
+        HexDirection.South,
+        HexDirection.SouthWest,
+        HexDirection.NorthWest
+    };
     
 
     /// <summary>
@@ -83,6 +94,33 @@ public static class GridUtils
                 : new Vector2Int(fromCoord.x - 1, fromCoord.y),
             _ => fromCoord
         };
+    }
+
+    /// <summary>
+    /// Transposes a relative hex direction based on a unit's facing direction.
+    /// Used for cleave attacks and other directional abilities that need to be oriented relative to unit facing.
+    /// </summary>
+    /// <param name="relativeDirection">The direction relative to "forward" (North)</param>
+    /// <param name="unitFacingDirection">The direction the unit is currently facing</param>
+    /// <returns>The transposed direction relative to the unit's facing</returns>
+    public static HexDirection TransposeDirection(HexDirection relativeDirection, HexDirection unitFacingDirection)
+    {
+        // Find the index of the unit's facing direction
+        int facingIndex = Array.IndexOf(DirectionsClockwise, unitFacingDirection);
+        if (facingIndex == -1)
+        {
+            Debug.LogWarning($"Invalid unit facing direction: {unitFacingDirection}");
+            return relativeDirection;
+        }
+
+        // Convert relative direction to index offset (divide by 60 since each direction is 60°)
+        int relativeIndex = (int)relativeDirection / 60;
+
+        // Add the offset and wrap around using modulo
+        int resultIndex = (facingIndex + relativeIndex) % DirectionsClockwise.Length;
+        if (resultIndex < 0) resultIndex += DirectionsClockwise.Length;
+
+        return DirectionsClockwise[resultIndex];
     }
 
     /// <summary>

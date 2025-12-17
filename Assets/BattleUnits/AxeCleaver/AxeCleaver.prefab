@@ -2405,7 +2405,9 @@ MonoBehaviour:
   _healthBarAnchor: {fileID: 8346074998150019823}
   _glowComponent: {fileID: 0}
   _attackAnimationClip: {fileID: 895831804001188954, guid: ca371505123df8344ab6cf38e4eea4ac, type: 3}
-  _hitSound: {fileID: 0}
+  _hitSound: {fileID: 11400000, guid: d205c5c53a97f4cde81129d915aaa99d, type: 2}
+  _deathSound: {fileID: 11400000, guid: a394d22132edf4db8a6c39f0e9f12208, type: 2}
+  _attackSound: {fileID: 11400000, guid: 7f5e8be96ae3d4a92adf15365cf81718, type: 2}
 --- !u!114 &993005958516007445
 MonoBehaviour:
   m_ObjectHideFlags: 0
