@@ -7,14 +7,16 @@ namespace Game
     [System.Serializable]
     public class BattleUnitsConfig : BaseConfig
     {
+        // Individual SOs for each battle unit (organized structure)
         [SerializeField]
-        private List<BattleUnitConfig> _battleUnits = new List<BattleUnitConfig>();
+        private List<BattleUnitConfigSO> _battleUnitConfigs = new List<BattleUnitConfigSO>();
 
-        public List<BattleUnitConfig> BattleUnits => _battleUnits;
+        public List<BattleUnitConfigSO> BattleUnitConfigs => _battleUnitConfigs;
 
         public BattleUnitConfig GetBattleUnit(string id)
         {
-            return _battleUnits.Find(unit => unit.Id == id);
+            var configSO = _battleUnitConfigs.Find(so => so.Config.Id == id);
+            return configSO?.Config;
         }
     }
 }
