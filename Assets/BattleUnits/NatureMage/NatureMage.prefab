@@ -1512,9 +1512,13 @@ MonoBehaviour:
   _rotator: {fileID: 2611751085726299521}
   _shooter: {fileID: 9131060932748270222}
   _healthBarAnchor: {fileID: 2320991684095420712}
+  _damageAnchor: {fileID: 2320991684095420712}
+  _damageTextPreset: {fileID: 11400000, guid: 238d37518f4254adbad1a54077764413, type: 2}
   _glowComponent: {fileID: 0}
   _attackAnimationClip: {fileID: 7400000, guid: 68e3a50f30bb0c54e8ca5cfae6eea48d, type: 3}
   _hitSound: {fileID: 0}
+  _deathSound: {fileID: 0}
+  _attackSound: {fileID: 0}
 --- !u!114 &1642804295770935528
 MonoBehaviour:
   m_ObjectHideFlags: 0

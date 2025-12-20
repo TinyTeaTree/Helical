@@ -31,6 +31,9 @@ namespace Game
             var healthBarWidget = Feature.Hud.CreateWidget(Feature.AssetPack.HealthBarPrefab, battleUnit.HealthBarAnchor);
             battleUnit.SetHealthBarWidget(healthBarWidget as BattleUnitHealthBar);
 
+            // Set the battle units feature reference so the unit can access it
+            battleUnit.SetBattleUnitsFeature(Feature);
+
             // Initialize health bar to full health
             battleUnit.UpdateHealthBar(1.0f);
 

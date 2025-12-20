@@ -42,6 +42,7 @@ namespace Game
             _features.Add<ITurn>(new TurnFeature());
             _features.Add<IConsole>(new ConsoleFeature());
             _features.Add<ICursor>(new CursorFeature());
+            _features.Add<IFloatingText>(new FloatingTextFeature());
             //<New Feature>
         }
 

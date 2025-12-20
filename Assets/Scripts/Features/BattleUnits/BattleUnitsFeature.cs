@@ -16,6 +16,7 @@ namespace Game
         [Inject] public IGridSelection GridSelection { get; set; }
         [Inject] public IPlayerAccount PlayerAccount { get; set; }
         [Inject] public IHud Hud { get; set; }
+        [Inject] public IFloatingText FloatingText { get; set; }
 
         private BattleUnitsConfig _config;
         private BattleUnitsAssetPack _assetPack;
@@ -687,6 +688,9 @@ namespace Game
             var targetUnit = _visual.GetUnitAtCoordinate(targetCoordinate);
             targetUnit?.GetHit();
 
+            // Show floating damage text
+            targetUnit?.ShowDamageText(damage.ToString());
+
             // Update health bar
             UpdateUnitHealthBar(targetCoordinate, targetUnitData.Health, targetUnitData.IsDead);
 
@@ -724,6 +728,14 @@ namespace Game
             foreach (var unit in allUnits)
             {
                 unit.SetGlow(false);
+            }
+        }
+
+        public void ShowFloatingDamageText(string damageText, Transform anchor, FloatingTextPresetSO preset)
+        {
+            if (preset != null && anchor != null)
+            {
+                FloatingText.ShowDamageText(damageText, anchor, preset);
             }
         }
     }

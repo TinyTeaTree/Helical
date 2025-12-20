@@ -3,6 +3,7 @@ namespace Services
     public static class Addresses
     {
         //<Resource Path Start>
+        public const string FloatingText = "Floating Text";
         public const string GenericSoundCollection = "Generic Sound Collection";
         public const string SoundPlayer = "Sound Player";
         public const string LocalConfigs = "Configs/Local Configs";

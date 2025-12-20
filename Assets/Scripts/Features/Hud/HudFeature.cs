@@ -72,6 +72,9 @@ namespace Game
             var registration = new WidgetRegistration(widgetInstance, trackedTransform);
             _widgetRegistrations[trackedTransform] = registration;
 
+            // Position the widget immediately to avoid positioning issues on the first frame
+            registration.UpdatePosition(_mainCamera, _visual.OnTopCanvas.transform as RectTransform);
+
             return widgetInstance;
         }
 
