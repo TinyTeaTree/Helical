@@ -330,9 +330,17 @@ namespace Game
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(interceptionTime));
 
-                // Update unit logical position at interception point
-                unitData.Coordinate = targetCoordinate;
+                // Check if target hex is already occupied by another unit
+                var occupyingUnitData = GetUnitData(targetCoordinate);
+                if (occupyingUnitData != null && occupyingUnitData != unitData)
+                {
+                    // Target hex is occupied! Cancel current movement and return to original position
+                    await HandleOccupiedHexMovement(unit, unitData, oldCoordinate, targetCoordinate, duration, interceptionTime);
+                    return;
+                }
 
+                // Target hex is free, update unit logical position at interception point
+                unitData.Coordinate = targetCoordinate;
 
                 // Update hex ownership indicators
                 GridSelection.UpdateHexOwnershipIndicators();
@@ -352,7 +360,40 @@ namespace Game
 
             Notebook.NoteData($"Unit movement animation completed for {targetCoordinate} in {duration} seconds");
         }
-        
+
+        private async UniTask HandleOccupiedHexMovement(BaseBattleUnit unit, BattleUnitData unitData, Vector2Int originalCoordinate, Vector2Int targetCoordinate, float totalDuration, float interceptionTime)
+        {
+            Notebook.NoteWarning($"Unit at {originalCoordinate} cannot move to {targetCoordinate} - hex is occupied! Returning to original position.");
+
+            // Cancel the current movement tween (the unit.Move() call is still running)
+            // The unit should handle tween cancellation internally when we start a new movement
+
+            // Calculate remaining time after interception
+            float remainingTime = totalDuration - interceptionTime;
+
+            if (remainingTime > 0)
+            {
+                // Return to original position using remaining time
+                var originalWorldPosition = Grid.GetWorldPosition(originalCoordinate);
+
+                // Start return movement
+                var returnMoveTask = unit.Move(originalWorldPosition, remainingTime);
+
+                // Wait for return movement to complete
+                await returnMoveTask;
+
+                Notebook.NoteData($"Unit returned to original position {originalCoordinate} after hex occupation conflict");
+            }
+            else
+            {
+                // No remaining time, instantly snap back to original position
+                var originalWorldPosition = Grid.GetWorldPosition(originalCoordinate);
+                unit.transform.position = originalWorldPosition;
+
+                Notebook.NoteData($"Unit instantly returned to original position {originalCoordinate} (no remaining movement time)");
+            }
+        }
+
         public async UniTask ExecuteRotate(Vector2Int unitCoordinate, Vector2Int targetCoordinate, int actionPoints)
         {
             var unit = _visual.GetUnitAtCoordinate(unitCoordinate);
