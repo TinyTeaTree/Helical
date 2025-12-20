@@ -15,7 +15,6 @@ namespace Game
         [SerializeField, CanBeNull] protected BattleUnitShooter _shooter;
         [SerializeField] protected Transform _healthBarAnchor;
         [SerializeField] protected Transform _damageAnchor;
-        [SerializeField] protected FloatingTextPresetSO _damageTextPreset;
 
         protected BattleUnitHealthBar _healthBarWidget;
         protected IBattleUnits _battleUnitsFeature;
@@ -25,7 +24,6 @@ namespace Game
 
         public Transform HealthBarAnchor => _healthBarAnchor;
         public Transform DamageAnchor => _damageAnchor;
-        public FloatingTextPresetSO DamageTextPreset => _damageTextPreset;
         public string InstanceGuid { get => _instanceGuid; set => _instanceGuid = value; }
 
         public virtual void Initialize(string unitId)
@@ -54,9 +52,9 @@ namespace Game
 
         public void ShowDamageText(string damageText)
         {
-            if (_battleUnitsFeature != null && _damageTextPreset != null)
+            if (_battleUnitsFeature != null)
             {
-                _battleUnitsFeature.ShowFloatingDamageText(damageText, _damageAnchor, _damageTextPreset);
+                _battleUnitsFeature.ShowDamageText(damageText, _damageAnchor);
             }
         }
 

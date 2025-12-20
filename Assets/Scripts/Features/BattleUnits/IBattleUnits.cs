@@ -17,6 +17,6 @@ namespace Game
         UniTask ExecuteRotate(Vector2Int unitCoordinate, Vector2Int targetCoordinate, int actionPoints);
         UniTask ExecuteWait(Vector2Int unitCoordinate, int actionPoints, int interceptionPoint);
         bool SpawnUnitAtCoordinate(string unitId, Vector2Int spawnCoordinate);
-        void ShowFloatingDamageText(string damageText, Transform anchor, FloatingTextPresetSO preset);
+        void ShowDamageText(string damageText, Transform anchor);
     }
 }

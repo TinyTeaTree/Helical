@@ -1,49 +1,52 @@
+using Agents;
 using Core;
+using Cysharp.Threading.Tasks;
 using Services;
 using UnityEngine;
 
 namespace Game
 {
-    public class FloatingTextFeature : BaseFeature, IFloatingText
+    public class FloatingTextFeature : BaseFeature, IFloatingText, IAppLaunchAgent
     {
         [Inject] public IHud Hud { get; set; }
         [Inject] public ISummoningService Summoner { get; set; }
 
-        private FloatingTextWidget _floatingTextPrefab;
+        private FloatingTextAssetPack _assetPack;
 
-        public void ShowDamageText(string damageText, Transform anchor, FloatingTextPresetSO preset)
+        public async UniTask AppLaunch()
         {
+            _assetPack = await Summoner.LoadAssetPack<FloatingTextAssetPack>();
+        }
+
+        public void ShowDamageText(string damageText, Transform anchor)
+        {
+            ShowFloatingDamageText(damageText, anchor, FloatingTextPresetType.Damage);
+        }
+
+        public void ShowFloatingDamageText(string damageText, Transform anchor, FloatingTextPresetType presetType)
+        {
+            var preset = GetPreset(presetType);
+            if (preset == null)
+            {
+                Notebook.NoteError($"No preset found for type: {presetType}");
+                return;
+            }
+
+            var prefab = _assetPack?.GetPrefab(presetType);
+            if (prefab == null)
+            {
+                Notebook.NoteError($"No prefab found for preset type: {presetType}");
+                return;
+            }
+
             if (!Hud.IsReady)
             {
                 Notebook.NoteError("Cannot show floating text: Hud is not ready");
                 return;
             }
 
-            if (anchor == null)
-            {
-                Notebook.NoteError("Cannot show floating text: anchor transform is null");
-                return;
-            }
-
-            if (preset == null)
-            {
-                Notebook.NoteError("Cannot show floating text: preset is null");
-                return;
-            }
-
-            // Load the prefab if not already loaded
-            if (_floatingTextPrefab == null)
-            {
-                _floatingTextPrefab = Summoner.LoadResource<FloatingTextWidget>(Addresses.FloatingText);
-                if (_floatingTextPrefab == null)
-                {
-                    Notebook.NoteError("Failed to load FloatingTextWidget prefab");
-                    return;
-                }
-            }
-
             // Create the floating text widget using the Hud system
-            var floatingTextWidget = Hud.CreateWidget(_floatingTextPrefab, anchor);
+            var floatingTextWidget = Hud.CreateWidget(prefab, anchor);
             if (floatingTextWidget == null)
             {
                 Notebook.NoteError("Failed to create floating text widget");
@@ -53,6 +56,11 @@ namespace Game
             // Set the text and preset to start the animation, with completion callback
             var floatingTextComponent = floatingTextWidget.GetComponent<FloatingTextWidget>();
             floatingTextComponent.SetText(damageText, preset, () => Hud.DestroyWidget(floatingTextWidget));
+        }
+
+        public FloatingTextPresetSO GetPreset(FloatingTextPresetType presetType)
+        {
+            return _assetPack?.GetPreset(presetType);
         }
     }
 }

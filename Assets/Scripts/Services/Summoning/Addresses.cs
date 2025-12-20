@@ -3,7 +3,6 @@ namespace Services
     public static class Addresses
     {
         //<Resource Path Start>
-        public const string FloatingText = "Floating Text";
         public const string GenericSoundCollection = "Generic Sound Collection";
         public const string SoundPlayer = "Sound Player";
         public const string LocalConfigs = "Configs/Local Configs";
@@ -11,6 +10,7 @@ namespace Services
         public const string LoadingScreenStart = "Loading Screens/Loading Screen Start";
         public const string BattleUnitsAssetPack = "Packs/BattleUnitsAssetPack";
         public const string CastleAssetPack = "Packs/CastleAssetPack";
+        public const string FloatingTexts = "Packs/Floating Texts";
         public const string GridResourcePack = "Packs/GridResourcePack";
         public const string BattleAssetsVisual = "Visuals/BattleAssets Visual";
         public const string BattleGUIVisual = "Visuals/BattleGUI Visual";

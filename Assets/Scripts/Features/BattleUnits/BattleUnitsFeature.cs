@@ -734,11 +734,11 @@ namespace Game
             }
         }
 
-        public void ShowFloatingDamageText(string damageText, Transform anchor, FloatingTextPresetSO preset)
+        public void ShowDamageText(string damageText, Transform anchor)
         {
-            if (preset != null && anchor != null)
+            if (anchor != null)
             {
-                FloatingText.ShowDamageText(damageText, anchor, preset);
+                FloatingText.ShowDamageText(damageText, anchor);
             }
         }
     }

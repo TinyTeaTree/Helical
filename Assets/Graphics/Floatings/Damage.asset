@@ -12,23 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f59c00b4f51a94e24b64f0484646802a, type: 3}
   m_Name: Damage
   m_EditorClassIdentifier: Game::Game.FloatingTextPresetSO
-  _duration: 1
-  _riseAmount: 50
+  _duration: 2.2
+  _riseAmount: 200
   _scaleCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
+      time: 0.10578412
+      value: 1.0325682
+      inSlope: 6.1211267
+      outSlope: 6.1211267
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.18520044
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.25577378
+      value: 1.48572
+      inSlope: -2.7724552
+      outSlope: -2.7724552
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.059422545
+    - serializedVersion: 3
       time: 1
-      value: 0.8
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -51,6 +69,15 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
+      time: 0.71982473
+      value: 0.7676037
+      inSlope: -1.4866705
+      outSlope: -1.4866705
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
       time: 1
       value: 0
       inSlope: 0
@@ -62,6 +89,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _textColor: {r: 1, g: 1, b: 1, a: 1}
-  _startScale: 1
-  _endScale: 0.8
+  _textColor: {r: 1, g: 0.2028302, b: 0.2028302, a: 1}
+  _startScale: 0
+  _endScale: 1

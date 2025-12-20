@@ -152,6 +152,7 @@ namespace Game
             summoner.SetProvider(typeof(GridResourcePack), new ResourceAssetPackProvider(Addresses.GridResourcePack));
             summoner.SetProvider(typeof(BattleUnitsAssetPack), new ResourceAssetPackProvider(Addresses.BattleUnitsAssetPack));
             summoner.SetProvider(typeof(CastleAssetPack), new ResourceAssetPackProvider(Addresses.CastleAssetPack));
+            summoner.SetProvider(typeof(FloatingTextAssetPack), new ResourceAssetPackProvider(Addresses.FloatingTexts));
         }
 
         protected override void StartGame()

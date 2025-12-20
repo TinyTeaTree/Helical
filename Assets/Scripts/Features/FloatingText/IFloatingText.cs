@@ -5,6 +5,7 @@ namespace Game
 {
     public interface IFloatingText : IFeature
     {
-        void ShowDamageText(string damageText, Transform anchor, FloatingTextPresetSO preset);
+        void ShowDamageText(string damageText, Transform anchor);
+        FloatingTextPresetSO GetPreset(FloatingTextPresetType presetType);
     }
 }
