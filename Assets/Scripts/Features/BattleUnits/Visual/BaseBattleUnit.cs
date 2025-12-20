@@ -21,6 +21,8 @@ namespace Game
         protected IBattleUnits _battleUnitsFeature;
         protected string _instanceGuid;
 
+        public BattleUnitHealthBar HealthBarWidget => _healthBarWidget;
+
         public Transform HealthBarAnchor => _healthBarAnchor;
         public Transform DamageAnchor => _damageAnchor;
         public FloatingTextPresetSO DamageTextPreset => _damageTextPreset;

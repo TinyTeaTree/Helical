@@ -47,7 +47,10 @@ namespace Game
         {
             if (_spawnedUnits.Contains(battleUnit))
             {
-                Feature.Hud.DestroyWidget(battleUnit.HealthBarAnchor);
+                if (battleUnit.HealthBarWidget != null)
+                {
+                    Feature.Hud.DestroyWidget(battleUnit.HealthBarWidget);
+                }
                 _spawnedUnits.Remove(battleUnit);
                 Destroy(battleUnit.gameObject);
             }

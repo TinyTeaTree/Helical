@@ -52,7 +52,7 @@ namespace Game
 
             // Set the text and preset to start the animation, with completion callback
             var floatingTextComponent = floatingTextWidget.GetComponent<FloatingTextWidget>();
-            floatingTextComponent.SetText(damageText, preset, () => Hud.DestroyWidget(anchor));
+            floatingTextComponent.SetText(damageText, preset, () => Hud.DestroyWidget(floatingTextWidget));
         }
     }
 }

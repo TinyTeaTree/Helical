@@ -600,7 +600,10 @@ namespace Game
                 unit.SetIsDead(true);
 
                 // Remove health bar widget from HUD
-                Hud.DestroyWidget(unit.HealthBarAnchor);
+                if (unit.HealthBarWidget != null)
+                {
+                    Hud.DestroyWidget(unit.HealthBarWidget);
+                }
             }
 
             // Remove unit from the battle record

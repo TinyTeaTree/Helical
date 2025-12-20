@@ -12,7 +12,7 @@ namespace Game
     {
         [Inject] public ISummoningService Summoner { get; set; }
 
-        private readonly Dictionary<Transform, WidgetRegistration> _widgetRegistrations = new Dictionary<Transform, WidgetRegistration>();
+        private readonly List<WidgetRegistration> _widgetRegistrations = new List<WidgetRegistration>();
         private Camera _mainCamera;
 
         public bool IsReady { get; private set; }
@@ -50,12 +50,6 @@ namespace Game
                 return null;
             }
 
-            if (_widgetRegistrations.ContainsKey(trackedTransform))
-            {
-                Notebook.NoteError($"Widget already exists for tracked transform: {trackedTransform.name}");
-                return null;
-            }
-
             // Instantiate the widget using Summoner
             var widgetInstance = Summoner.CreateAsset(widgetPrefab, _visual.OnTopCanvas.transform);
 
@@ -68,9 +62,9 @@ namespace Game
             // Set up the widget
             widgetInstance.TrackedTransform = trackedTransform;
 
-            // Create registration and store it
+            // Create registration and add it to the list
             var registration = new WidgetRegistration(widgetInstance, trackedTransform);
-            _widgetRegistrations[trackedTransform] = registration;
+            _widgetRegistrations.Add(registration);
 
             // Position the widget immediately to avoid positioning issues on the first frame
             registration.UpdatePosition(_mainCamera, _visual.OnTopCanvas.transform as RectTransform);
@@ -79,41 +73,42 @@ namespace Game
         }
 
         /// <summary>
-        /// Destroys the widget associated with the specified tracked transform.
+        /// Destroys the specified widget instance.
         /// </summary>
-        /// <param name="trackedTransform">The transform that was being tracked by the widget</param>
-        public void DestroyWidget(Transform trackedTransform)
+        /// <param name="widget">The widget instance to destroy</param>
+        public void DestroyWidget(Widget widget)
         {
-            if (_widgetRegistrations.TryGetValue(trackedTransform, out var registration))
+            var registration = _widgetRegistrations.Find(r => r.Widget == widget);
+            if (registration != null)
             {
-                _widgetRegistrations.Remove(trackedTransform);
+                _widgetRegistrations.Remove(registration);
                 registration.Destroy();
             }
         }
 
         /// <summary>
-        /// Gets the list of registered WidgetRegistrations and cleans up any with null transforms (used by HudVisual for position updates)
+        /// Gets the list of registered WidgetRegistrations and cleans up any destroyed widgets (used by HudVisual for position updates)
         /// </summary>
         internal List<WidgetRegistration> GetWidgetRegistrations()
         {
-            // Clean up widgets with null transforms (indicates the tracked object was destroyed without proper cleanup)
-            var transformsToRemove = new List<Transform>();
-            foreach (var kvp in _widgetRegistrations)
+            // Clean up widgets that have been destroyed without proper cleanup
+            var registrationsToRemove = new List<WidgetRegistration>();
+            foreach (var registration in _widgetRegistrations)
             {
-                if (kvp.Key == null)
+                if (registration.Widget == null || registration.Widget.Equals(null))
                 {
-                    transformsToRemove.Add(kvp.Key);
-                    kvp.Value.Destroy();
-                    Notebook.NoteWarning("Widget was automatically cleaned up because its tracked transform became null. Consider calling DestroyWidget() when destroying tracked objects.");
+                    registrationsToRemove.Add(registration);
+                    registration.Destroy();
+                    Notebook.NoteWarning("Widget was automatically cleaned up because it was destroyed without calling DestroyWidget().");
                 }
             }
 
-            foreach (var transform in transformsToRemove)
+            foreach (var registration in registrationsToRemove)
             {
-                _widgetRegistrations.Remove(transform);
+                _widgetRegistrations.Remove(registration);
             }
 
-            return new List<WidgetRegistration>(_widgetRegistrations.Values);
+            return new List<WidgetRegistration>(_widgetRegistrations);
         }
 
         public async UniTask AppLaunch()

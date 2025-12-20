@@ -19,9 +19,9 @@ namespace Game
         Widget CreateWidget(Widget widgetPrefab, Transform trackedTransform);
 
         /// <summary>
-        /// Destroys the widget associated with the specified tracked transform.
+        /// Destroys the specified widget instance.
         /// </summary>
-        /// <param name="trackedTransform">The transform that was being tracked by the widget</param>
-        void DestroyWidget(Transform trackedTransform);
+        /// <param name="widget">The widget instance to destroy</param>
+        void DestroyWidget(Widget widget);
     }
 }
