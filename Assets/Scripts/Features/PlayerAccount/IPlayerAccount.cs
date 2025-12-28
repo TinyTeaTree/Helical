@@ -8,12 +8,13 @@ namespace Game
     {
         bool IsLoggedIn { get; }
         string PlayerId { get; }
-        
+
         UniTask Login();
         UniTask Logout();
-        
-        //Task LinkCredentials(); 
+
+        //Task LinkCredentials();
 
         UniTask CreateNewPlayer();
+        bool IsBotPlayer(string playerId);
     }
 }

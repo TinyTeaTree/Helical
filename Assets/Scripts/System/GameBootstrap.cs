@@ -78,6 +78,9 @@ namespace Game
             _agents.Add<ILogoutAgent>(new LogoutAgent());
             _agents.Add<ILoggedInAgent>(new LoggedInAgent());
             _agents.Add<IBattleLaunchAgent>(new BattleLaunchAgent());
+            _agents.Add<IOnBeforeBattleTurnStartAgent>(new OnBeforeBattleTurnStartAgent());
+            _agents.Add<IOnBattleTurnStartedAgent>(new OnBattleTurnStartedAgent());
+            _agents.Add<IOnBattleTurnEndedAgent>(new OnBattleTurnEndedAgent());
             //<New Agent>
         }
 

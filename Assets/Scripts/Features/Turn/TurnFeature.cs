@@ -1,4 +1,5 @@
 using System.Linq;
+using Agents;
 using Core;
 using Cysharp.Threading.Tasks;
 using Services;
@@ -16,6 +17,9 @@ namespace Game
         [Inject] public IGridSelection GridSelection { get; set; }
         [Inject] public IBattleUnits BattleUnits { get; set; }
         [Inject] public IGrid Grid { get; set; }
+        [Inject] public IOnBeforeBattleTurnStartAgent OnBeforeBattleTurnStartAgent { get; set; }
+        [Inject] public IOnBattleTurnStartedAgent OnBattleTurnStartedAgent { get; set; }
+        [Inject] public IOnBattleTurnEndedAgent OnBattleTurnEndedAgent { get; set; }
         
 
         private BaseFactory _turnBarFactory;
@@ -216,19 +220,25 @@ namespace Game
             unitData.TurnOrder.Actions.Add(newAction);
         }
 
-        public void OnTurnClicked()
+        public async void OnTurnClicked()
         {
             if (Record.InTurn)
             {
                 return;
             }
-            
+
+            // Let bots order their turns before the turn starts
+            await OnBeforeBattleTurnStartAgent.OnBeforeBattleTurnStart();
+
             GridSelection.HandleRightClick();
-            
+
             Record.InTurn = true;
             Record.Turn++;
-            
+
             _visual.SetTurnData();
+
+            // Notify that turn has started
+            await OnBattleTurnStartedAgent.OnBattleTurnStarted();
 
             foreach (var unit in UnitsRecord.BattleUnits)
             {
@@ -237,7 +247,7 @@ namespace Game
                     ExecuteTurn(unit, unit.TurnOrder).Forget();
                 }
             }
-            
+
             WaitForAllUnitsToExecuteRoutine().Forget();
         }
 
@@ -339,7 +349,7 @@ namespace Game
             }
         }
 
-        private void EndTurn()
+        private async void EndTurn()
         {
             foreach (var unit in UnitsRecord.BattleUnits)
             {
@@ -361,6 +371,9 @@ namespace Game
 
             Record.InTurn = false;
             _visual.SetTurnData();
+
+            // Notify that turn has ended
+            await OnBattleTurnEndedAgent.OnBattleTurnEnded();
         }
     }
 }

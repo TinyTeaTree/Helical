@@ -97,7 +97,7 @@ namespace Game
         public UniTask CreateNewPlayer()
         {
             Record.PlayerId = Guid.NewGuid().GetHashCode().ToString();
-            
+
             Notebook.NoteCritical($"New User Created {Record.PlayerId}");
 
             var records = JsonConvert.DeserializeObject<Dictionary<string, JObject>>(Config.NewPlayerRecords.text);
@@ -116,6 +116,11 @@ namespace Game
             Record.Version = PlayerAccountRecord.MigrationRecord;
 
             return UniTask.CompletedTask;
+        }
+
+        public bool IsBotPlayer(string playerId)
+        {
+            return playerId == "Bot";
         }
     }
 }
