@@ -1,0 +1,364 @@
+# Helical Project - AI Rules & Conventions
+
+## Core Architecture (Core Foundation)
+
+### Overview
+This project follows the "Core Foundation" architecture that splits the game into:
+- **Features**: Game logic and functionality (MVC pattern with Record + Interface + Implementation)
+- **Services**: Agnostic utilities and cross-cutting concerns
+- **Agents**: Cross-cutting lifecycle management and coordination
+
+### Assembly Structure
+```
+Scripts/
+├── Game.asmdef (references: Agents, Core, Plugins)
+├── Agents/ (Agents.asmdef - references: Core)
+├── Core/ (Core.asmdef)
+├── Features/ (organizational folder)
+├── Services/ (Services.asmdef - references: Core, Plugins)
+├── Factories/ (organizational folder)
+└── System/ (GameBootstrap.cs)
+```
+
+## Feature Pattern
+
+### Structure
+Each Feature consists of:
+- **Feature Script** (e.g., `BattleUnitsFeature.cs`): Main logic, inherits from `BaseVisualFeature<VisualType>` or `BaseFeature`
+- **Interface** (e.g., `IBattleUnits.cs`): Public API, inherits from `IFeature`
+- **Record** (e.g., `BattleUnitsRecord.cs`): Data storage, inherits from `BaseRecord`
+- **Visual Script** (optional): MonoBehaviour control, inherits from `BaseVisual`
+- **Config** (optional): Readonly data from ScriptableObjects
+
+### Feature Creation Pattern
+```csharp
+public class ExampleFeature : BaseVisualFeature<ExampleVisual>, IExampleFeature
+{
+    [Inject] public ExampleRecord Record { get; set; }
+    [Inject] public IOtherService Service { get; set; }
+
+    // Implementation of IExampleFeature methods
+}
+```
+
+### Interface Pattern
+Feature Interfaces are designed for **cross-feature communication only**.
+
+```csharp
+public interface IExampleFeature : IFeature
+{
+    // Only methods that other Features need to call
+    void DoSomethingOtherFeaturesNeed();
+    UniTask GetDataForOtherFeatures();
+}
+```
+
+### Interface vs Feature Public API
+- **Interface**: Cross-feature communication API
+- **Feature Public Methods**: Internal logic accessible by Visuals via `this.Feature`
+
+**Rule**: Don't expose Visual-specific interactions in Interfaces just because Visuals use them.
+
+**Example**: A button press on Visual should not be in Interface - other Features shouldn't press buttons. Use `this.Feature.HandleButtonPress()` directly instead.
+
+Visuals access their Feature via the `Feature` base property:
+```csharp
+public class ExampleVisual : BaseVisual
+{
+    private void OnButtonPressed()
+    {
+        // Direct access to Feature's public API
+        this.Feature.HandleButtonPress();
+        // NOT: Some other feature calls this button press
+    }
+}
+```
+
+### Record Pattern
+```csharp
+public class ExampleRecord : BaseRecord
+{
+    public List<SomeData> Items { get; private set; } = new List<SomeData>();
+    // Only serializable data - no Unity objects, tasks, callbacks, etc.
+}
+```
+
+## Service Pattern
+
+### Base Service
+```csharp
+public class ExampleService : BaseService, IExampleService
+{
+    // Services can have [Inject] properties too
+    [Inject] public ISomeOtherService Dependency { get; set; }
+}
+```
+
+### Service Registration
+Services are registered in `GameBootstrap.AddServices()`:
+```csharp
+_services.Add<IExampleService>(new ExampleService());
+_services.Add<ISummoningService>(new SummoningService()); // Note: SummonerService = SummoningService
+```
+
+## Agent Pattern
+
+### Agent Creation
+```csharp
+public class ExampleAgent : BaseAgent<IExampleAgent>, IExampleAgent
+{
+    public async UniTask SomeEvent()
+    {
+        // Coordinate across multiple features/services
+        foreach (var feature in _features)
+            await feature.SomeEvent();
+    }
+}
+```
+
+### Agent Registration
+Agents are registered in `GameBootstrap.AddAgents()`:
+```csharp
+_agents.Add<IExampleAgent>(new ExampleAgent());
+```
+
+## Dependency Injection
+
+### [Inject] Attribute
+- Used for automatic dependency resolution
+- Only works in Features and Services
+- Properties must have both getter and setter
+- Injected via interface types only
+
+```csharp
+[Inject] public IGrid Grid { get; set; }
+[Inject] public BattleUnitsRecord Record { get; set; }
+```
+
+## Visual Pattern
+
+### Base Visual
+```csharp
+public class ExampleVisual : BaseVisual
+{
+    // Visuals access their Feature through this.Feature
+    // Do NOT inject other Features/Services directly
+    // Use this.Feature for internal Feature API calls
+}
+```
+
+### Visual Creation
+Visuals are created via Factories registered in `GameBootstrap.AddFactories()`:
+```csharp
+_factories.Add(typeof(ExampleVisual), new ResourceFactory("Path/To/Prefab"));
+```
+
+## Bootstrapping
+
+### GameBootstrap Structure
+```csharp
+public class GameBootstrap : GameInfra
+{
+    protected override void AddServices() { /* Register services */ }
+    protected override void AddFeatures() { /* Register features */ }
+    protected override void AddFactories() { /* Register visual factories */ }
+    protected override void AddAgents() { /* Register agents */ }
+    protected override void AddRecords() { /* Register data records */ }
+    protected override void BootstrapCustoms() { /* Custom setup */ }
+    protected override void StartGame() { /* Launch game flow */ }
+}
+```
+
+### Code Generation Markers
+Use `//<New Service>`, `//<New Feature>`, etc. for automatic code generation.
+
+## Null Checking Rules
+
+### ✅ DO add null checks for:
+- Method return values that can be null
+- Fields marked `[CanBeNull]`
+- Nullable types (`Type?`)
+
+### ❌ DON'T add null checks for:
+- `[SerializeField]` components (assume they are assigned)
+- Feature injections (`[Inject]` properties)
+- Record properties
+- Asset references loaded via SummoningService
+- Resource loads
+
+## Async Programming
+
+### UniTask Usage
+- Use `UniTask` instead of `Task` or `async () =>`
+- Use `UniTask.CompletedTask` for void async methods
+- Use `UniTask.WhenAll()` for parallel operations
+- Use `UniTask.Delay()` for delays
+
+### Common Patterns
+```csharp
+public async UniTask ExecuteAction()
+{
+    await UniTask.Delay(1000);
+    // Do something
+    return UniTask.CompletedTask;
+}
+```
+
+## Data Management
+
+### Records vs Configs vs AssetPacks
+- **Records**: Mutable game state data, can be saved/loaded, single instance
+- **Configs**: Readonly data from ScriptableObjects, multiple instances possible
+- **AssetPacks**: Containers for resources/assets to load, loaded via SummonerService
+
+### Record Persistence
+Records that should persist are registered in `BootstrapSavedRecords()`:
+```csharp
+saveService.AddSaveRecord(_records[typeof(PlayerAccountRecord)]);
+```
+
+### AssetPack Pattern
+```csharp
+public class ExampleAssetPack : BaseAssetPack
+{
+    public GameObject Prefab1;
+    public Material Material1;
+    // Asset references loaded by SummonerService
+}
+```
+
+### AssetPack Loading
+```csharp
+_assetPack = await Summoner.SummoningService.LoadAssetPack<ExampleAssetPack>();
+```
+
+### SummonerService (Instantiation Service)
+The SummonerService handles:
+- **Resource Loading**: `LoadResource<T>(string path)` for Resources folder
+- **AssetPack Loading**: `LoadAssetPack<TAssetPack>()` for complex asset collections
+- **Asset Instantiation**: `CreateAsset<T>(T loadedAsset, Transform parent)`
+- **Provider Registration**: `SetProvider(Type type, BaseAssetPackProvider provider)`
+
+AssetPacks use providers registered in `GameBootstrap.BootstrapSummoningService()`:
+```csharp
+summoner.SetProvider(typeof(ExampleAssetPack), new ResourceAssetPackProvider("Path/To/AssetPack"));
+```
+
+## Unity Conventions
+
+### Scene Structure
+- **Empty Main Scene**: Only GameBootstrap GameObject
+- **Managed Lifecycle**: All visuals created/destroyed through Features
+- **No Merge Conflicts**: Features don't exist in scene hierarchy
+
+### Asset Organization
+- Use Resources folder for prefabs referenced by ResourceFactory
+- AssetPacks loaded via SummonerService (SummoningService)
+- Address system for resource paths
+
+## Naming Conventions
+
+### Files and Classes
+- Feature: `FeatureName.cs`, `IFeatureName.cs`, `FeatureNameRecord.cs`
+- Service: `ServiceName.cs`, `IServiceName.cs`
+- Agent: `AgentName.cs`, `IAgentName.cs`
+- Visual: `FeatureNameVisual.cs`
+
+### Methods
+- Features expose public API through interfaces
+- Use `AppLaunch()` and `BattleLaunch()` for initialization
+- Async methods return `UniTask`
+
+## Editor Integration
+
+### Custom Editors
+- Located in `Editor/` folder
+- Use `BaseSoundDesignEditor.cs` pattern for ScriptableObjects
+
+### Code Generation
+- Feature Maker tool for creating new features
+- SO Maker for ScriptableObjects
+- Record Spy for debugging
+
+## Logging and Debugging
+
+### Notebook Service
+```csharp
+Notebook.NoteData("Info message");
+Notebook.NoteWarning("Warning message");
+Notebook.NoteError("Error message");
+```
+
+### Error Handling
+- Use try/catch where appropriate
+- Log errors but don't crash the game
+- Return default values or `UniTask.CompletedTask` on errors
+
+## Common Patterns
+
+### Agent Coordination
+```csharp
+public UniTask AppLaunch()
+{
+    List<UniTask> tasks = new();
+    foreach (var receiver in _features)
+        tasks.Add(receiver.AppLaunch());
+    return UniTask.WhenAll(tasks);
+}
+```
+
+### Feature Communication
+Features communicate through:
+- Shared Records
+- Agent coordination
+- Direct interface calls (when appropriate)
+
+### Visual Updates
+```csharp
+protected async UniTask CreateVisual()
+{
+    _visual = await _factory.Create<VisualType>();
+    _visual.SetFeature(this);
+}
+```
+
+## Project-Specific Extensions
+
+### Grid System
+- Hexagonal grid with `Vector2Int` coordinates
+- `HexDirection` enum for unit facing
+- Pathfinding through `TravelPath`
+
+### Battle System
+- Turn-based combat with action points
+- Unit abilities (Attack, Move, Rotate, Wait)
+- Health/damage system with floating text
+
+### Audio System
+- DJ static class for sound playback
+- Sound collections for different categories
+- Configurable audio through ScriptableObjects
+
+### SummonerService Usage
+```csharp
+// Load resources from Resources folder
+var prefab = Summoner.SummoningService.LoadResource<GameObject>("Path/To/Prefab");
+
+// Load asset packs
+var assetPack = await Summoner.SummoningService.LoadAssetPack<ExampleAssetPack>();
+
+// Instantiate assets
+var instance = Summoner.SummoningService.CreateAsset(loadedAsset, parent);
+```
+
+## Best Practices
+
+### Code Organization
+- One feature per folder under `Features/`
+- Clear separation of concerns
+- Interface-driven design
+
+### Maintenance
+- Keep features small and focused
+- Use the established patterns
+- Document complex logic
