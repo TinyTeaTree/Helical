@@ -26,7 +26,7 @@ namespace Core
             var feature = _set[typeof(IFeatureType)];
             return (IFeatureType)feature;
         }
-        
+
         public T Get(Type featureType)
         {
             var feature = _set[featureType];
@@ -41,6 +41,11 @@ namespace Core
         public IEnumerable<KeyValuePair<System.Type, T>> GetKVP()
         {
             return _set.ToList();
+        }
+
+        public bool ContainsKey(Type type)
+        {
+            return _set.ContainsKey(type);
         }
     }
 }

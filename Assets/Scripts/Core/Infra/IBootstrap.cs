@@ -6,6 +6,7 @@ namespace Core
     public interface IBootstrap
     {
         TypeSet<IFeature> Features { get; }
+        TypeSet<IResolver> Resolvers { get; }
         TypeSet<IService> Services { get; }
         TypeSet<IAgent> Agents { get; }
         Dictionary<Type, BaseFactory> Factories { get; }

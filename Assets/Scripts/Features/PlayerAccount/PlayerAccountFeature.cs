@@ -10,7 +10,7 @@ using Services;
 
 namespace Game
 {
-    public class PlayerAccountFeature : BaseFeature, IPlayerAccount, IAppLaunchAgent
+    public class PlayerAccountFeature : BaseFeature, IPlayerAccount, IAppLaunchAgent, IBotPlayerResolver
     {
         [Inject] public PlayerAccountRecord Record { get; set; }
         [Inject] public IPlayerSaveService Saver { get; set; }

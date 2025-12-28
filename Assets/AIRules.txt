@@ -7,6 +7,7 @@ This project follows the "Core Foundation" architecture that splits the game int
 - **Features**: Game logic and functionality (MVC pattern with Record + Interface + Implementation)
 - **Services**: Agnostic utilities and cross-cutting concerns
 - **Agents**: Cross-cutting lifecycle management and coordination
+- **Resolvers**: Partial interfaces exposing specific functionality from Features/Services
 
 ### Assembly Structure
 ```
@@ -19,6 +20,13 @@ Scripts/
 ├── Factories/ (organizational folder)
 └── System/ (GameBootstrap.cs)
 ```
+
+### Interface Hierarchy
+All injectable interfaces inherit from `IInjectableInterface`:
+- `IFeature` : Core game functionality
+- `IService` : Agnostic utilities
+- `IAgent` : Lifecycle coordination
+- `IResolver` : Partial API exposure
 
 ## Feature Pattern
 
@@ -91,6 +99,48 @@ public class ExampleService : BaseService, IExampleService
 {
     // Services can have [Inject] properties too
     [Inject] public ISomeOtherService Dependency { get; set; }
+}
+```
+
+## Resolver Pattern
+
+### Overview
+Resolvers are partial interfaces that expose specific functionality from Features or Services without requiring injection of the entire interface. This improves dependency management by allowing granular control over what functionality is accessible.
+
+### Resolver Interface
+```csharp
+public interface IExampleResolver : IResolver
+{
+    // Only expose the specific methods needed
+    bool IsExampleCondition();
+}
+```
+
+### Feature with Resolver
+```csharp
+public class ExampleFeature : BaseFeature, IExampleFeature, IExampleResolver
+{
+    // Implement both full interface and resolver
+    public bool IsExampleCondition() { /* implementation */ }
+}
+```
+
+### Resolver Registration
+```csharp
+protected override void AddFeatures()
+{
+    var exampleFeature = new ExampleFeature();
+    _features.Add<IExampleFeature>(exampleFeature);
+    _resolvers.Add<IExampleResolver>(exampleFeature); // Register resolver
+}
+```
+
+### Resolver Injection
+```csharp
+public class ConsumerFeature : BaseFeature
+{
+    // Inject only the resolver, not the full feature
+    [Inject] public IExampleResolver ExampleResolver { get; set; }
 }
 ```
 

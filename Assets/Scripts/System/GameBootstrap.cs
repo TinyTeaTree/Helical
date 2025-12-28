@@ -21,7 +21,7 @@ namespace Game
             //<New Service>
         }
 
-        protected override void AddFeatures()
+        protected override void AddFeaturesAndResolvers()
         {
             _features.Add<ILoadingScreen>(new LoadingScreenFeature());
             _features.Add<IHud>(new HudFeature());
@@ -29,7 +29,12 @@ namespace Game
             _features.Add<IArena>(new ArenaFeature());
             _features.Add<IGrid>(new GridFeature());
             _features.Add<IMobs>(new MobsFeature());
-            _features.Add<IPlayerAccount>(new PlayerAccountFeature());
+            
+            var playerFeature = new PlayerAccountFeature();
+            _features.Add<IPlayerAccount>(playerFeature);
+            //I would like this to work.
+            _resolvers.Add<IBotPlayerResolver>(playerFeature);
+            
             _features.Add<IPlayerSettings>(new PlayerSettingsFeature());
             _features.Add<ICameraMove>(new CameraMoveFeature());
             _features.Add<IBattleUnits>(new BattleUnitsFeature());

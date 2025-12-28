@@ -1,6 +1,7 @@
 using Core;
 using Cysharp.Threading.Tasks;
 using Agents;
+using UnityEngine;
 
 namespace Game
 {
@@ -8,7 +9,7 @@ namespace Game
     {
         [Inject] public BotRecord Record { get; set; }
         [Inject] public BattleUnitsRecord BattleUnitsRecord { get; set; }
-        [Inject] public IPlayerAccount PlayerAccount { get; set; }
+        [Inject] public IBotPlayerResolver BotPlayerResolver { get; set; }
 
         public UniTask OnBeforeBattleTurnStart()
         {
@@ -46,7 +47,8 @@ namespace Game
 
         private bool IsBotUnit(BattleUnitData unit)
         {
-            return PlayerAccount.IsBotPlayer(unit.PlayerId);
+            var isbot = BotPlayerResolver.IsBotPlayer(unit.PlayerId);
+            return isbot;
         }
     }
 }

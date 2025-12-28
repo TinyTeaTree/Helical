@@ -1,7 +1,7 @@
 namespace Core
 {
-    public interface IAgent
+    public interface IAgent : IInjectableInterface
     {
-        
+
     }
 }

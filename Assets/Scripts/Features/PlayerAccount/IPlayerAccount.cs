@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 
 namespace Game
 {
-    public interface IPlayerAccount : IFeature
+    public interface IPlayerAccount : IFeature, IBotPlayerResolver
     {
         bool IsLoggedIn { get; }
         string PlayerId { get; }
@@ -15,6 +15,5 @@ namespace Game
         //Task LinkCredentials();
 
         UniTask CreateNewPlayer();
-        bool IsBotPlayer(string playerId);
     }
 }

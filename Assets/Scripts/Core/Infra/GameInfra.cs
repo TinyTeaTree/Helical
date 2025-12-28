@@ -9,12 +9,14 @@ namespace Core
         public static GameInfra Single;
         
         protected TypeSet<IFeature> _features = new();
+        protected TypeSet<IResolver> _resolvers = new();
         protected TypeSet<IService> _services = new();
         protected TypeSet<IAgent> _agents = new();
         protected Dictionary<Type, BaseFactory> _factories = new();
         protected Dictionary<Type, BaseRecord> _records = new();
 
         public TypeSet<IFeature> Features => _features;
+        public TypeSet<IResolver> Resolvers => _resolvers;
         public TypeSet<IService> Services => _services;
         public TypeSet<IAgent> Agents => _agents;
         public Dictionary<Type, BaseFactory> Factories => _factories;
@@ -34,7 +36,7 @@ namespace Core
             
             AddServices();
             AddAgents();
-            AddFeatures();
+            AddFeaturesAndResolvers();
             AddFactories();
             AddRecords();
             SetupAgents();
@@ -45,7 +47,7 @@ namespace Core
 
         protected abstract void AddServices();
         
-        protected abstract void AddFeatures();
+        protected abstract void AddFeaturesAndResolvers();
 
         protected abstract void AddFactories();
 
