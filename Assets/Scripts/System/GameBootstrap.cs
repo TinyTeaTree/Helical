@@ -43,6 +43,7 @@ namespace Game
             _features.Add<IConsole>(new ConsoleFeature());
             _features.Add<ICursor>(new CursorFeature());
             _features.Add<IFloatingText>(new FloatingTextFeature());
+            _features.Add<IBot>(new BotFeature());
             //<New Feature>
         }
 
@@ -94,6 +95,7 @@ namespace Game
             _records.Add(typeof(CastleRecord), new CastleRecord());
             _records.Add(typeof(BattleAssetsRecord), new BattleAssetsRecord());
             _records.Add(typeof(TurnRecord), new TurnRecord());
+            _records.Add(typeof(BotRecord), new BotRecord());
             //<New Record>
         }
 
