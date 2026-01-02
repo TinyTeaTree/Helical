@@ -11,26 +11,31 @@ namespace Game
     {
         [SerializeField] private TextMeshProUGUI _textMesh;
         [SerializeField] private CanvasGroup _canvasGroup;
+        [SerializeField] private RectTransform _textContainer;
 
         private FloatingTextPresetSO _preset;
         private CancellationTokenSource _animationCts;
 
     private System.Action _onComplete;
 
-    public void SetText(string text, FloatingTextPresetSO preset, System.Action onComplete = null)
-    {
-        _preset = preset;
-        _textMesh.text = text;
-        _textMesh.color = preset.TextColor;
-        _onComplete = onComplete;
+        public void SetText(string text, FloatingTextPresetSO preset, System.Action onComplete = null)
+        {
+            _preset = preset;
+            _textMesh.text = text;
+            _textMesh.color = preset.TextColor;
+            _onComplete = onComplete;
 
-        // Reset initial state
-        transform.localScale = Vector3.one * preset.StartScale;
-        _canvasGroup.alpha = 1.0f;
+            // Reset initial state
+            if (_textContainer != null)
+            {
+                _textContainer.anchoredPosition = Vector2.zero;
+            }
+            transform.localScale = Vector3.one * preset.StartScale;
+            _canvasGroup.alpha = 1.0f;
 
-        // Start the animation
-        PlayAnimation().Forget();
-    }
+            // Start the animation
+            PlayAnimation().Forget();
+        }
 
         private async UniTask PlayAnimation()
         {
@@ -40,15 +45,16 @@ namespace Game
 
             try
             {
-                // Store initial position
-                Vector3 startPosition = transform.localPosition;
-                Vector3 endPosition = startPosition + new Vector3(0, _preset.RiseAmount, 0);
-
                 // Create animation sequence
                 Sequence sequence = DOTween.Sequence();
 
-                // Position tween
-                sequence.Join(transform.DOLocalMove(endPosition, _preset.Duration).SetEase(Ease.OutQuad));
+                // Position tween - animate the text container upward locally
+                if (_textContainer != null)
+                {
+                    Vector2 startPosition = _textContainer.anchoredPosition;
+                    Vector2 endPosition = startPosition + new Vector2(0, _preset.RiseAmount);
+                    sequence.Join(_textContainer.DOAnchorPos(endPosition, _preset.Duration).SetEase(Ease.OutQuad));
+                }
 
                 // Scale tween
                 sequence.Join(
@@ -70,6 +76,10 @@ namespace Game
             {
                 // Animation was cancelled, cleanup
                 DOTween.Kill(transform);
+                if (_textContainer != null)
+                {
+                    DOTween.Kill(_textContainer);
+                }
                 _onComplete?.Invoke();
             }
         }
@@ -79,6 +89,10 @@ namespace Game
             _animationCts?.Cancel();
             _animationCts?.Dispose();
             DOTween.Kill(transform);
+            if (_textContainer != null)
+            {
+                DOTween.Kill(_textContainer);
+            }
         }
     }
 }

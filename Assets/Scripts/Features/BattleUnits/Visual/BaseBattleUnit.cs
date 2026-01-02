@@ -1,10 +1,11 @@
+using Core;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Game
 {
-    public abstract class BaseBattleUnit : MonoBehaviour
+    public abstract class BaseBattleUnit : BaseVisual<BattleUnitsFeature>
     {
         [SerializeField] private string _id;
         public string Id => _id;
@@ -17,7 +18,6 @@ namespace Game
         [SerializeField] protected Transform _damageAnchor;
 
         protected BattleUnitHealthBar _healthBarWidget;
-        protected IBattleUnits _battleUnitsFeature;
         protected string _instanceGuid;
 
         public BattleUnitHealthBar HealthBarWidget => _healthBarWidget;
@@ -44,17 +44,11 @@ namespace Game
         {
             _healthBarWidget = widget;
         }
-
-        public void SetBattleUnitsFeature(IBattleUnits feature)
-        {
-            _battleUnitsFeature = feature;
-        }
-
         public void ShowDamageText(string damageText)
         {
-            if (_battleUnitsFeature != null)
+            if (Feature != null)
             {
-                _battleUnitsFeature.ShowDamageText(damageText, _damageAnchor);
+                Feature.ShowDamageText(damageText, _damageAnchor);
             }
         }
 

@@ -179,7 +179,9 @@ namespace Game
                 // This callback is executed at the interception point
                 if (unitData != null)
                 {
-                    DealDamageToTarget(attackerCoordinate, unitData.Direction, unitData.PlayerId);
+                    // Calculate target coordinate based on attacker's facing direction
+                    var targetCoordinate = GridUtils.NextHex(attackerCoordinate, unitData.Direction);
+                    DealDamageToTargetAtCoordinate(attackerCoordinate, targetCoordinate, unitData.PlayerId);
                 }
             });
 
@@ -552,61 +554,6 @@ namespace Game
             return true;
         }
         
-        private void DealDamageToTarget(Vector2Int attackerCoordinate, HexDirection facingDirection, string attackerPlayerId)
-        {
-            // Calculate the target coordinate in the facing direction
-            var targetCoordinate = GridUtils.NextHex(attackerCoordinate, facingDirection);
-
-            // Check if there's a unit at the target coordinate
-            var targetUnitData = GetUnitData(targetCoordinate);
-            if (targetUnitData == null)
-            {
-                Notebook.NoteData($"No unit found at {targetCoordinate} to attack");
-                return;
-            }
-
-            // Check if the target is an enemy (different player ID)
-            if (targetUnitData.PlayerId == attackerPlayerId)
-            {
-                Notebook.NoteData($"Cannot attack own unit at {targetCoordinate}");
-                return;
-            }
-
-            // Get attacker config to determine damage
-            var attackerConfig = GetUnitConfig(GetUnitData(attackerCoordinate)?.BattleUnitId);
-            if (attackerConfig == null)
-            {
-                Notebook.NoteError("Cannot find attacker config for damage calculation");
-                return;
-            }
-
-            // Calculate damage (for now, basic calculation)
-            int damage = attackerConfig.AttackPower;
-
-            // Apply damage to target
-            targetUnitData.Health -= damage;
-            targetUnitData.Health = Mathf.Max(0, targetUnitData.Health); // Ensure health doesn't go below 0
-
-            // Trigger hit animation on target unit
-            var targetUnit = _visual.GetUnitAtCoordinate(targetCoordinate);
-            if (targetUnitData.Health > 0)
-            {
-                targetUnit?.GetHit();
-            }
-
-            // Update health bar
-            UpdateUnitHealthBar(targetCoordinate, targetUnitData.Health, targetUnitData.IsDead);
-
-            Notebook.NoteData($"Unit at {attackerCoordinate} dealt {damage} damage to enemy at {targetCoordinate}. Enemy health: {targetUnitData.Health}");
-
-            // Check if target is dead
-            if (targetUnitData.Health <= 0 && !targetUnitData.IsDead)
-            {
-                targetUnitData.IsDead = true;
-                HandleUnitDeath(targetCoordinate);
-                Notebook.NoteData($"Unit at {targetCoordinate} has died");
-            }
-        }
 
         private void UpdateUnitHealthBar(Vector2Int unitCoordinate, int currentHealth, bool isDead)
         {

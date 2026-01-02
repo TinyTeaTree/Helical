@@ -23,7 +23,7 @@ namespace Game
             ShowFloatingDamageText(damageText, anchor, FloatingTextPresetType.Damage);
         }
 
-        public void ShowFloatingDamageText(string damageText, Transform anchor, FloatingTextPresetType presetType)
+        private void ShowFloatingDamageText(string damageText, Transform anchor, FloatingTextPresetType presetType)
         {
             var preset = GetPreset(presetType);
             if (preset == null)

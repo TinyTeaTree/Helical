@@ -65,6 +65,7 @@ MonoBehaviour:
   _worldOffset: {x: 0, y: 0, z: 0}
   _textMesh: {fileID: 6847069090718630642}
   _canvasGroup: {fileID: 2483243691504622624}
+  _textContainer: {fileID: 8888988754544300396}
 --- !u!1 &3471823795088491169
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,10 +131,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: asd3433 34 43
+  m_text: 13
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3da434cd3e582482aba72df1d28cefd7, type: 2}
-  m_sharedMaterial: {fileID: -5938504178475952403, guid: 3da434cd3e582482aba72df1d28cefd7, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: e9ca4b7a3c39945668788a14874715b7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -157,8 +158,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 41.91
-  m_fontSizeBase: 41.91
+  m_fontSize: 57.33
+  m_fontSizeBase: 57.33
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

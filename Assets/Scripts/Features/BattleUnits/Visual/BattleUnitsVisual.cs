@@ -22,6 +22,7 @@ namespace Game
             unitInstance.transform.localRotation = rotation;
 
             var battleUnit = unitInstance.GetComponent<BaseBattleUnit>();
+            battleUnit.SetFeature(Feature);
             battleUnit.Initialize(unitData.BattleUnitId);
 
             // Cache the instance GUID on the visual for future reference
@@ -30,9 +31,6 @@ namespace Game
             // Create health bar widget and store reference in the unit
             var healthBarWidget = Feature.Hud.CreateWidget(Feature.AssetPack.HealthBarPrefab, battleUnit.HealthBarAnchor);
             battleUnit.SetHealthBarWidget(healthBarWidget as BattleUnitHealthBar);
-
-            // Set the battle units feature reference so the unit can access it
-            battleUnit.SetBattleUnitsFeature(Feature);
 
             // Initialize health bar to full health
             battleUnit.UpdateHealthBar(1.0f);
