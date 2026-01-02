@@ -306,6 +306,15 @@ summoner.SetProvider(typeof(ExampleAssetPack), new ResourceAssetPackProvider("Pa
 - AssetPacks loaded via SummonerService (SummoningService)
 - Address system for resource paths
 
+### ScriptableObject Rules
+**HARD RULE**: ScriptableObjects (SOs) and Configs are **purely for data storage only**
+- ❌ **NEVER** add functionality, logic, or methods to SOs/Configs (except simple getters)
+- ❌ **NEVER** add constructors to SOs/Configs
+- ✅ **ONLY** use serialized fields and simple getter properties
+- ✅ Simple getter helpers are acceptable (e.g., `public int MaxValue => _maxValue;`)
+
+**Rationale**: SOs are Unity's data containers. Keep them pure to avoid serialization issues, maintain editability in Inspector, and ensure they're just data structures.
+
 ## Naming Conventions
 
 ### Files and Classes
