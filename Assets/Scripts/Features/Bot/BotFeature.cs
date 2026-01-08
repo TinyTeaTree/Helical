@@ -2,6 +2,7 @@ using System.Linq;
 using Core;
 using Cysharp.Threading.Tasks;
 using Services;
+using System.Collections.Generic;
 
 namespace Game
 {
@@ -13,6 +14,7 @@ namespace Game
         [Inject] public ILocalConfigService ConfigService { get; set; }
         [Inject] public ITurn Turn { get; set; }
         [Inject] public IBattleUnits BattleUnits { get; set; }
+        [Inject] public IGrid Grid { get; set; }
 
         private BotConfig _config;
 
@@ -103,8 +105,9 @@ namespace Game
 
             if (enemyUnits.Count == 0)
             {
-                Notebook.NoteData($"Bot {botUnit.BattleUnitId} using Aggressive behavior - no enemies found");
-                return false;
+                // No enemies found - fall back to roaming behavior
+                Notebook.NoteData($"Bot {botUnit.BattleUnitId} using Aggressive behavior - no enemies found, falling back to roaming");
+                return TryMoveToRandomAdjacentHex(botUnit);
             }
 
             // Find closest enemy
@@ -139,8 +142,9 @@ namespace Game
             var botConfig = BattleUnits.GetUnitConfig(botUnit.BattleUnitId);
             if (botConfig == null)
             {
-                Notebook.NoteError($"Bot {botUnit.BattleUnitId} - could not find unit config");
-                return false;
+                Notebook.NoteError($"Bot {botUnit.BattleUnitId} - could not find unit config, falling back to roaming");
+                // Fall back to roaming if we can't attack
+                return TryMoveToRandomAdjacentHex(botUnit);
             }
 
             // Choose appropriate attack based on distance and available abilities
@@ -148,8 +152,9 @@ namespace Game
 
             if (chosenAttack == AbilityMode.None)
             {
-                Notebook.NoteData($"Bot {botUnit.BattleUnitId} - no suitable attack for enemy at distance {closestDistance}");
-                return false;
+                // No suitable attack found - fall back to roaming behavior
+                Notebook.NoteData($"Bot {botUnit.BattleUnitId} - no suitable attack for enemy at distance {closestDistance}, falling back to roaming");
+                return TryMoveToRandomAdjacentHex(botUnit);
             }
 
             // Order the attack
@@ -184,15 +189,39 @@ namespace Game
             return AbilityMode.None;
         }
 
+        private bool TryMoveToRandomAdjacentHex(BattleUnitData botUnit)
+        {
+            // Get all adjacent coordinates (range 1, excluding center)
+            var adjacentCoords = GridUtils.GetCoordinatesInRange(botUnit.Coordinate, 1)
+                .Where(coord => coord != botUnit.Coordinate) // Exclude current position
+                .ToList();
+
+            // Filter for valid movement locations
+            var validMoveCoords = adjacentCoords
+                .Where(coord => Grid.IsValidForAbility(AbilityMode.Move, coord))
+                .ToList();
+
+            if (validMoveCoords.Count == 0)
+            {
+                Notebook.NoteData($"Bot {botUnit.BattleUnitId} at {botUnit.Coordinate} has no valid adjacent hexes to move to");
+                return false;
+            }
+
+            // Pick a random valid coordinate
+            var randomIndex = UnityEngine.Random.Range(0, validMoveCoords.Count);
+            var targetCoordinate = validMoveCoords[randomIndex];
+
+            // Order the move
+            Turn.OrderTurn(botUnit.Coordinate, targetCoordinate, AbilityMode.Move);
+
+            Notebook.NoteData($"Bot {botUnit.BattleUnitId} ordered move from {botUnit.Coordinate} to {targetCoordinate}");
+            return true;
+        }
+
         private bool OrderRoamingBehaviour(BattleUnitData botUnit, RoamingBotBehaviourSO config)
         {
-            // TODO: Implement roaming bot logic using config data
-            // - Move to random nearby location (up to config.MaxMovesPerTurn)
-            // - Attack if enemies within config.AttackRange
-            // - Avoid dangerous positions if config.AvoidDanger is true
-
-            Notebook.NoteData($"Bot {botUnit.BattleUnitId} using Roaming behavior (MaxMoves: {config.MaxMovesPerTurn}, AttackRange: {config.AttackRange}) - not yet implemented");
-            return false;
+            // For now, just move to a random adjacent hex
+            return TryMoveToRandomAdjacentHex(botUnit);
         }
 
         private bool OrderDefendingBehaviour(BattleUnitData botUnit, DefendingBotBehaviourSO config)
